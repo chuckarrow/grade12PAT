@@ -157,23 +157,28 @@ begin
   Result := (FUsername <> '') and (FPassword <> '');
 end;
 
-// TODO: Injection 'with ... do'
+// TODO: SQL Injection avoid with 'with ... do'
 function TUserLogin.VerifyAgainstDB: Boolean;
 var
   q: string;
 begin
 
   q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
-  DMUnit.DataModule1.RunSQL(q); // (SELECT ONLY)
 
-  DMUnit.DataModule1.qrySQL.Close;
-  DMUnit.DataModule1.qrySQL.SQL.Text := q;
-  DMUnit.DataModule1.qrySQL.Open;
 
-  if DataModule1.qrySQL.FieldByName('Password').AsString = FPassword then
+  with DMUnit.DataModule1 do
+  begin
+  RunSQL(q); // (SELECT ONLY)
+
+  qrySQL.Close;
+  qrySQL.SQL.Text := q;
+  qrySQL.Open;
+
+  if qrySQL.FieldByName('Password').AsString = FPassword then
     Result := True
   else
     Result := False;
+  end;
 end;
 
 function TUserLogin.Authenticate(out ErrorMsg: string): Boolean;
