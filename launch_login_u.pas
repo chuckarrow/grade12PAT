@@ -1,5 +1,6 @@
 // TODO
 // - Make same size as welcome form.
+// - Remove forgot password
 unit launch_login_u;
 
 interface
