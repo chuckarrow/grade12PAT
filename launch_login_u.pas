@@ -1,0 +1,71 @@
+// TODO
+// - Make same size as welcome form.
+unit launch_login_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMLoginSystem_u;
+
+type
+  TfrmLogin = class(TForm)
+    edtUsername: TEdit;
+    edtPassword: TEdit;
+    btnLogin: TButton;
+    btnForgot: TButton;
+    btnBack: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure btnLoginClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmLogin: TfrmLogin;
+
+implementation
+
+uses
+  launch_welcome_u, home_u;
+
+{$R *.dfm}
+
+
+procedure TfrmLogin.btnBackClick(Sender: TObject);
+begin
+  launch_welcome_u.frmWelcome.Show;
+  self.hide;
+end;
+
+procedure TfrmLogin.btnLoginClick(Sender: TObject);
+var
+  username, password, error: string;
+  loginAttempt: DMLoginSystem_u.TUserLogin;
+begin
+  username := edtUsername.Text;
+  password := edtPassword.Text;
+  loginAttempt := TUserLogin.CreateNew(username, password);
+
+  if loginAttempt.Authenticate(error) then
+  // Login
+  begin
+    // ShowMessage('Success')
+    self.hide;
+    home_u.frmHome.Show;
+  end
+  else
+    // Failed
+    ShowMessage(error);
+
+end;
+
+procedure TfrmLogin.FormShow(Sender: TObject);
+begin
+  launch_welcome_u.frmWelcome.hide;
+end;
+
+end.

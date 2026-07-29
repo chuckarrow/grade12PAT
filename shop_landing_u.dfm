@@ -1,0 +1,42 @@
+object frmShop: TfrmShop
+  Left = 0
+  Top = 0
+  Caption = 'Shop'
+  ClientHeight = 441
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  TextHeight = 15
+  object grbFilter: TGroupBox
+    Left = 24
+    Top = 24
+    Width = 569
+    Height = 73
+    Caption = 'Filter and Sort'
+    TabOrder = 0
+  end
+  object DBGrid1: TDBGrid
+    Left = 24
+    Top = 128
+    Width = 569
+    Height = 249
+    TabOrder = 1
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+  end
+  object btnAdd: TButton
+    Left = 40
+    Top = 400
+    Width = 105
+    Height = 25
+    Caption = 'Add to Suitcase'
+    TabOrder = 2
+  end
+end
