@@ -1,5 +1,6 @@
 // TODO
 // - Make same size as welcome form.
+// - Remove forgot password
 unit launch_login_u;
 
 interface
@@ -13,6 +14,7 @@ type
     edtUsername: TEdit;
     edtPassword: TEdit;
     btnLogin: TButton;
+    btnForgot: TButton;
     btnBack: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnBackClick(Sender: TObject);

@@ -40,13 +40,21 @@ object frmLogin: TfrmLogin
     TabOrder = 2
     OnClick = btnLoginClick
   end
+  object btnForgot: TButton
+    Left = 208
+    Top = 183
+    Width = 153
+    Height = 18
+    Caption = 'Forgot Username/Password'
+    TabOrder = 3
+  end
   object btnBack: TButton
     Left = 520
     Top = 24
     Width = 75
     Height = 25
     Caption = 'Back'
-    TabOrder = 3
+    TabOrder = 4
     OnClick = btnBackClick
   end
 end
