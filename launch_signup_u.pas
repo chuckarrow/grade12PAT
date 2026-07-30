@@ -1,5 +1,6 @@
 // TODO
 // - Bullet out password edit boxes
+// - Go To Admin
 
 unit launch_signup_u;
 
@@ -44,7 +45,7 @@ var
 implementation
 
 uses
-  launch_welcome_u;
+  launch_welcome_u, home_u;
 
 {$R *.dfm}
 
@@ -67,7 +68,7 @@ end;
 // Form Resize
 procedure TfrmSignup.btnSubmitClick(Sender: TObject);
 var
-signupAttempt : TUserSignup;
+  signupAttempt: TUserSignup;
   sName, sSurname, sUsername, sPassword, sPasswordRepeat, error: string;
   iAge: integer;
   isMale: boolean;
@@ -85,11 +86,12 @@ begin
   signupAttempt := DMLoginSystem_u.TUserSignup.CreateNew(sName, sSurname, sUsername, sPassword, sPasswordRepeat, iAge, isMale);
 
   if signupAttempt.AttemptRegister(error) then
-  //register
-  ShowMessage('Can Create Acc')
+  begin
+    openHome(sUsername, self);
+  end
   else
-  //error
-  ShowMessage(error);
+    ShowMessage(error);
+
 end;
 
 procedure TfrmSignup.FormResize(Sender: TObject);
@@ -99,12 +101,12 @@ end;
 
 procedure TfrmSignup.rbnFemaleClick(Sender: TObject);
 begin
-rbnMale.Checked := false;
+  rbnMale.Checked := false;
 end;
 
 procedure TfrmSignup.rbnMaleClick(Sender: TObject);
 begin
-    rbnFemale.Checked := false;
+  rbnFemale.Checked := false;
 
 end;
 

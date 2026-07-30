@@ -1,2 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject/>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2026/07/30 18:49:25.511,=D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\Unit1.pas</Transaction>
+    <Transaction>2026/07/30 18:49:33.279,D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\admin_home_u.dfm=D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\Unit1.dfm</Transaction>
+    <Transaction>2026/07/30 18:49:33.279,D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\admin_home_u.pas=D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\Unit1.pas</Transaction>
+    <Transaction>2026/07/30 18:49:36.857,=D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\Unit2.pas</Transaction>
+    <Transaction>2026/07/30 18:49:47.125,D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\manager_home_u.pas=D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\Unit2.pas</Transaction>
+    <Transaction>2026/07/30 18:49:47.125,D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\manager_home_u.dfm=D:\SACS\Work\2026\IT\PAT\2026\Git\grade12PAT\Unit2.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

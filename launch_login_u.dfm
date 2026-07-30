@@ -6,12 +6,13 @@ object frmLogin: TfrmLogin
   Caption = 'Login'
   ClientHeight = 265
   ClientWidth = 624
-  Color = clBtnFace
+  Color = 11915762
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  ShowInTaskBar = True
   OnShow = FormShow
   TextHeight = 15
   object edtUsername: TEdit

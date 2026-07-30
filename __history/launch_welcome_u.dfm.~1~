@@ -1,0 +1,64 @@
+object frmWelcome: TfrmWelcome
+  AlignWithMargins = True
+  Left = 0
+  Top = 0
+  Margins.Left = 20
+  Margins.Top = 20
+  Margins.Right = 20
+  Margins.Bottom = 20
+  BorderIcons = []
+  BorderStyle = bsSingle
+  Caption = 'Welcome | Rykofuku Travel Planner'
+  ClientHeight = 387
+  ClientWidth = 661
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnCreate = FormCreate
+  OnResize = FormResize
+  OnShow = FormShow
+  DesignSize = (
+    661
+    387)
+  TextHeight = 15
+  object lbl01: TLabel
+    Left = 280
+    Top = 40
+    Width = 96
+    Height = 15
+    Alignment = taCenter
+    Anchors = []
+    Caption = '[Welcome Screen]'
+  end
+  object btnLogin: TButton
+    Left = 232
+    Top = 296
+    Width = 169
+    Height = 24
+    Caption = 'Login'
+    TabOrder = 0
+    OnClick = btnLoginClick
+  end
+  object btnSignup: TButton
+    Left = 232
+    Top = 257
+    Width = 169
+    Height = 25
+    Caption = 'Signup'
+    TabOrder = 1
+    OnClick = btnSignupClick
+  end
+  object btnClose: TButton
+    Left = 578
+    Top = 354
+    Width = 75
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = 'Close'
+    TabOrder = 2
+    OnClick = btnCloseClick
+  end
+end

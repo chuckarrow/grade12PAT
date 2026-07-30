@@ -1,4 +1,7 @@
-// Fix Alt+F4
+// TODO:
+// - Fix Alt+F4
+// - Make buttons prettier
+
 unit launch_welcome_u;
 
 interface
@@ -6,14 +9,17 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMCommon_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMCommon_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
 
 type
   TfrmWelcome = class(TForm)
     btnLogin: TButton;
     btnSignup: TButton;
     lbl01: TLabel;
+    TitleBarPanel1: TTitleBarPanel;
     btnClose: TButton;
+    lbl02: TLabel;
+    img01: TImage;
     procedure FormShow(Sender: TObject);
     procedure btnSignupClick(Sender: TObject);
     procedure btnLoginClick(Sender: TObject);
@@ -47,6 +53,9 @@ begin
   Self.Height := DMCommon_u.launchWindowHeight;
   Self.Width := DMCommon_u.launchWindowWidth;
 
+  DMCommon.horizCentre(lbl01);
+  DMCommon.horizCentre(lbl02);
+  DMCommon.horizCentre(img01);
   // Location
   DMCommon.screenCentre(Self);
 

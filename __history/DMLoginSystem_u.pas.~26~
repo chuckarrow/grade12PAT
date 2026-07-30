@@ -3,7 +3,9 @@ unit DMLoginSystem_u;
 interface
 
 uses
-  System.SysUtils, System.Classes, DMUnit;
+  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB;
+
+procedure openHome(username: string; form: TForm);
 
 type
   // --- SIGNUP OBJECT ---
@@ -55,6 +57,9 @@ var
   DM2: TDM2;
 
 implementation
+
+uses
+  home_u;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
@@ -111,8 +116,22 @@ begin
 end;
 
 function TUserSignup.UserExistsInDB: Boolean;
+var
+  q: string;
 begin
-  Result := False;
+  q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+    Result := not DMUnit.DataModule1.qrySQL.IsEmpty;
+    qrySQL.Close;
+
+  end;
+
 end;
 
 function TUserSignup.IsUsernameValid: Boolean;
@@ -143,10 +162,14 @@ begin
   else
   begin
     // Construct SQL Query
-    q := 'INSERT INTO tblUsers (username, password, name, surname, acc_type, balance, isMale) '
-      + 'VALUES (' + QuotedStr(FUsername) + ', ' + QuotedStr(FPassword) + ', ' +
-      QuotedStr(FName) + ', ' + QuotedStr(FSurname) + ', ' + '1, ' +
-    // Default account type
+    // SQL: Create Account (Escaped reserved words with brackets)
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
+      'VALUES (' +
+      QuotedStr(FUsername) + ', ' +
+      QuotedStr(FPassword) + ', ' +
+      QuotedStr(FName) + ', ' +
+      QuotedStr(FSurname) + ', ' +
+      '1, ' + // Default account type
       '0, ' + // Initial balance
       BoolToStr(FGender, True) + ')';
 
@@ -155,10 +178,10 @@ begin
     begin
       qrySQL.Close;
       qrySQL.SQL.Text := q;
-      qrySQL.ExecSQL; // Use ExecSQL for INSERT statements
+      qrySQL.ExecSQL;
     end;
 
-    Result := True; // Set Result := True ONLY when registration succeeds
+    Result := True;
   end;
 end;
 { ========== }
@@ -198,6 +221,7 @@ begin
       Result := True
     else
       Result := False;
+    qrySQL.Close;
   end;
 end;
 
@@ -212,6 +236,44 @@ begin
     ErrorMsg := 'Invalid username or password.'
   else
     Result := True; // Access granted
+end;
+
+{ All }
+procedure openHome(username: string; form: TForm);
+var
+  q: string;
+  accType : integer;
+begin
+  q := 'SELECT acc_type FROM tblUsers WHERE username = "' + username + '" ';
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+
+     accType := qrySQL.FieldByName('acc_type').AsInteger;
+
+
+
+      qrySQL.Close;
+  end;
+
+      if accType  = 1 then
+    begin
+      form.hide;
+      home_u.frmHome.show;
+    end
+    else if accType	= 2 then
+    begin
+            // Manager Form
+    end
+    else if accType = 3 then
+    begin
+       // Admin Form
+    end;
+
 end;
 
 end.

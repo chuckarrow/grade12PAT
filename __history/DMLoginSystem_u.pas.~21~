@@ -111,8 +111,22 @@ begin
 end;
 
 function TUserSignup.UserExistsInDB: Boolean;
+var
+  q: string;
 begin
-  Result := False;
+  q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+
+
+
+  end;
+  Result := not DMUnit.DataModule1.qrySQL.IsEmpty;
 end;
 
 function TUserSignup.IsUsernameValid: Boolean;
@@ -143,10 +157,14 @@ begin
   else
   begin
     // Construct SQL Query
-    q := 'INSERT INTO tblUsers (username, password, name, surname, acc_type, balance, isMale) '
-      + 'VALUES (' + QuotedStr(FUsername) + ', ' + QuotedStr(FPassword) + ', ' +
-      QuotedStr(FName) + ', ' + QuotedStr(FSurname) + ', ' + '1, ' +
-    // Default account type
+    // SQL: Create Account (Escaped reserved words with brackets)
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
+      'VALUES (' +
+      QuotedStr(FUsername) + ', ' +
+      QuotedStr(FPassword) + ', ' +
+      QuotedStr(FName) + ', ' +
+      QuotedStr(FSurname) + ', ' +
+      '1, ' + // Default account type
       '0, ' + // Initial balance
       BoolToStr(FGender, True) + ')';
 
