@@ -95,7 +95,9 @@ object frmSignup: TfrmSignup
     Width = 49
     Height = 17
     Caption = 'Male'
+    Checked = True
     TabOrder = 8
+    TabStop = True
     OnClick = rbnMaleClick
   end
   object rbnFemale: TRadioButton
@@ -105,6 +107,7 @@ object frmSignup: TfrmSignup
     Height = 17
     Caption = 'Female'
     TabOrder = 9
+    OnClick = rbnFemaleClick
   end
   object btnSubmit: TButton
     Left = 184

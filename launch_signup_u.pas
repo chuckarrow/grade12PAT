@@ -30,6 +30,7 @@ type
     procedure rbnMaleClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure btnSubmitClick(Sender: TObject);
+    procedure rbnFemaleClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -83,7 +84,7 @@ begin
   // Create User Object
   signupAttempt := DMLoginSystem_u.TUserSignup.CreateNew(sName, sSurname, sUsername, sPassword, sPasswordRepeat, iAge, isMale);
 
-  if signupAttempt.CanRegister(error) then
+  if signupAttempt.AttemptRegister(error) then
   //register
   ShowMessage('Can Create Acc')
   else
@@ -96,9 +97,13 @@ begin
   //
 end;
 
+procedure TfrmSignup.rbnFemaleClick(Sender: TObject);
+begin
+rbnMale.Checked := false;
+end;
+
 procedure TfrmSignup.rbnMaleClick(Sender: TObject);
 begin
-  if NOT rbnMale.Checked then
     rbnFemale.Checked := false;
 
 end;

@@ -17,14 +17,14 @@ type
     FAge: Integer;
     FGender: Boolean;
   public
-    constructor CreateNew(const AName, ASurname, AUsername, APassword, APasswordRetype: string; AAge: Integer;
-      AGender: Boolean);
+    constructor CreateNew(const AName, ASurname, AUsername, APassword,
+      APasswordRetype: string; AAge: Integer; AGender: Boolean);
     function PasswordsMatch: Boolean;
     function IsPasswordSecure: Boolean;
     function IsAgeValid: Boolean;
     function UserExistsInDB: Boolean;
     function IsUsernameValid: Boolean;
-    function CanRegister(out ErrorMsg: string): Boolean;
+    function AttemptRegister(out ErrorMsg: string): Boolean;
   end;
 
   // --- LOGIN OBJECT ---
@@ -57,13 +57,13 @@ var
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
-
 {$R *.dfm}
-
+{ =========== }
 { TUserSignup }
+{ =========== }
 
-constructor TUserSignup.CreateNew(const AName, ASurname, AUsername, APassword, APasswordRetype: string; AAge: Integer;
-  AGender: Boolean);
+constructor TUserSignup.CreateNew(const AName, ASurname, AUsername, APassword,
+  APasswordRetype: string; AAge: Integer; AGender: Boolean);
 begin
   inherited Create;
   FName := AName;
@@ -120,11 +120,12 @@ begin
   Result := (Length(FUsername) >= 3) and (Pos(' ', FUsername) = 0);
 end;
 
-// Can Register
-function TUserSignup.CanRegister(out ErrorMsg: string): Boolean;
+function TUserSignup.AttemptRegister(out ErrorMsg: string): Boolean;
+var
+  q: string;
 begin
   ErrorMsg := '';
-  Result := False;
+  Result := False; // Default to False
 
   if (FName = '') or (FSurname = '') then
     ErrorMsg := 'Name and Surname cannot be empty.'
@@ -135,14 +136,38 @@ begin
   else if not PasswordsMatch then
     ErrorMsg := 'Passwords do not match.'
   else if not IsPasswordSecure then
-    ErrorMsg := 'Password must be at least 8 characters, with uppercase, lowercase, and numbers.'
+    ErrorMsg :=
+      'Password must be at least 8 characters, with uppercase, lowercase, and numbers.'
   else if not IsAgeValid then
     ErrorMsg := 'You must be at least 13 years old to register.'
   else
-    Result := True;
-end;
+  begin
+    // Construct SQL Query
+// SQL: Create Account (Escaped reserved words with brackets)
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
+         'VALUES (' +
+         QuotedStr(FUsername) + ', ' +
+         QuotedStr(FPassword) + ', ' +
+         QuotedStr(FName) + ', ' +
+         QuotedStr(FSurname) + ', ' +
+         '1, ' +                     // Default account type
+         '0, ' +                     // Initial balance
+         BoolToStr(FGender, True) + ')';
 
+    // Execute Query
+    with DMUnit.DataModule1 do
+    begin
+      qrySQL.Close;
+      qrySQL.SQL.Text := q;
+      qrySQL.ExecSQL;
+    end;
+
+    Result := True;
+  end;
+end;
+{ ========== }
 { TUserLogin }
+{ ========== }
 
 constructor TUserLogin.CreateNew(const AUsername, APassword: string);
 begin
@@ -165,19 +190,18 @@ begin
 
   q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
 
-
   with DMUnit.DataModule1 do
   begin
-  RunSQL(q); // (SELECT ONLY)
+    RunSQL(q); // (SELECT ONLY)
 
-  qrySQL.Close;
-  qrySQL.SQL.Text := q;
-  qrySQL.Open;
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
 
-  if qrySQL.FieldByName('Password').AsString = FPassword then
-    Result := True
-  else
-    Result := False;
+    if qrySQL.FieldByName('Password').AsString = FPassword then
+      Result := True
+    else
+      Result := False;
   end;
 end;
 
