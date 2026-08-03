@@ -16,12 +16,8 @@
 ### popup_addToTrip_u
 - [ ] Add Cancel button
 
-### launch_signup_u:
-- [ ] Min/Max on age spin edit
-
 ## Other
-- [ ] Build Manager Menu
-- [ ] Build Admin Menu
+- [ ] Figure out what DM2 is
 
 ---
 
@@ -72,10 +68,11 @@
 | DMLoginSystem_u | 1 |
 | DMUnit | 1 |
 | home_u | 1 |
-| launch_login_u | 1 |
-| launch_signup_u | 1 |
 | manager_home_u | 1 |
 | shop_landing_u | 1 |
 | trip_overview_u | 1 |
 | popup_addToTrip_u | 1 |
+| Complete | |
+| launch_login_u | 5 |
+| launch_signup_u | 5 |
 | launch_welcome_u | 5 |

@@ -16,9 +16,6 @@
 ### popup_addToTrip_u
 - [ ] Add Cancel button
 
-### launch_signup_u:
-- [ ] Min/Max on age spin edit
-
 ## Other
 - [ ] Figure out what DM2 is
 
@@ -46,16 +43,31 @@
 
 ## Things Left To Do
 - [ ] Manager Menu — **4 Aug**
+     - [ ] List Stores under manager
+           - [ ] View Items per store
+     - [ ] Edit Stores (popup)
+     - [ ] Edit Items (popup)
+     - [ ] Signout button
+     - [ ] Resizing and Close Query
 - [ ] Admin Menu — **4 Aug**
+     - [ ] List ALL Stores
+           - [ ] View Items per store
+     - [ ] Edit Stores (popup)
+     - [ ] Edit Items (popup)
+     - [ ] Add/Edit/Delete Users
+     - [ ] Signout button
+     - [ ] Resizing and Close Query
 - [ ] Payment & Checkout — **5 Aug**
-- [ ] Receipt — **5 Aug**
+     - [ ] 'Payment System' (Add more credits to balance)
+     - [ ] Receipt — **5 Aug**
 - [ ] Go over Phase 1 — **6 Aug**
 - [ ] Go over Phase 2 — **6 Aug**
 - [ ] Clean up code — **8 Aug**
-     - [ ] Rename DB fields (correct_naming)
+     - [ ] check DB
      - [ ] Get rid of Debug Units
+     - [ ] Make README
 - [ ] Finish any incomplete forms — **8 Aug**
-- [ ] GUI — **9 Aug**
+- [ ] GUI and clean dust — **9 Aug**
 
 ---
 
