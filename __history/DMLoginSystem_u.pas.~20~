@@ -24,7 +24,7 @@ type
     function IsAgeValid: Boolean;
     function UserExistsInDB: Boolean;
     function IsUsernameValid: Boolean;
-    function CanRegister(out ErrorMsg: string): Boolean;
+    function AttemptRegister(out ErrorMsg: string): Boolean;
   end;
 
   // --- LOGIN OBJECT ---
@@ -58,7 +58,6 @@ implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
-
 { =========== }
 { TUserSignup }
 { =========== }
@@ -112,8 +111,23 @@ begin
 end;
 
 function TUserSignup.UserExistsInDB: Boolean;
+var
+  q: string;
 begin
-  Result := False;
+  q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+
+
+
+  end;
+  Result := not DMUnit.DataModule1.qrySQL.IsEmpty;
 end;
 
 function TUserSignup.IsUsernameValid: Boolean;
@@ -121,11 +135,12 @@ begin
   Result := (Length(FUsername) >= 3) and (Pos(' ', FUsername) = 0);
 end;
 
-// Can Register
-function TUserSignup.CanRegister(out ErrorMsg: string): Boolean;
+function TUserSignup.AttemptRegister(out ErrorMsg: string): Boolean;
+var
+  q: string;
 begin
   ErrorMsg := '';
-  Result := False;
+  Result := False; // Default to False
 
   if (FName = '') or (FSurname = '') then
     ErrorMsg := 'Name and Surname cannot be empty.'
@@ -141,9 +156,30 @@ begin
   else if not IsAgeValid then
     ErrorMsg := 'You must be at least 13 years old to register.'
   else
-    Result := True;
-end;
+  begin
+    // Construct SQL Query
+    // SQL: Create Account (Escaped reserved words with brackets)
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
+      'VALUES (' +
+      QuotedStr(FUsername) + ', ' +
+      QuotedStr(FPassword) + ', ' +
+      QuotedStr(FName) + ', ' +
+      QuotedStr(FSurname) + ', ' +
+      '1, ' + // Default account type
+      '0, ' + // Initial balance
+      BoolToStr(FGender, True) + ')';
 
+    // Execute Query
+    with DMUnit.DataModule1 do
+    begin
+      qrySQL.Close;
+      qrySQL.SQL.Text := q;
+      qrySQL.ExecSQL;
+    end;
+
+    Result := True;
+  end;
+end;
 { ========== }
 { TUserLogin }
 { ========== }

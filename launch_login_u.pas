@@ -42,19 +42,17 @@ end;
 
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
 var
-  username, password, error: string;
+  sUsername, sPassword, error: string;
   loginAttempt: DMLoginSystem_u.TUserLogin;
 begin
-  username := edtUsername.Text;
-  password := edtPassword.Text;
-  loginAttempt := TUserLogin.CreateNew(username, password);
+  sUsername := edtUsername.Text;
+  sPassword := edtPassword.Text;
+  loginAttempt := TUserLogin.CreateNew(sUsername, sPassword);
 
   if loginAttempt.Authenticate(error) then
   // Login
   begin
-    // ShowMessage('Success')
-    self.hide;
-    home_u.frmHome.Show;
+    openHome(sUsername, self);
   end
   else
     // Failed

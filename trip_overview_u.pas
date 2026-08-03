@@ -1,10 +1,14 @@
+// TODO
+// - Fix Table SQL??
 unit trip_overview_u;
 
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, DMUnit, DMLoginSystem_u;
 
 type
   TfrmTripOverview = class(TForm)
@@ -16,6 +20,9 @@ type
     btnFinalise: TButton;
     lbl01: TLabel;
     lbl02: TLabel;
+    Button1: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure btnEditClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -30,5 +37,50 @@ implementation
 {$R *.dfm}
 
 
+// Edit Button
+procedure TfrmTripOverview.btnEditClick(Sender: TObject);
+var
+  q: string;
+begin
+  q := 'UPDATE tblTrip SET depart-date username = NOW() WHERE tblUsers.username = "' + currUser.getUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+    DBGrid1.DataSource := dsQrySQL;
+    qrySQL.Close;
+
+  end;
+
+  ShowMessage('d');
+end;
+
+
+// Form Show
+procedure TfrmTripOverview.FormShow(Sender: TObject);
+var
+  q: string;
+begin
+
+ShowMessage(currUser.getUsername);
+// q := 'SELECT * FROM tblTrip WHERE username = "' + currUser.getUsername + '" ';
+q := 'SELECT * FROM tblTrip WHERE username = "' + currUser.getUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+    DBGrid1.DataSource := dsQrySQL;
+    qrySQL.Close;
+
+  end;
+
+  ShowMessage('I H8 DELPHI ;(');
+end;
 
 end.

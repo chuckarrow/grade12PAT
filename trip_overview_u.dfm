@@ -10,6 +10,7 @@ object frmTripOverview: TfrmTripOverview
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnShow = FormShow
   TextHeight = 15
   object lbl01: TLabel
     Left = 257
@@ -21,7 +22,7 @@ object frmTripOverview: TfrmTripOverview
   object lbl02: TLabel
     Left = 266
     Top = 40
-    Width = 54
+    Width = 55
     Height = 15
     Caption = 'Trip Name'
   end
@@ -52,6 +53,7 @@ object frmTripOverview: TfrmTripOverview
     Height = 25
     Caption = 'Edit'
     TabOrder = 2
+    OnClick = btnEditClick
   end
   object btnRemove: TButton
     Left = 541
@@ -76,5 +78,13 @@ object frmTripOverview: TfrmTripOverview
     Height = 25
     Caption = 'Finalise Trip'
     TabOrder = 5
+  end
+  object Button1: TButton
+    Left = 541
+    Top = 120
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 6
   end
 end

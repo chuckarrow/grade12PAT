@@ -3,7 +3,9 @@ unit DMLoginSystem_u;
 interface
 
 uses
-  System.SysUtils, System.Classes, DMUnit;
+  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB;
+
+procedure openHome(username: string; form: TForm);
 
 type
   // --- SIGNUP OBJECT ---
@@ -40,6 +42,8 @@ type
     function CredentialsAreValid: Boolean; // Local sanity check
     function VerifyAgainstDB: Boolean; // Placeholder database verification
     function Authenticate(out ErrorMsg: string): Boolean; // Master login check
+
+    function getUsername(): string;
   end;
 
   TDM2 = class(TDataModule)
@@ -53,8 +57,12 @@ type
 
 var
   DM2: TDM2;
+  currUser: TUserLogin;
 
 implementation
+
+uses
+  home_u;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
@@ -111,8 +119,22 @@ begin
 end;
 
 function TUserSignup.UserExistsInDB: Boolean;
+var
+  q: string;
 begin
-  Result := False;
+  q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+    Result := not DMUnit.DataModule1.qrySQL.IsEmpty;
+    qrySQL.Close;
+
+  end;
+
 end;
 
 function TUserSignup.IsUsernameValid: Boolean;
@@ -143,16 +165,13 @@ begin
   else
   begin
     // Construct SQL Query
-// SQL: Create Account (Escaped reserved words with brackets)
-    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
-         'VALUES (' +
-         QuotedStr(FUsername) + ', ' +
-         QuotedStr(FPassword) + ', ' +
-         QuotedStr(FName) + ', ' +
-         QuotedStr(FSurname) + ', ' +
-         '1, ' +                     // Default account type
-         '0, ' +                     // Initial balance
-         BoolToStr(FGender, True) + ')';
+    // SQL: Create Account (Escaped reserved words with brackets)
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) '
+      + 'VALUES (' + QuotedStr(FUsername) + ', ' + QuotedStr(FPassword) + ', ' +
+      QuotedStr(FName) + ', ' + QuotedStr(FSurname) + ', ' + '1, ' +
+    // Default account type
+      '0, ' + // Initial balance
+      BoolToStr(FGender, True) + ')';
 
     // Execute Query
     with DMUnit.DataModule1 do
@@ -162,6 +181,7 @@ begin
       qrySQL.ExecSQL;
     end;
 
+    currUser := TUserLogin.CreateNew(FUsername, FPassword);
     Result := True;
   end;
 end;
@@ -174,6 +194,11 @@ begin
   inherited Create;
   FUsername := Trim(AUsername);
   FPassword := APassword;
+end;
+
+function TUserLogin.getUsername(): string;
+begin
+  Result := FUsername;
 end;
 
 function TUserLogin.CredentialsAreValid: Boolean;
@@ -202,6 +227,7 @@ begin
       Result := True
     else
       Result := False;
+    qrySQL.Close;
   end;
 end;
 
@@ -215,7 +241,47 @@ begin
   else if not VerifyAgainstDB then
     ErrorMsg := 'Invalid username or password.'
   else
+  begin
+    currUser := TUserLogin.CreateNew(FUsername, FPassword);
     Result := True; // Access granted
+  end;
+
+end;
+
+{ All }
+procedure openHome(username: string; form: TForm);
+var
+  q: string;
+  accType: Integer;
+begin
+  q := 'SELECT acc_type FROM tblUsers WHERE username = "' + username + '" ';
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+
+    accType := qrySQL.FieldByName('acc_type').AsInteger;
+
+    qrySQL.Close;
+  end;
+
+  if accType = 1 then
+  begin
+    form.hide;
+    home_u.frmHome.show;
+  end
+  else if accType = 2 then
+  begin
+    // Manager Form
+  end
+  else if (accType = 3) OR (accType = 4) then
+  begin
+    // Admin Form
+  end;
+
 end;
 
 end.

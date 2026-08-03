@@ -20,6 +20,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure btnSignoutClick(Sender: TObject);
+    procedure btnTripClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -32,7 +33,7 @@ var
 implementation
 
 uses
-  launch_welcome_u;
+  launch_welcome_u, trip_overview_u;
 
 {$R *.dfm}
 
@@ -41,6 +42,11 @@ procedure TfrmHome.btnSignoutClick(Sender: TObject);
 begin
   self.hide;
   launch_welcome_u.frmWelcome.Show;
+end;
+
+procedure TfrmHome.btnTripClick(Sender: TObject);
+begin
+  trip_overview_u.frmTripOverview.Show;
 end;
 
 procedure TfrmHome.Button1Click(Sender: TObject);
@@ -59,6 +65,7 @@ end;
 procedure TfrmHome.FormShow(Sender: TObject);
 begin
   // Add Welcome back user
+
 end;
 
 // Form Terminate

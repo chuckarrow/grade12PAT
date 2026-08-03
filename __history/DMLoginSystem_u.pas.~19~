@@ -111,7 +111,19 @@ begin
 end;
 
 function TUserSignup.UserExistsInDB: Boolean;
+var
+  q: string;
 begin
+  q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
+
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+  end;
   Result := False;
 end;
 
@@ -120,13 +132,12 @@ begin
   Result := (Length(FUsername) >= 3) and (Pos(' ', FUsername) = 0);
 end;
 
-// Can Register
 function TUserSignup.AttemptRegister(out ErrorMsg: string): Boolean;
 var
   q: string;
 begin
   ErrorMsg := '';
-  Result := False;
+  Result := False; // Default to False
 
   if (FName = '') or (FSurname = '') then
     ErrorMsg := 'Name and Surname cannot be empty.'
@@ -143,32 +154,29 @@ begin
     ErrorMsg := 'You must be at least 13 years old to register.'
   else
   begin
-    // SQL: Create Account
-    q := 'INSERT INTO tblUsers (username, password, name, surname, acc_type, balance, isMale) '
-      + 'VALUES (' + QuotedStr(FUsername) + ', ' + QuotedStr(FPassword) + ', ' +
-      QuotedStr(FName) + ', ' + QuotedStr(FSurname) + ', ' + '1, ' +
-    // Default account type
+    // Construct SQL Query
+    // SQL: Create Account (Escaped reserved words with brackets)
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
+      'VALUES (' +
+      QuotedStr(FUsername) + ', ' +
+      QuotedStr(FPassword) + ', ' +
+      QuotedStr(FName) + ', ' +
+      QuotedStr(FSurname) + ', ' +
+      '1, ' + // Default account type
       '0, ' + // Initial balance
       BoolToStr(FGender, True) + ')';
 
-    // Run Query
+    // Execute Query
     with DMUnit.DataModule1 do
     begin
-      RunSQL(q); // (SELECT ONLY)
-
       qrySQL.Close;
       qrySQL.SQL.Text := q;
-      qrySQL.Open;
-
-      if qrySQL.FieldByName('Password').AsString = FPassword then
-        Result := True
-      else
-        Result := False;
+      qrySQL.ExecSQL;
     end;
-  end;
-  Result := True;
-end;
 
+    Result := True;
+  end;
+end;
 { ========== }
 { TUserLogin }
 { ========== }

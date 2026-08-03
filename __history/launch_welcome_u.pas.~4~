@@ -1,0 +1,100 @@
+// Fix Alt+F4
+unit launch_welcome_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMCommon_u, Vcl.TitleBarCtrls;
+
+type
+  TfrmWelcome = class(TForm)
+    btnLogin: TButton;
+    btnSignup: TButton;
+    lbl01: TLabel;
+    TitleBarPanel1: TTitleBarPanel;
+    btnClose: TButton;
+    lbl02: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure btnSignupClick(Sender: TObject);
+    procedure btnLoginClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmWelcome: TfrmWelcome;
+
+implementation
+
+uses
+  home_u, launch_signup_u, launch_login_u;
+
+{$R *.dfm}
+// ====
+// Form
+// ====
+
+// Form Create
+procedure TfrmWelcome.FormCreate(Sender: TObject);
+begin
+  // GUI
+  // Dimensions
+  Self.Height := DMCommon_u.launchWindowHeight;
+  Self.Width := DMCommon_u.launchWindowWidth;
+
+  DMCommon.horizCentre(lbl01);
+   DMCommon.horizCentre(lbl02);
+  // Location
+  DMCommon.screenCentre(Self);
+
+
+end;
+
+// Form Resize
+procedure TfrmWelcome.FormResize(Sender: TObject);
+begin
+  DMCommon.horizCentre(lbl01);
+  DMCommon.horizCentre(btnLogin);
+  DMCommon.horizCentre(btnSignup);
+end;
+
+// Form Show
+procedure TfrmWelcome.FormShow(Sender: TObject);
+begin
+  home_u.frmHome.Hide;
+  // Want to hide home_u
+end;
+
+// ====
+// Buttons
+// ====
+
+// Close Button
+procedure TfrmWelcome.btnCloseClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+// Login Form
+procedure TfrmWelcome.btnLoginClick(Sender: TObject);
+begin
+  Application.CreateForm(TfrmLogin, frmLogin);
+  launch_login_u.frmLogin.Show;
+
+end;
+
+// Signup Form
+procedure TfrmWelcome.btnSignupClick(Sender: TObject);
+begin
+  Application.CreateForm(TfrmSignup, frmSignup);
+  launch_signup_u.frmSignup.Show;
+end;
+
+end.

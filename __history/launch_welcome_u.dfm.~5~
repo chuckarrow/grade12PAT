@@ -1,0 +1,114 @@
+object frmWelcome: TfrmWelcome
+  AlignWithMargins = True
+  Left = 0
+  Top = 0
+  Margins.Left = 20
+  Margins.Top = 20
+  Margins.Right = 20
+  Margins.Bottom = 20
+  BorderIcons = []
+  BorderStyle = bsSingle
+  Caption = 'Welcome | Rykofuku Travel Planner'
+  ClientHeight = 418
+  ClientWidth = 661
+  Color = 11915762
+  CustomTitleBar.Control = TitleBarPanel1
+  CustomTitleBar.Enabled = True
+  CustomTitleBar.Height = 31
+  CustomTitleBar.SystemColors = False
+  CustomTitleBar.BackgroundColor = 8828129
+  CustomTitleBar.ForegroundColor = 65793
+  CustomTitleBar.InactiveBackgroundColor = clWhite
+  CustomTitleBar.InactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonForegroundColor = 65793
+  CustomTitleBar.ButtonBackgroundColor = clWhite
+  CustomTitleBar.ButtonHoverForegroundColor = 65793
+  CustomTitleBar.ButtonHoverBackgroundColor = 16053492
+  CustomTitleBar.ButtonPressedForegroundColor = 65793
+  CustomTitleBar.ButtonPressedBackgroundColor = 15395562
+  CustomTitleBar.ButtonInactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  GlassFrame.Enabled = True
+  GlassFrame.Top = 31
+  StyleElements = [seFont]
+  ShowInTaskBar = True
+  OnCreate = FormCreate
+  OnResize = FormResize
+  OnShow = FormShow
+  DesignSize = (
+    661
+    418)
+  TextHeight = 15
+  object lbl01: TLabel
+    Left = 296
+    Top = 68
+    Width = 65
+    Height = 15
+    Alignment = taCenter
+    Anchors = []
+    Caption = 'Welcome to'
+    Color = 3421343
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 3421343
+    Font.Height = -12
+    Font.Name = 'Arial'
+    Font.Style = []
+    ParentColor = False
+    ParentFont = False
+  end
+  object lbl02: TLabel
+    Left = 104
+    Top = 97
+    Width = 457
+    Height = 32
+    Caption = 'RyokoFuku Travel Clothes Planner'
+    Color = 3421343
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 3421343
+    Font.Height = -27
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object btnLogin: TButton
+    Left = 232
+    Top = 296
+    Width = 169
+    Height = 24
+    Caption = 'Login'
+    TabOrder = 0
+    OnClick = btnLoginClick
+  end
+  object btnSignup: TButton
+    Left = 232
+    Top = 257
+    Width = 169
+    Height = 25
+    Caption = 'Signup'
+    TabOrder = 1
+    OnClick = btnSignupClick
+  end
+  object TitleBarPanel1: TTitleBarPanel
+    Left = 0
+    Top = 0
+    Width = 661
+    Height = 31
+    CustomButtons = <>
+  end
+  object btnClose: TButton
+    Left = 578
+    Top = 385
+    Width = 75
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = 'Close'
+    TabOrder = 3
+    OnClick = btnCloseClick
+  end
+end
