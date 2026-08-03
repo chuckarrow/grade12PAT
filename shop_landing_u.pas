@@ -62,7 +62,7 @@ var
 begin
   { Refresh DB: }
   q := 'SELECT * FROM tblStock';
-  DMUnit.DataModule1.RunSQL(q); // (SELECT ONLY)
+  DMUnit.DataModule1.RunSQL(q);
   DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
 end;
 
