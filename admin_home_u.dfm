@@ -11,4 +11,16 @@ object frmAdminHome: TfrmAdminHome
   Font.Name = 'Segoe UI'
   Font.Style = []
   TextHeight = 15
+  object DBGrid1: TDBGrid
+    Left = 24
+    Top = 24
+    Width = 320
+    Height = 120
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+  end
 end

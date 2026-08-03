@@ -3,7 +3,7 @@ unit DMCommon_u;
 interface
 
 uses
-  System.SysUtils, System.Classes, Vcl.Forms, Vcl.Controls;
+  System.SysUtils, System.Classes, Vcl.Forms, Vcl.Controls, Winapi.Windows;
 
 type
   TDMCommon = class(TDataModule)
@@ -13,6 +13,7 @@ type
     { Public declarations }
     class procedure horizCentre(control: TControl; Offset: Integer = 0);
 class procedure screenCentre(Form: TForm);
+class procedure fixWindow(Form: TForm);
   end;
 
 var
@@ -23,10 +24,23 @@ Const
   launchWindowWidth = 750;
   launchWindowHeight = 500;
 
+  // Start Currency
+  startingCurrency = 1000.00;
+
 implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
+class procedure TDMCommon.fixWindow(Form: TForm);
+begin
+
+  // Incorrect Window Activation incorrect Fix
+  // Source: https://stackoverflow.com/questions/802279/multiple-app-windows-activation-not-working-correctly
+  ShowWindow(Form.Handle, SW_HIDE	);
+  SetWindowLong(Form.Handle, GWL_EXSTYLE, GetWindowLong(Form.Handle, GWL_EXSTYLE) or WS_EX_APPWINDOW);
+  ShowWindow(Form.Handle, SW_SHOW);
+end;
+
 { TDataModule3 }
 
 { TDataModule3 }

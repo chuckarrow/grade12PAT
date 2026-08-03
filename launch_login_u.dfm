@@ -3,38 +3,58 @@ object frmLogin: TfrmLogin
   Top = 0
   BorderIcons = []
   BorderStyle = bsSingle
-  Caption = 'Login'
-  ClientHeight = 265
-  ClientWidth = 624
-  Color = 11915762
+  Caption = 'Login | RyokoFuku Travel Planner'
+  ClientHeight = 214
+  ClientWidth = 191
+  Color = 11981554
+  CustomTitleBar.Control = tlbTitleBar
+  CustomTitleBar.Enabled = True
+  CustomTitleBar.Height = 31
+  CustomTitleBar.SystemColors = False
+  CustomTitleBar.BackgroundColor = 8828129
+  CustomTitleBar.ForegroundColor = 65793
+  CustomTitleBar.InactiveBackgroundColor = clWhite
+  CustomTitleBar.InactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonForegroundColor = 65793
+  CustomTitleBar.ButtonBackgroundColor = clWhite
+  CustomTitleBar.ButtonHoverForegroundColor = 65793
+  CustomTitleBar.ButtonHoverBackgroundColor = 16053492
+  CustomTitleBar.ButtonPressedForegroundColor = 65793
+  CustomTitleBar.ButtonPressedBackgroundColor = 15395562
+  CustomTitleBar.ButtonInactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'Segoe UI'
+  Font.Name = 'Arial MT Medium'
   Font.Style = []
+  GlassFrame.Enabled = True
+  GlassFrame.Top = 31
+  StyleElements = [seFont]
   ShowInTaskBar = True
+  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
-  TextHeight = 15
+  TextHeight = 14
   object edtUsername: TEdit
-    Left = 224
-    Top = 64
+    Left = 40
+    Top = 48
     Width = 121
-    Height = 23
+    Height = 22
     TabOrder = 0
     Text = 'Username'
   end
   object edtPassword: TEdit
-    Left = 224
-    Top = 104
+    Left = 40
+    Top = 88
     Width = 121
-    Height = 23
+    Height = 22
     PasswordChar = #8226
     TabOrder = 1
     Text = 'Password'
   end
   object btnLogin: TButton
-    Left = 224
-    Top = 133
+    Left = 40
+    Top = 117
     Width = 121
     Height = 36
     Caption = 'Login'
@@ -42,12 +62,19 @@ object frmLogin: TfrmLogin
     OnClick = btnLoginClick
   end
   object btnBack: TButton
-    Left = 520
-    Top = 24
+    Left = 61
+    Top = 168
     Width = 75
     Height = 25
     Caption = 'Back'
     TabOrder = 3
     OnClick = btnBackClick
+  end
+  object tlbTitleBar: TTitleBarPanel
+    Left = 0
+    Top = 0
+    Width = 191
+    Height = 30
+    CustomButtons = <>
   end
 end

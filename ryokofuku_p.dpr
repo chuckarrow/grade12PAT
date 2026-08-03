@@ -39,11 +39,14 @@ begin
   // Other forms
   Application.CreateForm(TfrmTripOverview, frmTripOverview);
   Application.CreateForm(TfrmShop, frmShop);
-
-  Application.CreateForm(TfrmDebug1, frmDebug1);
   Application.CreateForm(TfrmAdminHome, frmAdminHome);
   Application.CreateForm(TfrmManagerHome, frmManagerHome);
   Application.CreateForm(TfrmAddToTrip, frmAddToTrip);
+
+  // Debug Form
+  Application.CreateForm(TfrmDebug1, frmDebug1);
+
+  // Run App
   Application.Run;
 
 end.
