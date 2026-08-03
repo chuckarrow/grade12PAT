@@ -1,0 +1,26 @@
+#       TODO
+##
+
+##### shop_landing_u:
+- Make filter and sort fully functional
+- Make search bar seach all fields.
+
+
+
+## Task [?]:
+Delphi code or SQL:
+1. Insert :white_check_mark:
+2. Update
+3. Delete
+
+(4 to 7) MUST BE SQL-one sql can contain more than one stated or different sqls with each stated: \
+4. View * data from a table  :white_check_mark:  \
+5. Two aggregate functions used. :orange_square:\
+6. Two tables in one sql. \
+7. Variable used in sql :white_check_mark: 
+  
+(8 to 10) OTHER CODE-from phase 1. 
+once coded update phase one to match:  
+8. One text file read and/or written to and/or appended. \
+9. One array processed. \
+10. One class from the classes listed in the classes and object section of your phase 1. 

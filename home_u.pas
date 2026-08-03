@@ -21,6 +21,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure btnSignoutClick(Sender: TObject);
     procedure btnTripClick(Sender: TObject);
+    procedure btnShopClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -33,22 +34,32 @@ var
 implementation
 
 uses
-  launch_welcome_u, trip_overview_u;
+  launch_welcome_u, trip_overview_u, shop_landing_u;
 
 {$R *.dfm}
 
 
+// Shop Button
+procedure TfrmHome.btnShopClick(Sender: TObject);
+begin
+  shop_landing_u.frmShop.Show;
+  self.hide;
+end;
+
+// Singout Button
 procedure TfrmHome.btnSignoutClick(Sender: TObject);
 begin
   self.hide;
   launch_welcome_u.frmWelcome.Show;
 end;
 
+// Trip Button
 procedure TfrmHome.btnTripClick(Sender: TObject);
 begin
   trip_overview_u.frmTripOverview.Show;
 end;
 
+// Debug button
 procedure TfrmHome.Button1Click(Sender: TObject);
 begin
   frmDebug1.Show;

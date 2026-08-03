@@ -287,40 +287,6 @@ begin
 
 end;
 
-{ All }
-procedure openHome(username: string; form: TForm);
-var
-  q: string;
-  accType: Integer;
-begin
-  q := 'SELECT acc_type FROM tblUsers WHERE username = "' + username + '" ';
-  with DMUnit.DataModule1 do
-  begin
-    RunSQL(q); // (SELECT ONLY)
 
-    qrySQL.Close;
-    qrySQL.SQL.Text := q;
-    qrySQL.Open;
-
-    accType := qrySQL.FieldByName('acc_type').AsInteger;
-
-    qrySQL.Close;
-  end;
-
-  if accType = 1 then
-  begin
-    form.hide;
-    home_u.frmHome.show;
-  end
-  else if accType = 2 then
-  begin
-    // Manager Form
-  end
-  else if (accType = 3) OR (accType = 4) then
-  begin
-    // Admin Form
-  end;
-
-end;
 
 end.

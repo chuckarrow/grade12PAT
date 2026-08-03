@@ -62,5 +62,6 @@ object frmHome: TfrmHome
     Height = 25
     Caption = 'Go Shopping'
     TabOrder = 3
+    OnClick = btnShopClick
   end
 end

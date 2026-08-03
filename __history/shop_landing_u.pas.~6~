@@ -1,0 +1,79 @@
+﻿unit shop_landing_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit;
+
+type
+  TfrmShop = class(TForm)
+    grbFilter: TGroupBox;
+    DBGrid1: TDBGrid;
+    btnAdd: TButton;
+    edtSearch: TEdit;
+    cmbCategory: TComboBox;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
+    procedure btnAddClick(Sender: TObject);
+    procedure addToTrip(name, comment: string);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmShop: TfrmShop;
+
+implementation
+
+uses
+popup_addToTrip_u;
+
+{$R *.dfm}
+
+
+// On Show
+
+
+procedure TfrmShop.btnAddClick(Sender: TObject);
+var
+ name, comment: string;
+begin
+   popup_addToTrip_u.frmAddToTrip.Show;
+end;
+
+
+
+procedure TfrmShop.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Application.Terminate;
+end;
+
+
+procedure TfrmShop.FormShow(Sender: TObject);
+var
+  q: string;
+begin
+  q := 'SELECT * FROM tblStock';
+  DMUnit.DataModule1.RunSQL(q); // (SELECT ONLY)
+  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+end;
+
+
+    // Add To Trip
+procedure TfrmShop.addToTrip(name, comment: string);
+var
+q : string;
+begin
+
+
+
+     q := 'INSERT INTO tblCuratedList ([username], trip_id, stock_id, quantity_required, [comment]) VALUES ('
+  + QuotedStr(DMLoginSystem_u.currUser.getUsername)  + ', '
+  	+ ' ';
+  DMUnit.DataModule1.RunSQL(q); // (SELECT ONLY)
+  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+end;
+end.

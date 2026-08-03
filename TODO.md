@@ -1,6 +1,26 @@
 #       TODO
 ##
 
+### Things to ask ma'am:
+1. DO we need to have table connection at all in DMUnit, if just using SQL.
+2. Clear up SQL Statements
+3. Fix Popup trip_id 'issue'
+
+##### shop_landing_u:
+- Make filter and sort fully functional
+- Make search bar seach all fields.
+- Make Grid Widths Right
+
+
+##### popup_addToTrip_u:
+- Add Cancel Button
+
+#### Other:
+1. Build Manager Menu
+2. Build Admin Menu
+
+
+## Task [?]:
 Delphi code or SQL:
 1. Insert :white_check_mark:
 2. Update

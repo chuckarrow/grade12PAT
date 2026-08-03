@@ -10,6 +10,8 @@ object frmShop: TfrmShop
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnClose = FormClose
+  OnShow = FormShow
   TextHeight = 15
   object grbFilter: TGroupBox
     Left = 24
@@ -18,6 +20,25 @@ object frmShop: TfrmShop
     Height = 73
     Caption = 'Filter and Sort'
     TabOrder = 0
+    object edtSearch: TEdit
+      Left = 424
+      Top = 32
+      Width = 121
+      Height = 23
+      TabOrder = 0
+      Text = 'Search'
+    end
+    object cmbCategory: TComboBox
+      Left = 240
+      Top = 32
+      Width = 145
+      Height = 23
+      TabOrder = 1
+      Text = 'Category'
+      Items.Strings = (
+        'All'
+        'Footwear')
+    end
   end
   object DBGrid1: TDBGrid
     Left = 24
@@ -38,5 +59,6 @@ object frmShop: TfrmShop
     Height = 25
     Caption = 'Add to Suitcase'
     TabOrder = 2
+    OnClick = btnAddClick
   end
 end
