@@ -2,9 +2,8 @@
 
 ## Things to Ask Ma'am
 1. Do we need table connections in `DMUnit` at all, if just using SQL?
-2. Clean up SQL statements.
-3. Fix popup `trip_id` issue.
-4. Are Custom buttons a must. I prefer pastel clean with Win controls.
+2. Fix popup `trip_id` issue.
+3. Are Custom buttons a must. I prefer pastel clean with Win controls.
 
 ## Form-Specific Fixes
 
@@ -18,7 +17,7 @@
 
 ## Other
 - [ ] Figure out what DM2 is
-
+- [ ] Clean up SQL statements.
 ---
 
 ## Task Requirements
