@@ -64,10 +64,7 @@ procedure TfrmTripOverview.FormShow(Sender: TObject);
 var
   q: string;
 begin
-
-ShowMessage(currUser.getUsername);
-// q := 'SELECT * FROM tblTrip WHERE username = "' + currUser.getUsername + '" ';
-q := 'SELECT * FROM tblTrip WHERE username = "' + currUser.getUsername + '" ';
+  q := 'SELECT * FROM tblTrip WHERE username = "' + currUser.getUsername + '" ';
 
   with DMUnit.DataModule1 do
   begin

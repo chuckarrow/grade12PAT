@@ -168,12 +168,16 @@
         </DCCReference>
         <DCCReference Include="admin_home_u.pas">
             <Form>frmAdminHome</Form>
+        </DCCReference>
+        <DCCReference Include="admin_home_u.pas">
+            <Form>frmAdminHome</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="manager_home_u.pas">
             <Form>frmManagerHome</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <None Include="TODO.md"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -195,7 +199,13 @@
                     <Source Name="MainSource">ryokofuku_p.dpr</Source>
                 </Source>
             </Delphi.Personality>
-            <Deployment Version="4">
+            <Deployment Version="5">
+                <DeployFile LocalName="Untitled1.md" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\ryokofuku_p.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win32\Debug\ryokofuku_p.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">

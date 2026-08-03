@@ -42,6 +42,8 @@ type
     function CredentialsAreValid: Boolean; // Local sanity check
     function VerifyAgainstDB: Boolean; // Placeholder database verification
     function Authenticate(out ErrorMsg: string): Boolean; // Master login check
+
+    function getUsername(): string;
   end;
 
   TDM2 = class(TDataModule)
@@ -55,6 +57,7 @@ type
 
 var
   DM2: TDM2;
+  currUser: TUserLogin;
 
 implementation
 
@@ -181,6 +184,7 @@ begin
       qrySQL.ExecSQL;
     end;
 
+    currUser := TUserLogin.CreateNew(FUsername, FPassword);
     Result := True;
   end;
 end;
@@ -193,6 +197,11 @@ begin
   inherited Create;
   FUsername := Trim(AUsername);
   FPassword := APassword;
+end;
+
+function TUserLogin.getUsername(): string;
+begin
+  Result := FUsername;
 end;
 
 function TUserLogin.CredentialsAreValid: Boolean;
@@ -235,7 +244,47 @@ begin
   else if not VerifyAgainstDB then
     ErrorMsg := 'Invalid username or password.'
   else
+  begin
+    currUser := TUserLogin.CreateNew(FUsername, FPassword);
     Result := True; // Access granted
+  end;
+
+end;
+
+{ All }
+procedure openHome(username: string; form: TForm);
+var
+  q: string;
+  accType: Integer;
+begin
+  q := 'SELECT acc_type FROM tblUsers WHERE username = "' + username + '" ';
+  with DMUnit.DataModule1 do
+  begin
+    RunSQL(q); // (SELECT ONLY)
+
+    qrySQL.Close;
+    qrySQL.SQL.Text := q;
+    qrySQL.Open;
+
+    accType := qrySQL.FieldByName('acc_type').AsInteger;
+
+    qrySQL.Close;
+  end;
+
+  if accType = 1 then
+  begin
+    form.hide;
+    home_u.frmHome.show;
+  end
+  else if accType = 2 then
+  begin
+    // Manager Form
+  end
+  else if (accType = 3) OR (accType = 4) then
+  begin
+    // Admin Form
+  end;
+
 end;
 
 { All }

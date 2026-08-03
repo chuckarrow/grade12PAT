@@ -44,7 +44,6 @@ object frmHome: TfrmHome
     Height = 25
     Caption = 'View Trip'
     TabOrder = 1
-    OnClick = btnTripClick
   end
   object btnSignout: TButton
     Left = 432

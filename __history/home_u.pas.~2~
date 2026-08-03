@@ -65,7 +65,6 @@ end;
 procedure TfrmHome.FormShow(Sender: TObject);
 begin
   // Add Welcome back user
-
 end;
 
 // Form Terminate

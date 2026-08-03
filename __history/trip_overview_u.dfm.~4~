@@ -53,7 +53,6 @@ object frmTripOverview: TfrmTripOverview
     Height = 25
     Caption = 'Edit'
     TabOrder = 2
-    OnClick = btnEditClick
   end
   object btnRemove: TButton
     Left = 541
