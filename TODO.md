@@ -1,19 +1,92 @@
-#       TODO
-##
+﻿# TODO
 
-Delphi code or SQL:
-1. Insert :white_check_mark:
-2. Update
-3. Delete
+## Things to Ask Ma'am
+1. Do we need table connections in `DMUnit` at all, if just using SQL?
+2. Fix popup `trip_id` issue.
+3. Are Custom buttons a must. I prefer pastel clean with Win controls.
 
-(4 to 7) MUST BE SQL-one sql can ccontain more than one stated or different sqls with each stated:
-4. View * data from a table  :white_check_mark:
-5. Two aggregate functions used
-6. Two tables in one sql
-7. Variable used in sql   :white_check_mark:
+## Form-Specific Fixes
 
-(8 to 10) OTHER CODE-from phase 1
-once coded update phase one to match:
-8. One text file read and/or written to and/or appended
-9. One array processed
-10. One class from the classes listed in the classes and object section of your phase 1
+### shop_landing_u
+- [ ] Make filter and sort fully functional
+- [ ] Make search bar search all fields
+- [ ] Fix grid column widths
+
+### popup_addToTrip_u
+- [ ] Add Cancel button
+
+## Other
+- [ ] Figure out what DM2 is
+- [ ] Clean up SQL statements.
+---
+
+## Task Requirements
+
+| # | Requirement | Status |
+|---|---|---|
+| 1 | Insert | ✅ |
+| 2 | Update | ⬜ |
+| 3 | Delete | ⬜ |
+| 4 | View `*` data from a table (SQL) | ✅ |
+| 5 | Two aggregate functions used (SQL) | 🟧 |
+| 6 | Two tables in one SQL statement | ⬜ |
+| 7 | Variable used in SQL | ✅ |
+| 8 | One text file read/written/appended to | ⬜ |
+| 9 | One array processed | ⬜ |
+| 10 | One class from Phase 1's classes/objects list | ✅ |
+
+> Items 4–7 must be pure SQL — one SQL statement can contain more than one requirement.
+> Items 8–10 are other code carried over from Phase 1 — once coded, update Phase 1 to match.
+
+---
+
+## Things Left To Do
+- [ ] Manager Menu — **4 Aug**
+     - [ ] List Stores under manager
+           - [ ] View Items per store
+     - [ ] Edit Stores (popup)
+     - [ ] Edit Items (popup)
+     - [ ] Signout button
+     - [ ] Resizing and Close Query
+- [ ] Admin Menu — **4 Aug**
+     - [ ] List ALL Stores
+           - [ ] View Items per store
+     - [ ] Edit Stores (popup)
+     - [ ] Edit Items (popup)
+     - [ ] Add/Edit/Delete Users
+     - [ ] Signout button
+     - [ ] Resizing and Close Query
+- [ ] Payment & Checkout — **5 Aug**
+     - [ ] 'Payment System' (Add more credits to balance)
+     - [ ] Receipt — **5 Aug**
+- [ ] Go over Phase 1 — **6 Aug**
+- [ ] Go over Phase 2 — **6 Aug**
+- [ ] Clean up code — **8 Aug**
+     - [ ] check DB
+     - [ ] Get rid of Debug Units
+     - [ ] Make README
+- [ ] Finish any incomplete forms — **8 Aug**
+- [ ] GUI and clean dust — **9 Aug**
+
+---
+
+## Unit Progress
+
+**Legend:** `1` Empty · `2` Debug · `3` Functional · `4` GUI · `5` Complete
+
+| Unit | Progress |
+|---|---|
+| admin_home_u | 1 |
+| debug_db_u | 1 |
+| DMCommon_u | 1 |
+| DMLoginSystem_u | 1 |
+| DMUnit | 1 |
+| home_u | 1 |
+| manager_home_u | 1 |
+| shop_landing_u | 1 |
+| trip_overview_u | 1 |
+| popup_addToTrip_u | 1 |
+| Complete | |
+| launch_login_u | 5 |
+| launch_signup_u | 5 |
+| launch_welcome_u | 5 |

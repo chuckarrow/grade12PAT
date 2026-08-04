@@ -12,7 +12,7 @@ object frmWelcome: TfrmWelcome
   ClientHeight = 418
   ClientWidth = 661
   Color = 11915762
-  CustomTitleBar.Control = TitleBarPanel1
+  CustomTitleBar.Control = tlbTitleBar
   CustomTitleBar.Enabled = True
   CustomTitleBar.Height = 31
   CustomTitleBar.SystemColors = False
@@ -31,7 +31,7 @@ object frmWelcome: TfrmWelcome
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'Segoe UI'
+  Font.Name = 'Arial MT Medium'
   Font.Style = []
   GlassFrame.Enabled = True
   GlassFrame.Top = 31
@@ -43,7 +43,7 @@ object frmWelcome: TfrmWelcome
   DesignSize = (
     661
     418)
-  TextHeight = 15
+  TextHeight = 14
   object lbl01: TLabel
     Left = 296
     Top = 68
@@ -355,11 +355,11 @@ object frmWelcome: TfrmWelcome
     TabOrder = 1
     OnClick = btnSignupClick
   end
-  object TitleBarPanel1: TTitleBarPanel
+  object tlbTitleBar: TTitleBarPanel
     Left = 0
     Top = 0
     Width = 661
-    Height = 31
+    Height = 30
     CustomButtons = <>
   end
   object btnClose: TButton

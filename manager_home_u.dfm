@@ -2,8 +2,8 @@ object frmManagerHome: TfrmManagerHome
   Left = 0
   Top = 0
   Caption = 'Form2'
-  ClientHeight = 441
-  ClientWidth = 624
+  ClientHeight = 386
+  ClientWidth = 647
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,4 +11,39 @@ object frmManagerHome: TfrmManagerHome
   Font.Name = 'Segoe UI'
   Font.Style = []
   TextHeight = 15
+  object lbl01: TLabel
+    Left = 64
+    Top = 35
+    Width = 206
+    Height = 15
+    Caption = 'Viewing: <Stores>/<Items of <Store>>'
+  end
+  object DBGrid1: TDBGrid
+    Left = 64
+    Top = 56
+    Width = 320
+    Height = 120
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+  end
+  object edtStore: TButton
+    Left = 400
+    Top = 56
+    Width = 75
+    Height = 25
+    Caption = 'Edit Store'
+    TabOrder = 1
+  end
+  object edtItem: TButton
+    Left = 400
+    Top = 87
+    Width = 75
+    Height = 25
+    Caption = 'Edit Item'
+    TabOrder = 2
+  end
 end

@@ -168,9 +168,15 @@
         </DCCReference>
         <DCCReference Include="admin_home_u.pas">
             <Form>frmAdminHome</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="manager_home_u.pas">
             <Form>frmManagerHome</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="popup_addToTrip_u.pas">
+            <Form>frmAddToTrip</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <None Include="TODO.md"/>
         <BuildConfiguration Include="Base">
@@ -194,8 +200,8 @@
                     <Source Name="MainSource">ryokofuku_p.dpr</Source>
                 </Source>
             </Delphi.Personality>
-            <Deployment Version="5">
-                <DeployFile LocalName="Untitled1.md" Configuration="Debug" Class="ProjectFile">
+            <Deployment Version="4">
+                <DeployFile LocalName="TODO.md" Configuration="Debug" Class="ProjectFile">
                     <Platform Name="Win32">
                         <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
@@ -218,6 +224,16 @@
                     </Platform>
                     <Platform Name="Win32">
                         <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidClasses">
+                    <Platform Name="Android">
+                        <RemoteDir>classes</RemoteDir>
+                        <Operation>64</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>classes</RemoteDir>
+                        <Operation>64</Operation>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="AndroidFileProvider">

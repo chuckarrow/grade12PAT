@@ -1,7 +1,5 @@
-// TODO
-// - Bullet out password edit boxes
-// - Go To Admin
-
+// Charles Fletcher
+// File Status: Complete
 unit launch_signup_u;
 
 interface
@@ -10,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Samples.Spin,
-  DMCommon_u, DMLoginSystem_u;
+  DMCommon_u, DMLoginSystem_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
 
 type
   TfrmSignup = class(TForm)
@@ -26,12 +24,15 @@ type
     rbnMale: TRadioButton;
     rbnFemale: TRadioButton;
     btnSubmit: TButton;
+    tlbTitleBar: TTitleBarPanel;
+    Image1: TImage;
     procedure FormShow(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure rbnMaleClick(Sender: TObject);
-    procedure FormResize(Sender: TObject);
     procedure btnSubmitClick(Sender: TObject);
     procedure rbnFemaleClick(Sender: TObject);
+    procedure btnViewPasswordClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 
   private
     { Private declarations }
@@ -41,6 +42,7 @@ type
 
 var
   frmSignup: TfrmSignup;
+  isPassVisible: Boolean;
 
 implementation
 
@@ -49,29 +51,80 @@ uses
 
 {$R *.dfm}
 
-
-procedure TfrmSignup.btnBackClick(Sender: TObject);
-begin
-
-  launch_welcome_u.frmWelcome.Show;
-  self.Hide;
-end;
+{ Form }
 
 // Form Show
 procedure TfrmSignup.FormShow(Sender: TObject);
 begin
   launch_welcome_u.frmWelcome.Hide;
 
-  // DMLoginSystem_u.DM2.CreateNew();
+  // Incorrect Window Activation incorrect Fix
+  DMCommon.fixWindow(self);
+
+  // Init.
+  isPassVisible := false;
+
+  // GUI
+  DMCommon.screenCentre(self);
+  edtPassword.PasswordChar := '•';
+  edtPasswordRepeat.PasswordChar := '•';
 end;
 
-// Form Resize
+// Close Query
+procedure TfrmSignup.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := false;
+
+  FlashWindow(Handle, True);
+end;
+
+{ End of Form }
+
+{ Controls }
+
+// Show Password Button
+procedure TfrmSignup.btnViewPasswordClick(Sender: TObject);
+begin
+  if isPassVisible then
+  begin
+    edtPassword.PasswordChar := '•';
+    edtPasswordRepeat.PasswordChar := '•';
+    btnViewPassword.Caption := 'Show Password';
+
+    isPassVisible := false;
+  end
+  else
+  begin
+    edtPassword.PasswordChar := #0;
+    edtPasswordRepeat.PasswordChar := #0;
+    btnViewPassword.Caption := 'Hide  Password';
+
+    isPassVisible := True;
+  end;
+
+end;
+
+// Gender Radio
+// Female Selected
+procedure TfrmSignup.rbnFemaleClick(Sender: TObject);
+begin
+  rbnMale.Checked := false;
+end;
+
+// Male Selected
+procedure TfrmSignup.rbnMaleClick(Sender: TObject);
+begin
+  rbnFemale.Checked := false;
+end;
+
+
+// Submit Button
 procedure TfrmSignup.btnSubmitClick(Sender: TObject);
 var
   signupAttempt: TUserSignup;
   sName, sSurname, sUsername, sPassword, sPasswordRepeat, error: string;
   iAge: integer;
-  isMale: boolean;
+  isMale: Boolean;
 begin
 
   sName := edtName.Text;
@@ -91,23 +144,17 @@ begin
   end
   else
     ShowMessage(error);
-
 end;
 
-procedure TfrmSignup.FormResize(Sender: TObject);
+// Back Button
+procedure TfrmSignup.btnBackClick(Sender: TObject);
 begin
-  //
+  launch_welcome_u.frmWelcome.Show;
+  self.Hide;
 end;
 
-procedure TfrmSignup.rbnFemaleClick(Sender: TObject);
-begin
-  rbnMale.Checked := false;
-end;
-
-procedure TfrmSignup.rbnMaleClick(Sender: TObject);
-begin
-  rbnFemale.Checked := false;
-
-end;
+{ End of Controls }
 
 end.
+
+// Completed 3 Aug :)

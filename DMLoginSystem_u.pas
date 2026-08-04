@@ -3,7 +3,7 @@ unit DMLoginSystem_u;
 interface
 
 uses
-  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB;
+  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB, DMCommon_u	;
 
 procedure openHome(username: string; form: TForm);
 
@@ -46,13 +46,13 @@ type
     function getUsername(): string;
   end;
 
-  TDM2 = class(TDataModule)
-  private
+TDM2 = class(TDataModule)
+ private
     { Private declarations }
-  public
+ public
     { Public declarations }
-    CurrentUserSignup: TUserSignup;
-    CurrentUserLogin: TUserLogin; // Reference for active login attempt
+   CurrentUserSignup: TUserSignup;
+   CurrentUserLogin: TUserLogin; // Reference for active login attempt
   end;
 
 var
@@ -62,7 +62,7 @@ var
 implementation
 
 uses
-  home_u;
+  home_u, manager_home_u, admin_home_u;
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
@@ -166,11 +166,14 @@ begin
   begin
     // Construct SQL Query
     // SQL: Create Account (Escaped reserved words with brackets)
-    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) '
-      + 'VALUES (' + QuotedStr(FUsername) + ', ' + QuotedStr(FPassword) + ', ' +
-      QuotedStr(FName) + ', ' + QuotedStr(FSurname) + ', ' + '1, ' +
-    // Default account type
-      '0, ' + // Initial balance
+    q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
+      'VALUES (' +
+      QuotedStr(FUsername) + ', ' +
+      QuotedStr(FPassword) + ', ' +
+      QuotedStr(FName) + ', ' +
+      QuotedStr(FSurname) + ', ' +
+      '1, ' + // Default account type
+      QuotedStr(FloatToStr(DMCommon_u.startingCurrency)) + ', ' +
       BoolToStr(FGender, True) + ')';
 
     // Execute Query
@@ -268,20 +271,22 @@ begin
     qrySQL.Close;
   end;
 
-  if accType = 1 then
+  form.hide;
+  if accType = 1 then  // User
   begin
-    form.hide;
     home_u.frmHome.show;
   end
-  else if accType = 2 then
+  else if accType = 2 then    // Manager
   begin
-    // Manager Form
+    manager_home_u.frmManagerHome.show;
   end
-  else if (accType = 3) OR (accType = 4) then
+  else if (accType = 3) OR (accType = 4) then // Admin / SuperAdmin
   begin
-    // Admin Form
+    admin_home_u.frmAdminHome.Show;
   end;
 
 end;
+
+
 
 end.
