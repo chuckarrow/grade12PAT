@@ -3,8 +3,10 @@ unit popup_addToTrip_u;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, DMUnit, DMLoginSystem_u, Vcl.Samples.Spin, Data.DB,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, DMUnit,
+  DMLoginSystem_u, Vcl.Samples.Spin, Data.DB,
   Vcl.Grids, Vcl.DBGrids;
 
 type
@@ -22,12 +24,11 @@ type
     { Private declarations }
   public
     { Public declarations }
-      sTripID: string;
+    sTripID: string;
   end;
 
 var
   frmAddToTrip: TfrmAddToTrip;
-
 
 implementation
 
@@ -35,7 +36,6 @@ uses
   shop_landing_u;
 
 {$R *.dfm}
-
 // Form Show
 
 procedure TfrmAddToTrip.FormShow(Sender: TObject);
@@ -44,21 +44,31 @@ var
 begin
   memComment.Clear;
   sedQuantity.Value := 1;
-
-  q := 'SELECT trip_id, trip_name FROM tblTrip WHERE username = "' + DMLoginSystem_u.currUser.getUsername + '" ';
+  q := 'SELECT trip_id, trip_name FROM tblTrip WHERE username = ' +
+    QuotedStr(DMLoginSystem_u.currUser.getUsername);
   DMUnit.DataModule1.RunSQL(q);
-  dbcmbTrip.ListSource := DMUnit.DataModule1.dsQrySQL; // Source
+
   dbcmbTrip.KeyField := 'trip_id'; // Key Field Name
   dbcmbTrip.ListField := 'trip_name'; // Wanted/Shown Field Name
+  dbcmbTrip.ListSource := DMUnit.DataModule1.dsQrySQL; // Source
 end;
 
 // DBCombo Click
 procedure TfrmAddToTrip.btnSubmitClick(Sender: TObject);
 begin
-sTripID := dbcmbTrip.KeyValue;
+
+  if VarIsNull(dbcmbTrip.KeyValue) or VarIsEmpty(dbcmbTrip.KeyValue) then
+  begin
+    ShowMessage('Please select a trip first.');
+    Exit;
+  end;
+
+  sTripID := dbcmbTrip.KeyValue;
+  ShowMessage(sTripID);
   self.Hide;
   shop_landing_u.frmShop.addToTrip();
-  frmShop.refreshShop;
+  frmShop.refreshShop;  // Causing Error
+
 end;
 
 end.

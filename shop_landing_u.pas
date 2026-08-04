@@ -61,7 +61,8 @@ var
   q: string;
 begin
   { Refresh DB: }
-  q := 'SELECT * FROM tblStock';
+
+  q := 'SELECT * FROM tblStock';  // Causing Error
   DMUnit.DataModule1.RunSQL(q);
   DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
 end;
@@ -71,7 +72,7 @@ procedure TfrmShop.addToTrip();
 var
   q: string;
 begin
-
+                        ShowMessage('Test_2');
   q := 'INSERT INTO tblCuratedList ( [username], trip_id, stock_id, quantity_required, [comment] ) VALUES ('
     + QuotedStr(DMLoginSystem_u.currUser.getUsername) + ', '
     + QuotedStr(frmAddToTrip.sTripID) + ', '

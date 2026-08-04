@@ -34,12 +34,12 @@ object frmLogin: TfrmLogin
   ShowInTaskBar = True
   OnCloseQuery = FormCloseQuery
   OnShow = FormShow
-  TextHeight = 14
+  TextHeight = 15
   object edtUsername: TEdit
     Left = 40
     Top = 48
     Width = 121
-    Height = 22
+    Height = 23
     TabOrder = 0
     Text = 'Username'
   end
@@ -47,7 +47,7 @@ object frmLogin: TfrmLogin
     Left = 40
     Top = 88
     Width = 121
-    Height = 22
+    Height = 23
     PasswordChar = #8226
     TabOrder = 1
     Text = 'Password'

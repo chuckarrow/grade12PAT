@@ -16,7 +16,7 @@ object frmAddToTrip: TfrmAddToTrip
   object lbl01: TLabel
     Left = 24
     Top = 6
-    Width = 53
+    Width = 54
     Height = 15
     Caption = 'Select Trip'
   end

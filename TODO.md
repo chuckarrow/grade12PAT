@@ -18,6 +18,7 @@
 ## Other
 - [ ] Figure out what DM2 is
 - [ ] Clean up SQL statements.
+- [ ] Hide Delphi logo on Titlebar
 ---
 
 ## Task Requirements
