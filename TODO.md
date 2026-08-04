@@ -1,9 +1,12 @@
 ﻿# TODO
 
 ## Things to Ask Ma'am
+1. TLabel not a class?
 1. Do we need table connections in `DMUnit` at all, if just using SQL?
-2. Fix popup `trip_id` issue.
-3. Are Custom buttons a must. I prefer pastel clean with Win controls.
+1. Fix popup `trip_id` issue.
+1. Are Custom buttons a must. I prefer pastel clean with Win controls.
+1. Ask if manager_home_u:65 SQL 'INNER JOIN' is allowed
+1. Ask if popup_editItem_u:31, is that correct way of declaration?
 
 ## Form-Specific Fixes
 
@@ -15,10 +18,19 @@
 ### popup_addToTrip_u
 - [ ] Add Cancel button
 
+### popup_editItem_u
+- [ ] Dynamic Label
+- [ ] Lots of errors, need to debug
+
 ## Other
+- [ ] Rebrand to Travel Kits
 - [ ] Figure out what DM2 is
 - [ ] Clean up SQL statements.
 - [ ] Hide Delphi logo on Titlebar
+- [ ] Rename Controls (Especially DBGrids)
+- [ ] DBGrid Field Widths
+- [ ] Add Dimensions to Checkout screen
+- [ ] Add Stores
 ---
 
 ## Task Requirements
@@ -43,10 +55,7 @@
 
 ## Things Left To Do
 - [ ] Manager Menu — **4 Aug**
-     - [ ] List Stores under manager
-           - [ ] View Items per store
      - [ ] Edit Stores (popup)
-     - [ ] Edit Items (popup)
      - [ ] Signout button
      - [ ] Resizing and Close Query
 - [ ] Admin Menu — **4 Aug**

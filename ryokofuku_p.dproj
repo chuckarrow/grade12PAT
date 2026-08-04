@@ -178,6 +178,14 @@
             <Form>frmAddToTrip</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="popup_editItem_u.pas">
+            <Form>frmEditItem</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="checkout_u.pas">
+            <Form>frmCheckout</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <None Include="TODO.md"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
@@ -200,10 +208,21 @@
                     <Source Name="MainSource">ryokofuku_p.dpr</Source>
                 </Source>
             </Delphi.Personality>
-            <Deployment Version="5">
+            <Deployment Version="4">
                 <DeployFile LocalName="TODO.md" Configuration="Debug" Class="ProjectFile"/>
+                <DeployFile LocalName="TODO.md" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\ryokofuku_p.exe" Configuration="Debug" Class="ProjectOutput"/>
-                <DeployFile LocalName="Win32\Debug\ryokofuku_p.exe" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="Win32\Debug\ryokofuku_p.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>ryokofuku_p.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="iOSSimulator">
                         <Operation>1</Operation>
@@ -214,6 +233,16 @@
                     </Platform>
                     <Platform Name="Win32">
                         <Operation>0</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="AndroidClasses">
+                    <Platform Name="Android">
+                        <RemoteDir>classes</RemoteDir>
+                        <Operation>64</Operation>
+                    </Platform>
+                    <Platform Name="Android64">
+                        <RemoteDir>classes</RemoteDir>
+                        <Operation>64</Operation>
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="AndroidFileProvider">

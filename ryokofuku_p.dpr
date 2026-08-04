@@ -14,7 +14,9 @@ uses
   shop_landing_u in 'shop_landing_u.pas' {frmShop} ,
   admin_home_u in 'admin_home_u.pas' {frmAdminHome} ,
   manager_home_u in 'manager_home_u.pas' {frmManagerHome} ,
-  popup_addToTrip_u in 'popup_addToTrip_u.pas' {frmAddToTrip};
+  popup_addToTrip_u in 'popup_addToTrip_u.pas' {frmAddToTrip} ,
+  popup_editItem_u in 'popup_editItem_u.pas' {frmEditItem} ,
+  checkout_u in 'checkout_u.pas' {frmCheckout};
 
 {$R *.res}
 
@@ -42,6 +44,8 @@ begin
   Application.CreateForm(TfrmAdminHome, frmAdminHome);
   Application.CreateForm(TfrmManagerHome, frmManagerHome);
   Application.CreateForm(TfrmAddToTrip, frmAddToTrip);
+  Application.CreateForm(TfrmEditItem, frmEditItem);
+  Application.CreateForm(TfrmCheckout, frmCheckout);
 
   // Debug Form
   Application.CreateForm(TfrmDebug1, frmDebug1);

@@ -1,0 +1,63 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 441
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  TextHeight = 15
+  object edtName: TEdit
+    Left = 32
+    Top = 16
+    Width = 185
+    Height = 23
+    TabOrder = 0
+    Text = 'Item Name'
+  end
+  object redDescription: TRichEdit
+    Left = 32
+    Top = 45
+    Width = 185
+    Height = 89
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    Lines.Strings = (
+      'redDescription')
+    ParentFont = False
+    TabOrder = 1
+  end
+  object edtMaterial: TEdit
+    Left = 32
+    Top = 140
+    Width = 185
+    Height = 23
+    TabOrder = 2
+    Text = 'Material'
+  end
+  object edtPrice: TEdit
+    Left = 32
+    Top = 169
+    Width = 185
+    Height = 23
+    TabOrder = 3
+    Text = 'Price'
+  end
+  object sedQuantity: TSpinEdit
+    Left = 32
+    Top = 198
+    Width = 185
+    Height = 24
+    MaxValue = 0
+    MinValue = 0
+    TabOrder = 4
+    Value = 0
+  end
+end
