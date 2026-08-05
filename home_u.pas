@@ -1,3 +1,5 @@
+// Charles Fletcher
+// Code status: Cleaned
 unit home_u;
 
 interface
@@ -5,7 +7,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, debug_db_u, Data.DB,
-  Vcl.Grids, Vcl.DBGrids;
+  Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u;
 
 type
   TfrmHome = class(TForm)
@@ -38,6 +40,31 @@ uses
 
 {$R *.dfm}
 
+{ Form }
+
+// Form Create
+procedure TfrmHome.FormCreate(Sender: TObject);
+begin
+  Application.CreateForm(TfrmWelcome, frmWelcome); // Create (& Show) 'frmWelcome'
+  // launch_welcome_u.frmWelcome.Show;
+end;
+
+// Form Show
+procedure TfrmHome.FormShow(Sender: TObject);
+begin
+  // Add Welcome back user
+lbl01.Caption := 'Welcome back, ' + DMLoginSystem_u.currUser.getName;
+end;
+
+// Form Terminate
+procedure TfrmHome.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Application.Terminate;
+end;
+
+{ End of Forms }
+
+{ Buttons }
 
 // Shop Button
 procedure TfrmHome.btnShopClick(Sender: TObject);
@@ -65,24 +92,7 @@ begin
   frmDebug1.Show;
 end;
 
-// Form Create
-procedure TfrmHome.FormCreate(Sender: TObject);
-begin
-  Application.CreateForm(TfrmWelcome, frmWelcome); // Create (& Show) 'frmWelcome'
-  // launch_welcome_u.frmWelcome.Show;
-end;
+{ End of Buttons }
 
-// Form Show
-procedure TfrmHome.FormShow(Sender: TObject);
-begin
-  // Add Welcome back user
-
-end;
-
-// Form Terminate
-procedure TfrmHome.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Application.Terminate;
-end;
 
 end.

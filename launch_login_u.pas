@@ -84,8 +84,8 @@ end;
 // Back Button
 procedure TfrmLogin.btnBackClick(Sender: TObject);
 begin
-  launch_welcome_u.frmWelcome.Show;
-  self.Hide;
+  launch_welcome_u.frmWelcome.Show; // Show Welcome Form
+  self.Hide; // Hide Login Form
 end;
 
 { End of Buttons }

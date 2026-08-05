@@ -26,7 +26,7 @@ type
     function IsAgeValid: Boolean;
     function UserExistsInDB: Boolean;
     function IsUsernameValid: Boolean;
-    function AttemptRegister(out ErrorMsg: string): Boolean;
+    function AttemptRegister(out ErrorMsg: string): Boolean; // Master check
   end;
 
   // --- LOGIN OBJECT ---
@@ -35,13 +35,10 @@ type
     FUsername: string;
     FPassword: string;
   public
-    // Mandatory instantiation function
     constructor CreateNew(const AUsername, APassword: string);
-
-    // Login Verification Methods
-    function CredentialsAreValid: Boolean; // Local sanity check
-    function VerifyAgainstDB: Boolean; // Placeholder database verification
-    function Authenticate(out ErrorMsg: string): Boolean; // Master login check
+    function CredentialsAreValid: Boolean;
+    function VerifyAgainstDB: Boolean;
+    function Authenticate(out ErrorMsg: string): Boolean; // Master check
 
     function getUsername(): string;
   end;
@@ -51,13 +48,13 @@ TDM2 = class(TDataModule)
     { Private declarations }
  public
     { Public declarations }
-   CurrentUserSignup: TUserSignup;
+   CurrentUserSignup: TUserSignup; // TODO: is needed;  find uses?
    CurrentUserLogin: TUserLogin; // Reference for active login attempt
   end;
 
 var
   DM2: TDM2;
-  currUser: TUserLogin;
+  currUser: TUserLogin; // Change to signup
 
 implementation
 
@@ -66,10 +63,12 @@ uses
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
+
 { =========== }
 { TUserSignup }
 { =========== }
 
+// Constructor
 constructor TUserSignup.CreateNew(const AName, ASurname, AUsername, APassword,
   APasswordRetype: string; AAge: Integer; AGender: Boolean);
 begin
@@ -83,11 +82,15 @@ begin
   FGender := AGender;
 end;
 
+// Password Match (Bool)
+// Check if passwords are NOT empty and DO match.
 function TUserSignup.PasswordsMatch: Boolean;
 begin
   Result := (FPassword <> '') and (FPassword = FPasswordRetype);
 end;
 
+// Password Security (Bool)
+// Check if the password is secure.
 function TUserSignup.IsPasswordSecure: Boolean;
 var
   HasUpper, HasLower, HasDigit: Boolean;
@@ -124,9 +127,9 @@ var
 begin
   q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
 
-  with DMUnit.DataModule1 do
+  with DMUnit.DataModule1 do // TODO: optimise
   begin
-    RunSQL(q); // (SELECT ONLY)
+    RunSQL(q);
     qrySQL.Close;
     qrySQL.SQL.Text := q;
     qrySQL.Open;
@@ -164,8 +167,6 @@ begin
     ErrorMsg := 'You must be at least 13 years old to register.'
   else
   begin
-    // Construct SQL Query
-    // SQL: Create Account (Escaped reserved words with brackets)
     q := 'INSERT INTO tblUsers ([username], [password], [name], [surname], [acc_type], [balance], [isMale]) ' +
       'VALUES (' +
       QuotedStr(FUsername) + ', ' +
@@ -188,6 +189,12 @@ begin
     Result := True;
   end;
 end;
+
+{ ================== }
+{ End of TUserSignup }
+{ ================== }
+
+
 { ========== }
 { TUserLogin }
 { ========== }
@@ -199,18 +206,24 @@ begin
   FPassword := APassword;
 end;
 
+// Get username
 function TUserLogin.getUsername(): string;
 begin
   Result := FUsername;
 end;
 
+// Get Name
+function TUserLogin.getName(): string;
+begin
+Result := FName;
+end;
+
+// Valid Credentials
 function TUserLogin.CredentialsAreValid: Boolean;
 begin
-  // Basic client-side check before reaching out to database
   Result := (FUsername <> '') and (FPassword <> '');
 end;
 
-// TODO: SQL Injection avoid with 'with ... do'
 function TUserLogin.VerifyAgainstDB: Boolean;
 var
   q: string;
@@ -286,7 +299,4 @@ begin
   end;
 
 end;
-
-
-
 end.

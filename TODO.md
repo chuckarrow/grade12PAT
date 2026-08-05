@@ -7,6 +7,7 @@
 1. Are Custom buttons a must. I prefer pastel clean with Win controls.
 1. Ask if manager_home_u:65 SQL 'INNER JOIN' is allowed
 1. Ask if popup_editItem_u:31, is that correct way of declaration?
+1. Do we need to worry about SQL injection.
 
 ## Form-Specific Fixes
 

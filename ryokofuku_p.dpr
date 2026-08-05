@@ -27,7 +27,7 @@ begin
 
   // Data Modules
   Application.CreateForm(TDataModule1, DataModule1);
-  Application.CreateForm(TDM2, DM2);
+  Application.CreateForm(TDM2, DM2); // TODO: Find what this is
   Application.CreateForm(TDMCommon, DMCommon);
 
   // Login Forms
@@ -48,7 +48,7 @@ begin
   Application.CreateForm(TfrmCheckout, frmCheckout);
 
   // Debug Form
-  Application.CreateForm(TfrmDebug1, frmDebug1);
+  Application.CreateForm(TfrmDebug1, frmDebug1); // TODO: remove
 
   // Run App
   Application.Run;

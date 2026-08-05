@@ -1,3 +1,4 @@
+// TODO: Use arrays
 unit checkout_u;
 
 interface
