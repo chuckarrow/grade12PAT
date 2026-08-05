@@ -38,13 +38,13 @@
 | # | Requirement | Status |
 |---|---|---|
 | 1 | Insert | ✅ |
-| 2 | Update | ⬜ |
-| 3 | Delete | ⬜ |
+| 2 | Update | ✅ |
+| 3 | Delete | ✅ |
 | 4 | View `*` data from a table (SQL) | ✅ |
-| 5 | Two aggregate functions used (SQL) | 🟧 |
-| 6 | Two tables in one SQL statement | ⬜ |
+| 5 | Two aggregate functions used (SQL) | ⬜ |
+| 6 | Two tables in one SQL statement | ✅ |
 | 7 | Variable used in SQL | ✅ |
-| 8 | One text file read/written/appended to | ⬜ |
+| 8 | One text file read/written/appended to | 🟧 |
 | 9 | One array processed | ⬜ |
 | 10 | One class from Phase 1's classes/objects list | ✅ |
 
@@ -57,7 +57,7 @@
 - [ ] Manager Menu — **4 Aug**
      - [ ] Edit Stores (popup)
      - [ ] Signout button
-     - [ ] Resizing and Close Query
+     - [ ] Resizing and 'Close Query'
 - [ ] Admin Menu — **4 Aug**
      - [ ] List ALL Stores
            - [ ] View Items per store
