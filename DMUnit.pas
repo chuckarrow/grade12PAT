@@ -5,6 +5,7 @@ interface
 
 uses
   System.SysUtils, System.Classes, ADODB, DB, StdCtrls, Dialogs;
+
 type
   TDataModule1 = class(TDataModule)
     procedure DataModuleCreate(Sender: TObject);
@@ -14,11 +15,26 @@ type
     { Public declarations }
     ADOConnection1: TAdoConnection;
 
-    tblUsers: TADOTable;// ADD THIS LINE PER TABLE YOU HAVE
-    dsTblUsers: TDataSource;// ADD THIS LINE PER TABLE YOU HAVE
+    tblUsers: TADOTable; // ADD THIS LINE PER TABLE YOU HAVE
+    dsTblUsers: TDataSource; // ADD THIS LINE PER TABLE YOU HAVE
 
-//    tblTableName2: TADOTable;
-//    dsTableName2: TDataSource;
+    tblStores: TADOTable;
+    dsTblStores: TDataSource;
+
+    tblItems: TADOTable;
+    dsTblItems: TDataSource;
+
+    tblStock: TADOTable;
+    dsTblStock: TDataSource;
+
+    tblTrip: TADOTable;
+    dsTblTrip: TDataSource;
+
+    tblCuratedList: TADOTable;
+    dsTblCuratedList: TDataSource;
+
+    // tblTableName2: TADOTable;
+    // dsTableName2: TDataSource;
 
     qrySQL: TADOQuery;
     dsQrySQL: TDataSource;
@@ -36,17 +52,34 @@ implementation
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
 
+
 procedure TDataModule1.DataModuleCreate(Sender: TObject);
-begin //rename all table names below to your table names
+begin // rename all table names below to your table names
 
   // Instantiate or create the componenets on the datamodule
   ADOConnection1 := TAdoConnection.Create(DataModule1);
 
+  // tblUsers
   tblUsers := TADOTable.Create(DataModule1);
-  dstblUsers := TDataSource.Create(DataModule1);
+  dsTblUsers := TDataSource.Create(DataModule1);
 
-//  tblTableName2 := TADOTable.Create(DataModule1);
-//  dsTableName2 := TDataSource.Create(DataModule1);
+  tblStores := TADOTable.Create(DataModule1);
+  dsTblStores := TDataSource.Create(DataModule1);
+
+  tblItems := TADOTable.Create(DataModule1);
+  dsTblItems := TDataSource.Create(DataModule1);
+
+  tblStock := TADOTable.Create(DataModule1);
+  dsTblStock := TDataSource.Create(DataModule1);
+
+  tblTrip := TADOTable.Create(DataModule1);
+  dsTblTrip := TDataSource.Create(DataModule1);
+
+  tblCuratedList := TADOTable.Create(DataModule1);
+  dsTblCuratedList := TDataSource.Create(DataModule1);
+
+  // tblTableName2 := TADOTable.Create(DataModule1);
+  // dsTableName2 := TDataSource.Create(DataModule1);
 
   qrySQL := TADOQuery.Create(DataModule1);
   dsQrySQL := TDataSource.Create(DataModule1);
@@ -65,18 +98,33 @@ begin //rename all table names below to your table names
 
   // Connection for every table you have
   tblUsers.Connection := ADOConnection1;
-  // ADOTable1 must be named ADOtablename(your associated table)
-//  tblTableName2.Connection := ADOConnection1;
+  tblUsers.TableName := 'tblUsers';
+  dsTblUsers.DataSet := tblUsers;
 
-  // Each ADOTable is associated with each table name in access
-  tblUsers.TableName := 'tblUsers'; // table name spelled as in in MS access
-//  tblTableName2.TableName := 'tblTowns';
-  // table name spelled as in in MS access
+  // tblStores
+  tblStores.Connection := ADOConnection1;
+  tblStores.TableName := 'tblStores';
+  dsTblStores.DataSet := tblStores;
 
-  // a data source is named dsTableName
-  // each data source must be associated with the correct ADOtable
-  dstblUsers.DataSet := tblUsers;
- // dsTableName2.DataSet := tblTableName2;
+  // tblItems
+  tblItems.Connection := ADOConnection1;
+  tblItems.TableName := 'tblItems';
+  dsTblItems.DataSet := tblItems;
+
+  // tblStock
+  tblStock.Connection := ADOConnection1;
+  tblStock.TableName := 'tblStock';
+  dsTblStock.DataSet := tblStock;
+
+  // tblTrip
+  tblTrip.Connection := ADOConnection1;
+  tblTrip.TableName := 'tblTrip';
+  dsTblTrip.DataSet := tblTrip;
+
+  // tblCuratedList
+  tblCuratedList.Connection := ADOConnection1;
+  tblCuratedList.TableName := 'tblCuratedList';
+  dsTblCuratedList.DataSet := tblCuratedList;
 
   // used for SQL interactions
   qrySQL.Connection := ADOConnection1;
@@ -88,12 +136,17 @@ procedure TDataModule1.OpenTables;
 begin
   // open all tables - rename to your table names
   tblUsers.Open;
- // tblTableName2.Open;
+  tblStores.Open;
+  tblItems.Open;
+  tblStock.Open;
+  tblTrip.Open;
+  tblCuratedList.Open;
+  // tblTableName2.Open;
 end;
 
 procedure TDataModule1.RunSQL(Statement: string); // (SELECT ONLY)
 begin
-    if length(Statement) <> 0 then
+  if length(Statement) <> 0 then
   begin
     qrySQL.Close;
     qrySQL.SQL.Text := Statement;
@@ -105,9 +158,9 @@ begin
     MessageDlg('ERROR: No SQL statement.', mtError, [mbOk], 0);
   end;
 
-end;// procedure RUN SQL (SELECT ONLY)
+end; // procedure RUN SQL (SELECT ONLY)
 
-procedure TDataModule1.ExecuteSQL(Statement: string); //(insert, update, delete)
+procedure TDataModule1.ExecuteSQL(Statement: string); // (insert, update, delete)
 begin
   // sqls
   var

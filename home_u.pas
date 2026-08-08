@@ -7,7 +7,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, debug_db_u, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u;
+  Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit;
 
 type
   TfrmHome = class(TForm)
@@ -47,6 +47,10 @@ procedure TfrmHome.FormCreate(Sender: TObject);
 begin
   Application.CreateForm(TfrmWelcome, frmWelcome); // Create (& Show) 'frmWelcome'
   // launch_welcome_u.frmWelcome.Show;
+
+  // Open Tables
+  if not DMUnit.DataModule1.tblTrip.Active then
+  DMUnit.DataModule1.OpenTables;
 end;
 
 // Form Show

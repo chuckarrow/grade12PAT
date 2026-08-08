@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit, DMCommon_u;
 
 type
   TfrmShop = class(TForm)
@@ -13,11 +13,13 @@ type
     btnAdd: TButton;
     edtSearch: TEdit;
     cmbCategory: TComboBox;
+    btnBack: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
     procedure addToTrip();
     procedure refreshShop();
+    procedure btnBackClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -31,7 +33,7 @@ var
 implementation
 
 uses
-  popup_addToTrip_u;
+  popup_addToTrip_u, home_u;
 
 {$R *.dfm}
 
@@ -40,6 +42,9 @@ uses
 procedure TfrmShop.FormShow(Sender: TObject);
 begin
   refreshShop;
+
+  // GUI
+  DMCommon.fixWindow(self);
 end;
 
 // Add Button
@@ -47,6 +52,14 @@ procedure TfrmShop.btnAddClick(Sender: TObject);
 begin
   sStockID := DBGrid1.DataSource.DataSet.FieldByName('stock_id').AsString;
   popup_addToTrip_u.frmAddToTrip.Show;
+end;
+
+
+// Back Button
+procedure TfrmShop.btnBackClick(Sender: TObject);
+begin
+     self.hide;
+     home_u.frmHome.show;
 end;
 
 // Form Close
@@ -62,28 +75,31 @@ var
 begin
   { Refresh DB: }
 
-  q := 'SELECT * FROM tblStock';  // Causing Error
-  DMUnit.DataModule1.RunSQL(q);
+  q := 'SELECT * FROM tblStock'; // Causing Error
+  DMUnit.DataModule1.qrySQL.Close;
+  DMUnit.DataModule1.qrySQL.SQL.Text := q;
+  DMUnit.DataModule1.qrySQL.Open;
+
+  // Bind the dataset
   DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
 end;
+
+{ Customs Methods }
 
 // Add To Trip
 procedure TfrmShop.addToTrip();
 var
   q: string;
 begin
-                        ShowMessage('Test_2');
-  q := 'INSERT INTO tblCuratedList ( [username], trip_id, stock_id, quantity_required, [comment] ) VALUES ('
+
+  q := 'INSERT INTO tblCuratedList ( [username], [trip_id], stock_id, quantity, [comment] ) VALUES ('
     + QuotedStr(DMLoginSystem_u.currUser.getUsername) + ', '
     + QuotedStr(frmAddToTrip.sTripID) + ', '
     + QuotedStr(sStockID) + ', '
     + IntToStr(frmAddToTrip.sedQuantity.Value) + ', '
     + QuotedStr(frmAddToTrip.memComment.Text) + ')';
 
-  DMUnit.DataModule1.qrySQL.Close;
-  DMUnit.DataModule1.qrySQL.SQL.Text := q;
-  DMUnit.DataModule1.qrySQL.ExecSQL;
-  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+  DMUnit.DataModule1.ExecuteSQL(q);
 end;
 
 end.

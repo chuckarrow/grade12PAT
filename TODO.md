@@ -1,14 +1,13 @@
 ﻿# TODO
 
+
+## Important
+1. Help menu on every page
+1. Arrays
+1. Help buttons
+
 ## Things to Ask Ma'am
-1. TLabel not a class?
-1. Do we need table connections in `DMUnit` at all, if just using SQL? Add Tables
-1. Fix popup `trip_id` issue.
-1. Are Custom buttons a must. I prefer pastel clean with Win controls. NO, see latest point
-1. Ask if manager_home_u:65 SQL 'INNER JOIN' is allowed? YES
-1. Ask if popup_editItem_u:31, is that correct way of declaration?
-1. Do we need to worry about SQL injection. NO
-2. help buttons
+- [ ] Arrays (records)
 
 ## Form-Specific Fixes
 

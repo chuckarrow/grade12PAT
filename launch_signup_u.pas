@@ -64,10 +64,11 @@ begin
   // Init.
   isPassVisible := false;
 
-  // GUI
+{$REGION 'GUI'}
   DMCommon.screenCentre(self);
   edtPassword.PasswordChar := '•';
   edtPasswordRepeat.PasswordChar := '•';
+{$ENDREGION}
 end;
 
 // Close Query
@@ -87,7 +88,7 @@ procedure TfrmSignup.btnViewPasswordClick(Sender: TObject);
 begin
   if isPassVisible then
   begin
-    edtPassword.PasswordChar := '•';
+edtPassword.PasswordChar := '•';
     edtPasswordRepeat.PasswordChar := '•';
     btnViewPassword.Caption := 'Show Password';
 
@@ -116,7 +117,6 @@ procedure TfrmSignup.rbnMaleClick(Sender: TObject);
 begin
   rbnFemale.Checked := false;
 end;
-
 
 // Submit Button
 procedure TfrmSignup.btnSubmitClick(Sender: TObject);

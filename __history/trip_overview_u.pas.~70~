@@ -1,0 +1,201 @@
+﻿// TODO
+// - Fix Table SQL??
+unit trip_overview_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, DMUnit, DMLoginSystem_u, Vcl.DBCtrls;
+
+type
+  TfrmTripOverview = class(TForm)
+    dbgItems: TDBGrid;
+    btnRemove: TButton;
+    btnBack: TButton;
+    btnFinalise: TButton;
+    lbl01: TLabel;
+    btnNewTrip: TButton;
+    dbcTripSelect: TDBLookupComboBox;
+    btnEditTrip: TButton;
+    btnInc: TButton;
+    btnDec: TButton;
+    lbl02: TLabel;
+    procedure FormShow(Sender: TObject);
+    procedure btnEditClick(Sender: TObject);
+    procedure refreshList();
+    procedure dbcTripSelectClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure btnIncClick(Sender: TObject);
+    procedure btnDecClick(Sender: TObject);
+    procedure removeSelItem();
+    procedure btnFinaliseClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTripOverview: TfrmTripOverview;
+  tripID, tripName, tripDepart, tripReturn: string;
+
+implementation
+
+uses
+  home_u, checkout_u;
+
+{$R *.dfm}
+
+
+// Edit Button
+procedure TfrmTripOverview.btnBackClick(Sender: TObject);
+begin
+  self.hide;
+  frmHome.show;
+end;
+
+// Edit Button
+procedure TfrmTripOverview.btnEditClick(Sender: TObject);
+var
+  q: string;
+begin
+  // Edit
+  refreshList;
+end;
+
+// Finalise Trip
+procedure TfrmTripOverview.btnFinaliseClick(Sender: TObject);
+begin
+
+  if dbgItems.DataSource.DataSet.RecordCount = 0 then
+  begin
+    ShowMessage('This Trip has no items');
+    Exit;
+  end;
+
+  tripID := dbcTripSelect.KeyValue;
+  self.hide;
+  checkout_u.frmCheckout.show;
+end;
+
+// Increase button
+procedure TfrmTripOverview.btnIncClick(Sender: TObject);
+begin
+
+  with DMUnit.DataModule1 do
+  begin
+    tblCuratedList.Edit;
+    tblCuratedList['quantity'] := tblCuratedList['quantity'] + 1;
+    tblCuratedList.Post;
+  end;
+  refreshList;
+end;
+
+// Decrease Button
+procedure TfrmTripOverview.btnDecClick(Sender: TObject);
+begin
+  refreshList;
+
+  if DMUnit.DataModule1.tblCuratedList['quantity'] > 1 then
+    with DMUnit.DataModule1 do
+    begin
+      tblCuratedList.Edit;
+      tblCuratedList['quantity'] := tblCuratedList['quantity'] - 1;
+      tblCuratedList.Post;
+    end
+  else
+    if MessageDlg('Are you sure you want to remove this item from the trip? ',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrNo then
+    removeSelItem();
+  refreshList;
+end;
+
+procedure TfrmTripOverview.dbcTripSelectClick(Sender: TObject);
+begin
+
+  // Time Label
+  DMUnit.DataModule1.tblCuratedList.Filtered := False;
+  DMUnit.DataModule1.tblCuratedList.Filter :=
+    'trip_id = ' + QuotedStr(dbcTripSelect.KeyValue);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+      tripName := DMUnit.DataModule1.tblTrip.FieldByName('trip_name').AsString;
+    tripDepart := DMUnit.DataModule1.tblTrip.FieldByName('depart_date').AsString;
+    tripName := DMUnit.DataModule1.tblTrip.FieldByName('return_date').AsString;
+
+  lbl01.Caption := tripDepart + ' → ' + tripName;
+
+
+  btnFinalise.Enabled := True;
+
+  refreshList;
+
+
+
+
+end;
+
+procedure TfrmTripOverview.removeSelItem;
+begin
+  // Remove Item
+  with DMUnit.DataModule1 do
+  begin
+    tblCuratedList.Delete;
+  end;
+  refreshList;
+end;
+
+
+// Form Show
+procedure TfrmTripOverview.FormShow(Sender: TObject);
+begin
+
+  // DB Lookup Combo
+  DMUnit.DataModule1.tblTrip.Filtered := False;
+  DMUnit.DataModule1.tblTrip.Filter :=
+    'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+  dbcTripSelect.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
+
+  // ShowMessage('Active: ' + BoolToStr(DMUnit.DataModule1.tblTrip.Active, True) +
+  // ' | Count: ' + IntToStr(DMUnit.DataModule1.tblTrip.RecordCount));
+
+  dbcTripSelect.KeyField := 'trip_id'; // Key Field Name
+  dbcTripSelect.ListField := 'trip_name'; // Wanted/Shown Field Name
+
+  btnFinalise.Enabled := False;
+
+
+
+end;
+
+procedure TfrmTripOverview.refreshList;
+var
+  s: string;
+begin
+
+  {
+    q := 'SELECT * FROM tblCuratedList WHERE trip_id = "' + dbcTripSelect.KeyValue + '" ';
+
+    DMUnit.DataModule1.RunSQL(q);
+    dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL; }
+
+  if not(dbcTripSelect.KeyValue = NULL) then
+    with DMUnit.DataModule1 do
+    begin
+      tblCuratedList.Filtered := False;
+      tblCuratedList.Filter := 'trip_id = ' + QuotedStr(dbcTripSelect.KeyValue);
+      tblCuratedList.Filtered := True;
+    end
+  else
+    DMUnit.DataModule1.tblCuratedList.Filtered := False;
+
+  dbgItems.DataSource := DMUnit.DataModule1.dsTblCuratedList;
+
+end;
+
+end.

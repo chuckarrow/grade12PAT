@@ -3,7 +3,7 @@ unit DMLoginSystem_u;
 interface
 
 uses
-  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB, DMCommon_u	;
+  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB, DMCommon_u;
 
 procedure openHome(username: string; form: TForm);
 
@@ -41,15 +41,17 @@ type
     function Authenticate(out ErrorMsg: string): Boolean; // Master check
 
     function getUsername(): string;
+    function getName(): string;
+    function getBalance(): Currency;
   end;
 
-TDM2 = class(TDataModule)
- private
+  TDM2 = class(TDataModule)
+  private
     { Private declarations }
- public
+  public
     { Public declarations }
-   CurrentUserSignup: TUserSignup; // TODO: is needed;  find uses?
-   CurrentUserLogin: TUserLogin; // Reference for active login attempt
+    CurrentUserSignup: TUserSignup; // TODO: is needed;  find uses?
+    CurrentUserLogin: TUserLogin; // Reference for active login attempt
   end;
 
 var
@@ -194,7 +196,6 @@ end;
 { End of TUserSignup }
 { ================== }
 
-
 { ========== }
 { TUserLogin }
 { ========== }
@@ -214,9 +215,27 @@ end;
 
 // Get Name
 function TUserLogin.getName(): string;
+var
+  q: string;
 begin
-Result := FName;
+
+  q := 'SELECT name FROM tblUsers WHERE username = "' + FUsername + '" ';
+  DMUnit.DataModule1.RunSQL(q);
+
+  Result := DMUnit.DataModule1.qrySQL.FieldByName('name').AsString;
 end;
+
+// Get Balance
+function TUserLogin.getBalance: Currency;
+var
+q : string;
+begin
+     q := 'SELECT balance FROM tblUsers WHERE username = "' + FUsername + '" ';
+  DMUnit.DataModule1.RunSQL(q);
+
+  Result := DMUnit.DataModule1.qrySQL.FieldByName('balance').AsCurrency;
+end;
+
 
 // Valid Credentials
 function TUserLogin.CredentialsAreValid: Boolean;
@@ -285,18 +304,19 @@ begin
   end;
 
   form.hide;
-  if accType = 1 then  // User
+  if accType = 1 then // User
   begin
     home_u.frmHome.show;
   end
-  else if accType = 2 then    // Manager
+  else if accType = 2 then // Manager
   begin
     manager_home_u.frmManagerHome.show;
   end
   else if (accType = 3) OR (accType = 4) then // Admin / SuperAdmin
   begin
-    admin_home_u.frmAdminHome.Show;
+    admin_home_u.frmAdminHome.show;
   end;
 
 end;
+
 end.

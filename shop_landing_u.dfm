@@ -61,4 +61,13 @@ object frmShop: TfrmShop
     TabOrder = 2
     OnClick = btnAddClick
   end
+  object btnBack: TButton
+    Left = 488
+    Top = 400
+    Width = 105
+    Height = 25
+    Caption = 'Back'
+    TabOrder = 3
+    OnClick = btnBackClick
+  end
 end

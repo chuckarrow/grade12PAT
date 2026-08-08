@@ -9,8 +9,14 @@ uses
 type
   TfrmAdminHome = class(TForm)
     DBGrid1: TDBGrid;
-        procedure refreshUsers();
+    btnAdd: TButton;
+    btnEdit: TButton;
+    btnDelete: TButton;
+    btnSignout: TButton;
+    procedure refreshUsers();
     procedure FormShow(Sender: TObject);
+    procedure btnSignoutClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -22,11 +28,26 @@ var
 
 implementation
 
+uses
+  launch_welcome_u;
+
 {$R *.dfm}
+
+
+procedure TfrmAdminHome.btnSignoutClick(Sender: TObject);
+begin
+  self.hide;
+  launch_welcome_u.frmWelcome.show;
+end;
+
+procedure TfrmAdminHome.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Application.Terminate;
+end;
 
 procedure TfrmAdminHome.FormShow(Sender: TObject);
 begin
-refreshUsers;
+  refreshUsers;
 end;
 
 procedure TfrmAdminHome.refreshUsers;

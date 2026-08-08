@@ -2,14 +2,15 @@ object frmCheckout: TfrmCheckout
   Left = 0
   Top = 0
   Caption = 'Checkout'
-  ClientHeight = 441
-  ClientWidth = 544
+  ClientHeight = 614
+  ClientWidth = 838
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnShow = FormShow
   TextHeight = 15
   object lbl01: TLabel
     Left = 72
@@ -18,10 +19,33 @@ object frmCheckout: TfrmCheckout
     Height = 15
     Caption = 'Wallet: <amount>'
   end
-  object DBGrid1: TDBGrid
+  object lbl02: TLabel
+    Left = 56
+    Top = 35
+    Width = 22
+    Height = 15
+    Caption = 'Cart'
+  end
+  object lbl03: TLabel
+    Left = 704
+    Top = 182
+    Width = 97
+    Height = 15
+    Alignment = taRightJustify
+    Caption = 'Items:'
+  end
+  object lbl04: TLabel
+    Left = 704
+    Top = 203
+    Width = 97
+    Height = 15
+    Alignment = taRightJustify
+    Caption = 'Total:'
+  end
+  object dbgItems: TDBGrid
     Left = 40
     Top = 56
-    Width = 320
+    Width = 761
     Height = 120
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
@@ -30,20 +54,14 @@ object frmCheckout: TfrmCheckout
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
   end
-  object DBLookupComboBox1: TDBLookupComboBox
-    Left = 40
-    Top = 27
-    Width = 145
-    Height = 23
-    TabOrder = 1
-  end
   object btnFunds: TButton
     Left = 200
     Top = 192
     Width = 75
     Height = 25
     Caption = 'Add Funds'
-    TabOrder = 2
+    TabOrder = 1
+    OnClick = btnFundsClick
   end
   object btnSubmit: TButton
     Left = 56
@@ -51,13 +69,14 @@ object frmCheckout: TfrmCheckout
     Width = 75
     Height = 25
     Caption = 'Checkout'
-    TabOrder = 3
+    TabOrder = 2
+    OnClick = btnSubmitClick
   end
   object redReceipt: TRichEdit
     Left = 56
     Top = 271
-    Width = 185
-    Height = 162
+    Width = 369
+    Height = 314
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -66,21 +85,25 @@ object frmCheckout: TfrmCheckout
     Lines.Strings = (
       'redReceipt')
     ParentFont = False
-    TabOrder = 4
+    ScrollBars = ssBoth
+    TabOrder = 3
   end
   object btnSave: TButton
-    Left = 256
-    Top = 408
+    Left = 559
+    Top = 270
     Width = 89
     Height = 25
     Caption = 'Save Receipt'
-    TabOrder = 5
+    TabOrder = 4
+    OnClick = btnSaveClick
   end
-  object tswRemoveTrip: TToggleSwitch
-    Left = 160
-    Top = 240
-    Width = 81
-    Height = 20
-    TabOrder = 6
+  object btnBack: TButton
+    Left = 694
+    Top = 536
+    Width = 107
+    Height = 57
+    Caption = 'Back'
+    TabOrder = 5
+    OnClick = btnBackClick
   end
 end
