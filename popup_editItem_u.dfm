@@ -1,37 +1,63 @@
 object frmEditItem: TfrmEditItem
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu]
   Caption = 'Edit Item'
   ClientHeight = 351
   ClientWidth = 236
-  Color = clBtnFace
+  Color = 11915762
+  CustomTitleBar.Control = tlbTitleBar
+  CustomTitleBar.Enabled = True
+  CustomTitleBar.Height = 31
+  CustomTitleBar.ShowIcon = False
+  CustomTitleBar.SystemColors = False
+  CustomTitleBar.BackgroundColor = 8828129
+  CustomTitleBar.ForegroundColor = 65793
+  CustomTitleBar.InactiveBackgroundColor = clWhite
+  CustomTitleBar.InactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonForegroundColor = 65793
+  CustomTitleBar.ButtonBackgroundColor = clWhite
+  CustomTitleBar.ButtonHoverForegroundColor = 65793
+  CustomTitleBar.ButtonHoverBackgroundColor = 16053492
+  CustomTitleBar.ButtonPressedForegroundColor = 65793
+  CustomTitleBar.ButtonPressedBackgroundColor = 15395562
+  CustomTitleBar.ButtonInactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  GlassFrame.Enabled = True
+  GlassFrame.Top = 31
+  StyleElements = [seFont, seClient]
+  OnHide = FormHide
   OnShow = FormShow
   TextHeight = 15
   object lbl01: TLabel
     Left = 198
-    Top = 204
+    Top = 224
     Width = 10
     Height = 15
     Caption = '%'
   end
   object edtName: TEdit
     Left = 32
-    Top = 16
+    Top = 36
     Width = 185
     Height = 23
+    Hint = 'Item Name'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     Text = 'Item Name'
   end
   object redDescription: TRichEdit
     Left = 32
-    Top = 45
+    Top = 65
     Width = 185
     Height = 89
+    Hint = 'Description'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -40,55 +66,69 @@ object frmEditItem: TfrmEditItem
     Lines.Strings = (
       'redDescription')
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object edtMaterial: TEdit
     Left = 32
-    Top = 140
+    Top = 160
     Width = 185
     Height = 23
+    Hint = 'Material'
     TabOrder = 2
     Text = 'Material'
+    TextHint = 'Material'
   end
   object edtPrice: TEdit
     Left = 32
-    Top = 169
+    Top = 189
     Width = 185
     Height = 23
+    Hint = 'Display Price'
     TabOrder = 3
     Text = 'Display Price'
   end
   object sedQuantity: TSpinEdit
     Left = 32
-    Top = 259
+    Top = 279
     Width = 185
     Height = 24
+    Hint = 'Quantity'
     MaxValue = 0
     MinValue = 0
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
     Value = 0
   end
   object sedSale: TSpinEdit
     Left = 32
-    Top = 200
+    Top = 220
     Width = 161
     Height = 24
+    Hint = 'Sale'
     MaxValue = 0
     MinValue = 0
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 5
     Value = 0
   end
   object edtStockPrice: TEdit
     Left = 32
-    Top = 230
+    Top = 250
     Width = 185
     Height = 23
+    Hint = 'Stock Price'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 6
     Text = 'Stock Price'
   end
   object btnReset: TButton
     Left = 32
-    Top = 304
+    Top = 318
     Width = 65
     Height = 25
     Caption = 'Reset'
@@ -97,11 +137,18 @@ object frmEditItem: TfrmEditItem
   end
   object btnUpdate: TButton
     Left = 103
-    Top = 304
+    Top = 318
     Width = 114
     Height = 25
     Caption = 'Update'
     TabOrder = 8
     OnClick = btnUpdateClick
+  end
+  object tlbTitleBar: TTitleBarPanel
+    Left = 0
+    Top = 0
+    Width = 236
+    Height = 30
+    CustomButtons = <>
   end
 end

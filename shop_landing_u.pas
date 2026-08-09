@@ -1,10 +1,13 @@
+// Charles Fletcher
+// File Status: Complete
 unit shop_landing_u;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit, DMCommon_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit, utils_u,
+  Vcl.TitleBarCtrls;
 
 type
   TfrmShop = class(TForm)
@@ -14,6 +17,7 @@ type
     edtSearch: TEdit;
     cmbCategory: TComboBox;
     btnBack: TButton;
+    tlbTitleBar: TTitleBarPanel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
@@ -37,15 +41,26 @@ uses
 
 {$R *.dfm}
 
+{$REGION 'Forms'}
 
 // Form Show
 procedure TfrmShop.FormShow(Sender: TObject);
 begin
+  utils_u.fixWindow(self);
   refreshShop;
 
-  // GUI
-  DMCommon.fixWindow(self);
 end;
+
+// Form Close
+procedure TfrmShop.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caNone;
+  utils_u.confirmQuit();
+end;
+
+{$ENDREGION}
+
+{$REGION 'Buttons' }
 
 // Add Button
 procedure TfrmShop.btnAddClick(Sender: TObject);
@@ -54,38 +69,16 @@ begin
   popup_addToTrip_u.frmAddToTrip.Show;
 end;
 
-
 // Back Button
 procedure TfrmShop.btnBackClick(Sender: TObject);
 begin
-     self.hide;
-     home_u.frmHome.show;
+  self.hide;
+  home_u.frmHome.Show;
 end;
 
-// Form Close
-procedure TfrmShop.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Application.Terminate;
-end;
+{$ENDREGION}
 
-// Refresh Shop
-procedure TfrmShop.refreshShop;
-var
-  q: string;
-begin
-  { Refresh DB: }
-
-  q := 'SELECT * FROM tblStock'; // Causing Error
-  DMUnit.DataModule1.qrySQL.Close;
-  DMUnit.DataModule1.qrySQL.SQL.Text := q;
-  DMUnit.DataModule1.qrySQL.Open;
-
-  // Bind the dataset
-  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
-end;
-
-{ Customs Methods }
-
+{$REGION 'Customs Methods' }
 // Add To Trip
 procedure TfrmShop.addToTrip();
 var
@@ -101,5 +94,22 @@ begin
 
   DMUnit.DataModule1.ExecuteSQL(q);
 end;
+
+// Refresh Shop
+procedure TfrmShop.refreshShop;
+var
+  q: string;
+begin
+  { Refresh DB: }
+
+  q := 'SELECT * FROM tblStock';
+  DMUnit.DataModule1.qrySQL.Close;
+  DMUnit.DataModule1.qrySQL.SQL.Text := q;
+  DMUnit.DataModule1.qrySQL.Open;
+
+  // Bind the dataset
+  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+end;
+{$ENDREGION}
 
 end.

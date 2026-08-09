@@ -1,5 +1,5 @@
-﻿// TODO
-// - Fix Table SQL??
+﻿// Charles Fletcher
+// File Status: Missing Functionality
 unit trip_overview_u;
 
 interface
@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
-  Vcl.StdCtrls, DMUnit, DMLoginSystem_u, Vcl.DBCtrls;
+  Vcl.StdCtrls, DMUnit, DMLoginSystem_u, Vcl.DBCtrls, System.UITypes, utils_u, Vcl.TitleBarCtrls;
 
 type
   TfrmTripOverview = class(TForm)
@@ -23,8 +23,8 @@ type
     btnInc: TButton;
     btnDec: TButton;
     lbl02: TLabel;
+    tlbTitleBar: TTitleBarPanel;
     procedure FormShow(Sender: TObject);
-    procedure btnEditClick(Sender: TObject);
     procedure refreshList();
     procedure dbcTripSelectClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
@@ -32,6 +32,9 @@ type
     procedure btnDecClick(Sender: TObject);
     procedure removeSelItem();
     procedure btnFinaliseClick(Sender: TObject);
+    procedure btnNewTripClick(Sender: TObject);
+    procedure btnEditTripClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
@@ -45,40 +48,90 @@ var
 implementation
 
 uses
-  home_u, checkout_u;
+  home_u, checkout_u, popup_createTrip_u;
 
 {$R *.dfm}
 
+{$REGION 'Forms'}
 
-// Edit Button
-procedure TfrmTripOverview.btnBackClick(Sender: TObject);
+
+// Show Form
+procedure TfrmTripOverview.FormShow(Sender: TObject);
 begin
-  self.hide;
-  frmHome.show;
+  utils_u.fixWindow(self);
+
+  // DB Lookup Combo
+  DMUnit.DataModule1.tblTrip.Filtered := False;
+  DMUnit.DataModule1.tblTrip.Filter :=
+    'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+  dbcTripSelect.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
+
+  // ShowMessage('Active: ' + BoolToStr(DMUnit.DataModule1.tblTrip.Active, True) +
+  // ' | Count: ' + IntToStr(DMUnit.DataModule1.tblTrip.RecordCount));
+
+  dbcTripSelect.KeyField := 'trip_id'; // Key Field Name
+  dbcTripSelect.ListField := 'trip_name'; // Wanted/Shown Field Name
+
+  btnFinalise.Enabled := False;
+
 end;
 
-// Edit Button
-procedure TfrmTripOverview.btnEditClick(Sender: TObject);
-var
-  q: string;
+// Close Form
+procedure TfrmTripOverview.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  // Edit
-  refreshList;
+  Action := caNone;
+  utils_u.confirmQuit();
 end;
 
-// Finalise Trip
-procedure TfrmTripOverview.btnFinaliseClick(Sender: TObject);
+{$ENDREGION}
+
+{$REGION 'Buttons' }
+
+
+// New Trip Button
+procedure TfrmTripOverview.btnNewTripClick(Sender: TObject);
+begin
+  frmCreateTrip.isEdit := False;
+  popup_createTrip_u.frmCreateTrip.Show;
+end;
+
+// Edit Trip
+procedure TfrmTripOverview.btnEditTripClick(Sender: TObject);
 begin
 
-  if dbgItems.DataSource.DataSet.RecordCount = 0 then
+  if not (dbcTripSelect.KeyValue = NULL) then
   begin
-    ShowMessage('This Trip has no items');
-    Exit;
-  end;
+    frmCreateTrip.isEdit := True;
+    popup_createTrip_u.frmCreateTrip.Show;
+  end
+  else
+    ShowMessage('Please select Trip');
+end;
 
+// Select Trip Lookup ComboBox
+procedure TfrmTripOverview.dbcTripSelectClick(Sender: TObject);
+begin
+
+  // Time Label
+  DMUnit.DataModule1.tblCuratedList.Filtered := False;
+  DMUnit.DataModule1.tblCuratedList.Filter :=
+    'trip_id = ' + QuotedStr(dbcTripSelect.KeyValue);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+  // Declare Global Variable
+  tripName := DMUnit.DataModule1.tblTrip.FieldByName('trip_name').AsString;
+  tripDepart := DMUnit.DataModule1.tblTrip.FieldByName('depart_date').AsString;
+  tripReturn := DMUnit.DataModule1.tblTrip.FieldByName('return_date').AsString;
   tripID := dbcTripSelect.KeyValue;
-  self.hide;
-  checkout_u.frmCheckout.show;
+
+  // GUI
+  lbl01.Caption := tripDepart + ' → ' + tripName;
+  btnFinalise.Enabled := True;
+
+  refreshList;
+
 end;
 
 // Increase button
@@ -113,82 +166,60 @@ begin
   refreshList;
 end;
 
-procedure TfrmTripOverview.dbcTripSelectClick(Sender: TObject);
+// Finalise Trip Button
+procedure TfrmTripOverview.btnFinaliseClick(Sender: TObject);
 begin
 
-  // Time Label
-  DMUnit.DataModule1.tblCuratedList.Filtered := False;
-  DMUnit.DataModule1.tblCuratedList.Filter :=
-    'trip_id = ' + QuotedStr(dbcTripSelect.KeyValue);
-  DMUnit.DataModule1.tblTrip.Filtered := True;
+  if dbgItems.DataSource.DataSet.RecordCount = 0 then
+  begin
+    ShowMessage('This Trip has no items');
+    Exit;
+  end;
 
-  tripName := DMUnit.DataModule1.tblTrip.FieldByName('trip_name').AsString;
-  tripDepart := DMUnit.DataModule1.tblTrip.FieldByName('depart_date').AsString;
-  tripReturn := DMUnit.DataModule1.tblTrip.FieldByName('return_date').AsString;
-
-  lbl01.Caption := tripDepart + ' → ' + tripName;
-
-  btnFinalise.Enabled := True;
-
-  refreshList;
-
+  self.hide;
+  checkout_u.frmCheckout.Show;
 end;
 
+// Back Button
+procedure TfrmTripOverview.btnBackClick(Sender: TObject);
+begin
+  self.hide;
+  frmHome.Show;
+end;
+
+{$ENDREGION}
+
+{$REGION 'Custom Methods'}
+
+
+// Remove Selected Item
 procedure TfrmTripOverview.removeSelItem;
 begin
-  // Remove Item
-  with DMUnit.DataModule1 do
+  with DMUnit.DataModule1
+    do
   begin
     tblCuratedList.Delete;
   end;
   refreshList;
 end;
 
-// Form Show
-procedure TfrmTripOverview.FormShow(Sender: TObject);
-begin
-
-  // DB Lookup Combo
-  DMUnit.DataModule1.tblTrip.Filtered := False;
-  DMUnit.DataModule1.tblTrip.Filter :=
-    'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
-  DMUnit.DataModule1.tblTrip.Filtered := True;
-
-  dbcTripSelect.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
-
-  // ShowMessage('Active: ' + BoolToStr(DMUnit.DataModule1.tblTrip.Active, True) +
-  // ' | Count: ' + IntToStr(DMUnit.DataModule1.tblTrip.RecordCount));
-
-  dbcTripSelect.KeyField := 'trip_id'; // Key Field Name
-  dbcTripSelect.ListField := 'trip_name'; // Wanted/Shown Field Name
-
-  btnFinalise.Enabled := False;
-
-end;
-
+// Refresh List
 procedure TfrmTripOverview.refreshList;
 var
-  s: string;
+  q: string;
 begin
 
-  {
-    q := 'SELECT * FROM tblCuratedList WHERE trip_id = "' + dbcTripSelect.KeyValue + '" ';
+  q := 'SELECT i.item_name AS [Item Name],  st.category AS [Category], st.store_name AS [Store], i.price AS [Price per Unit], cl.quantity AS [Quantity], cl.comment AS [Comment]'
+    + ' FROM ((tblCuratedList cl'
+    + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
+    + ' INNER JOIN tblItems i ON i.item_id = s.item_id)'
+    + ' INNER JOIN tblStores st ON st.store_id = s.store_id'
+    + ' WHERE cl.trip_id = ' + QuotedStr(tripID);
 
-    DMUnit.DataModule1.RunSQL(q);
-    dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL; }
-
-  if not(dbcTripSelect.KeyValue = NULL) then
-    with DMUnit.DataModule1 do
-    begin
-      tblCuratedList.Filtered := False;
-      tblCuratedList.Filter := 'trip_id = ' + QuotedStr(dbcTripSelect.KeyValue);
-      tblCuratedList.Filtered := True;
-    end
-  else
-    DMUnit.DataModule1.tblCuratedList.Filtered := False;
-
-  dbgItems.DataSource := DMUnit.DataModule1.dsTblCuratedList;
+  DMUnit.DataModule1.RunSQL(q);
+  dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL;
 
 end;
+{$ENDREGION}
 
 end.

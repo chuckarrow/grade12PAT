@@ -1,9 +1,11 @@
+// Charles Fletcher
+// DEPRECATED, please use utils_u
 unit DMCommon_u;
 
 interface
 
 uses
-  System.SysUtils, System.Classes, Vcl.Forms, Vcl.Controls, Winapi.Windows;
+  System.SysUtils, System.Classes, Vcl.Forms, Vcl.Controls, Winapi.Windows, Vcl.Dialogs, System.UITypes;
 
 type
   TDMCommon = class(TDataModule)
@@ -11,10 +13,13 @@ type
     { Private declarations }
   public
     { Public declarations }
-    class procedure horizCentre(control: TControl; Offset: Integer = 0);
-class procedure screenCentre(Form: TForm);
-class procedure fixWindow(Form: TForm);
+
   end;
+
+procedure horizCentre(control: TControl; Offset: Integer = 0);
+procedure screenCentre(Form: TForm);
+procedure fixWindow(Form: TForm);
+procedure confirmQuit();
 
 var
   DMCommon: TDMCommon;
@@ -31,21 +36,29 @@ implementation
 
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 {$R *.dfm}
-class procedure TDMCommon.fixWindow(Form: TForm);
+
+
+// Confirm Quit; No uses found
+procedure confirmQuit;
+begin
+  if MessageDlg('Are you sure you want to quit? ',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrNo then
+    Application.Terminate;
+end;
+
+// Fix Window; No uses found
+procedure fixWindow(Form: TForm);
 begin
 
   // Incorrect Window Activation incorrect Fix
   // Source: https://stackoverflow.com/questions/802279/multiple-app-windows-activation-not-working-correctly
-  ShowWindow(Form.Handle, SW_HIDE	);
+  ShowWindow(Form.Handle, SW_HIDE);
   SetWindowLong(Form.Handle, GWL_EXSTYLE, GetWindowLong(Form.Handle, GWL_EXSTYLE) or WS_EX_APPWINDOW);
   ShowWindow(Form.Handle, SW_SHOW);
 end;
 
-{ TDataModule3 }
-
-{ TDataModule3 }
-
-class procedure TDMCommon.horizCentre(control: TControl;
+// Horizontal Centering; No uses found
+procedure horizCentre(control: TControl;
   Offset: Integer = 0);
 begin
 
@@ -54,9 +67,10 @@ begin
   // lbl01.Left := Round(Self.Width / 2) - Round(lbl01.Width / 2);
 end;
 
-class procedure TDMCommon.screenCentre(Form: TForm);
+// Centre window on screen; No uses found
+procedure screenCentre(Form: TForm);
 begin
-Form.left := Round((Screen.Width / 2) - Form.Width / 2);
+  Form.left := Round((Screen.Width / 2) - Form.Width / 2);
   Form.Top := Round((Screen.Height / 2) - Form.Height / 2);
 end;
 

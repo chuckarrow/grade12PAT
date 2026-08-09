@@ -1,0 +1,65 @@
+object frmCreateTrip: TfrmCreateTrip
+  Left = 0
+  Top = 0
+  Caption = 'Create Trip '
+  ClientHeight = 329
+  ClientWidth = 207
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnShow = FormShow
+  TextHeight = 15
+  object edtName: TEdit
+    Left = 24
+    Top = 56
+    Width = 121
+    Height = 23
+    TabOrder = 0
+    Text = 'Enter Trip Name'
+  end
+  object dprDepart: TDatePicker
+    Left = 24
+    Top = 112
+    Date = 46243.000000000000000000
+    DateFormat = 'dd/mm/yyyy'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    TabOrder = 1
+  end
+  object dprReturn: TDatePicker
+    Left = 24
+    Top = 176
+    Date = 46243.000000000000000000
+    DateFormat = 'dd/mm/yyyy'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -16
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    TabOrder = 2
+  end
+  object btnCreate: TButton
+    Left = 79
+    Top = 233
+    Width = 95
+    Height = 48
+    Caption = 'Create'
+    TabOrder = 3
+    OnClick = btnCreateClick
+  end
+  object btnBack: TButton
+    Left = 24
+    Top = 233
+    Width = 49
+    Height = 48
+    Caption = 'Back'
+    TabOrder = 4
+    OnClick = btnBackClick
+  end
+end

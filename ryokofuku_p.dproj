@@ -144,10 +144,6 @@
             <Form>frmSignup</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="debug_db_u.pas">
-            <Form>frmDebug1</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="DMLoginSystem_u.pas">
             <Form>DM2</Form>
             <FormType>dfm</FormType>
@@ -184,6 +180,11 @@
         </DCCReference>
         <DCCReference Include="checkout_u.pas">
             <Form>frmCheckout</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="utils_u.pas"/>
+        <DCCReference Include="popup_createTrip_u.pas">
+            <Form>frmCreateTrip</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <None Include="TODO.md"/>

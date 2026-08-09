@@ -7,7 +7,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMCommon_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, utils_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.Buttons;
 
 type
   TfrmWelcome = class(TForm)
@@ -18,12 +19,12 @@ type
     btnClose: TButton;
     lbl02: TLabel;
     img01: TImage;
+    SpeedButton1: TSpeedButton;
     procedure FormShow(Sender: TObject);
     procedure btnSignupClick(Sender: TObject);
     procedure btnLoginClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
   public
@@ -40,32 +41,26 @@ uses
 
 {$R *.dfm}
 
-{ Form }
+{$REGION 'Forms'}
+
 
 // Form Create
 procedure TfrmWelcome.FormCreate(Sender: TObject);
 begin
   // GUI
   // Dimensions
-  Self.Height := DMCommon_u.launchWindowHeight;
-  Self.Width := DMCommon_u.launchWindowWidth;
+  Self.Height := utils_u.launchWindowHeight;
+  Self.Width := utils_u.launchWindowWidth;
 
   // Control Horizontal Centering
-  DMCommon.horizCentre(lbl01);
-  DMCommon.horizCentre(lbl02);
-  DMCommon.horizCentre(img01);
+  utils_u.horizCentre(btnLogin);
+  utils_u.horizCentre(btnSignup);
+  utils_u.horizCentre(lbl01);
+  utils_u.horizCentre(lbl02);
+  utils_u.horizCentre(img01);
 
   // Location
-  DMCommon.screenCentre(Self);
-
-end;
-
-// Form Resize
-procedure TfrmWelcome.FormResize(Sender: TObject);
-begin
-  DMCommon.horizCentre(lbl01);
-  DMCommon.horizCentre(btnLogin);
-  DMCommon.horizCentre(btnSignup);
+  utils_u.screenCentre(Self);
 end;
 
 // Form Show
@@ -74,17 +69,20 @@ begin
   home_u.frmHome.Hide;
 
   // Incorrect Window Activation incorrect Fix
-  DMCommon.fixWindow(Self);
+  utils_u.fixWindow(Self);
 end;
 
-{ End of Form }
 
-{ Buttons }
+{$ENDREGION}
+
+{$REGION 'Buttons' }
+
 
 // Login Form
 procedure TfrmWelcome.btnLoginClick(Sender: TObject);
 begin
   Application.CreateForm(TfrmLogin, frmLogin);
+  Self.Hide;
   launch_login_u.frmLogin.Show;
 
 end;
@@ -102,8 +100,6 @@ begin
   Application.Terminate;
 end;
 
-{ End of Buttons }
+{$ENDREGION}
 
 end.
-
-// Completed 3 Aug :)

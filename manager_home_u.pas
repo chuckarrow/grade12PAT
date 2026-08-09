@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMUnit, DMLoginSystem_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMUnit, DMLoginSystem_u, System.UITypes,
+  utils_u;
 
 type
   TfrmManagerHome = class(TForm)
@@ -14,13 +15,16 @@ type
     lbl01: TLabel;
     btnAdd: TButton;
     btnDelete: TButton;
+    btnSignout: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnStoreClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnItemClick(Sender: TObject);
     procedure refreshStores();
+    procedure refreshItems;
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
+    procedure btnSignoutClick(Sender: TObject);
   private
   public
     { Public declarations }
@@ -28,33 +32,48 @@ type
 
 var
   frmManagerHome: TfrmManagerHome;
+  sStore, sStoreID: string;
 
 implementation
 
 uses
-  popup_editItem_u;
+  launch_welcome_u, popup_editItem_u;
 
 {$R *.dfm}
 
-{ Forms }
+{$REGION 'Forms' }
+
 
 // Show Form
-procedure TfrmManagerHome.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Application.Terminate;
-end;
-
 procedure TfrmManagerHome.FormShow(Sender: TObject);
 begin
   refreshStores;
 
   // GUI
   btnItem.Enabled := false;
+  btnAdd.Enabled := false;
+  btnDelete.Enabled := false;
+  lbl01.Caption := 'Viewing: Stores';
 end;
+
+// Close Form
+procedure TfrmManagerHome.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caNone;
+  utils_u.confirmQuit;
+end;
+
+{$ENDREGION}
 
 { Buttons }
 
 // Edit Store Button
+procedure TfrmManagerHome.btnSignoutClick(Sender: TObject);
+begin
+  self.hide;
+  frmWelcome.Show;
+end;
+
 procedure TfrmManagerHome.btnStoreClick(Sender: TObject);
 var
   q: string;
@@ -69,20 +88,25 @@ begin
     DMUnit.DataModule1.RunSQL(q);
     DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
     btnStore.Caption := 'Return to Stores';
+      btnAdd.Enabled := true;
+  btnDelete.Enabled := true;
   end
   else
   begin
     refreshStores;
     btnStore.Caption := 'Edit Store';
+      btnAdd.Enabled := false;
+  btnDelete.Enabled := false;
   end;
 
   // GUI
   btnItem.Enabled := true;
+  lbl01.Caption := 'Viewing: Items of ' + sStore;
   // btnStore.Enabled := false;
 
 end;
 
-// Edit Item Button
+// Delete Item Button
 procedure TfrmManagerHome.btnDeleteClick(Sender: TObject);
 var
   qStock, qCheckOtherStock, qItems: string;
@@ -102,10 +126,10 @@ begin
     mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
     Exit;
 
-    // Remove from Stock
+  // Remove from Stock
   qStock := 'DELETE FROM tblStock WHERE item_id = ''' + itemID + ''' ' +
     'AND store_id = ''' + storeID + ''' ';
-  DMUnit.DataModule1.RunSQL(qStock);
+  DMUnit.DataModule1.ExecuteSQL(qStock);
 
   // Check other stores who may stock this item
   qCheckOtherStock := 'SELECT COUNT(*) AS Cnt FROM tblStock WHERE item_id = ''' + itemID + ''' ';
@@ -116,25 +140,28 @@ begin
   if (not ds.IsEmpty) and (ds.FieldByName('Cnt').AsInteger = 0) then
   begin
     qItems := 'DELETE FROM tblItems WHERE item_id = ''' + itemID + ''' ';
-    DMUnit.DataModule1.RunSQL(qItems);
+    DMUnit.DataModule1.ExecuteSQL(qItems);
   end;
 
   ShowMessage('Item deleted.');
-  DBGrid1.DataSource.DataSet.Refresh;
+  refreshItems;
 end;
 
+// Edit Button
 procedure TfrmManagerHome.btnItemClick(Sender: TObject);
 begin
+ShowMessage('Edit');
   popup_editItem_u.frmEditItem.Show;
-  frmEditItem.FisAdd := False;
+  frmEditItem.formatMenu(false);
 
 end;
 
-// Edit Add Button
+// Add Button
 procedure TfrmManagerHome.btnAddClick(Sender: TObject);
 begin
+ShowMessage('Add');
   popup_editItem_u.frmEditItem.Show;
-  frmEditItem.FisAdd := True;
+   frmEditItem.formatMenu(true);
 end;
 
 { End of Buttons }
@@ -149,6 +176,22 @@ begin
 
   // Populate Grid With Stores of Logged in Manager
   q := 'SELECT * FROM tblStores WHERE manager = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername) + ' ';
+  DMUnit.DataModule1.RunSQL(q);
+  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+  sStore := DBGrid1.DataSource.DataSet.FieldByName('store_name').AsString;
+  sStoreID := DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString;
+end;
+
+procedure TfrmManagerHome.refreshItems;
+var
+  q: string;
+begin
+
+  // Populate Grid With Items of Selected Store
+  q := 'SELECT i.item_id, i.item_name, i.item_description, i.material, i.price, i.sale,' +
+    's.stock_id, s.store_id, s.quantity_available, s.stock_price ' +
+    'FROM tblItems i INNER JOIN tblStock s ON i.item_id = s.item_id ' +
+    'WHERE s.store_id = ''' + sStoreID + ''' ';
   DMUnit.DataModule1.RunSQL(q);
   DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
 end;

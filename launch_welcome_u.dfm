@@ -11,10 +11,11 @@ object frmWelcome: TfrmWelcome
   Caption = 'Welcome | Rykofuku Travel Planner'
   ClientHeight = 418
   ClientWidth = 661
-  Color = 11915762
+  Color = 11981554
   CustomTitleBar.Control = tlbTitleBar
   CustomTitleBar.Enabled = True
   CustomTitleBar.Height = 31
+  CustomTitleBar.ShowIcon = False
   CustomTitleBar.SystemColors = False
   CustomTitleBar.BackgroundColor = 8828129
   CustomTitleBar.ForegroundColor = 65793
@@ -38,7 +39,6 @@ object frmWelcome: TfrmWelcome
   StyleElements = [seFont]
   ShowInTaskBar = True
   OnCreate = FormCreate
-  OnResize = FormResize
   OnShow = FormShow
   DesignSize = (
     661
@@ -361,6 +361,17 @@ object frmWelcome: TfrmWelcome
     Width = 661
     Height = 30
     CustomButtons = <>
+    DesignSize = (
+      661
+      30)
+    object SpeedButton1: TSpeedButton
+      Left = 635
+      Top = 0
+      Width = 26
+      Height = 30
+      Anchors = [akTop, akRight]
+      Caption = '?'
+    end
   end
   object btnClose: TButton
     Left = 578

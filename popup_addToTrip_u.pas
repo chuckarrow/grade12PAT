@@ -1,3 +1,5 @@
+// Charles Fletcher
+// File Status: Complete
 unit popup_addToTrip_u;
 
 interface
@@ -7,7 +9,7 @@ uses
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, DMUnit,
   DMLoginSystem_u, Vcl.Samples.Spin, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, DMCommon_u;
+  Vcl.Grids, Vcl.DBGrids, DMCommon_u, Vcl.TitleBarCtrls;
 
 type
   TfrmAddToTrip = class(TForm)
@@ -18,8 +20,11 @@ type
     btnSubmit: TButton;
     sedQuantity: TSpinEdit;
     lbl03: TLabel;
+    tlbTitleBar: TTitleBarPanel;
+    btnBack: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnSubmitClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -36,21 +41,16 @@ uses
   shop_landing_u;
 
 {$R *.dfm}
-// Form Show
 
+
+// Form Show
 procedure TfrmAddToTrip.FormShow(Sender: TObject);
-var
-  q: string;
 begin
+  // GUI
   memComment.Clear;
   sedQuantity.Value := 1;
 
-  // SQL
-  { q := 'SELECT trip_id, trip_name FROM tblTrip WHERE username = ' +
-    QuotedStr(DMLoginSystem_u.currUser.getUsername);
-    DMUnit.DataModule1.RunSQL(q); }
-
-  // Delphi
+  // DB Lookup ComboBox
   DMUnit.DataModule1.tblTrip.Filtered := False;
   DMUnit.DataModule1.tblTrip.Filter :=
     'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
@@ -64,6 +64,11 @@ begin
 end;
 
 // DBCombo Click
+procedure TfrmAddToTrip.btnBackClick(Sender: TObject);
+begin
+self.Hide
+end;
+
 procedure TfrmAddToTrip.btnSubmitClick(Sender: TObject);
 begin
 

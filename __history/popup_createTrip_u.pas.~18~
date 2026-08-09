@@ -1,0 +1,71 @@
+unit popup_createTrip_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.WinXPickers, utils_u, DMUnit, DMLoginSystem_u;
+
+type
+  TfrmCreateTrip = class(TForm)
+    edtName: TEdit;
+    dprDepart: TDatePicker;
+    dprReturn: TDatePicker;
+    btnCreate: TButton;
+    btnBack: TButton;
+    procedure btnCreateClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    isEdit: boolean;
+  end;
+
+var
+  frmCreateTrip: TfrmCreateTrip;
+
+implementation
+
+uses
+trip_overview_u;
+
+{$R *.dfm}
+
+
+// Show Form
+procedure TfrmCreateTrip.FormShow(Sender: TObject);
+var
+  q: string;
+begin
+  utils_u.fixWindow(self);
+
+  // Populate Controls (If Editing trip)
+  q := 'SELECT trip_id, trip_name, depart_date, return_date FROM tblTrip WHERE trip_id = ' + trip_overview_u.tripID;
+end;
+
+// Create Trip
+procedure TfrmCreateTrip.btnCreateClick(Sender: TObject);
+var
+  q: string;
+begin
+
+  // Insert into db
+  q := 'INSERT INTO tblTrip (trip_id, trip_name, username,  depart_date, return_date) ' +
+    'VALUES (' + QuotedStr(utils_u.getNextID('tblTrip', 'trip_id', '')) + ', ' +
+    QuotedStr(edtName.Text) + ', ' +
+    QuotedStr(DMLoginSystem_u.currUser.getUsername) + ', ' +
+    QuotedStr(DateToStr(dprDepart.Date)) + ', ' +
+    QuotedStr(DateToStr(dprReturn.Date)) + ')';
+
+  DMUnit.DataModule1.ExecuteSQL(q);
+end;
+
+// Back Button
+procedure TfrmCreateTrip.btnBackClick(Sender: TObject);
+begin
+  self.hide;
+end;
+
+end.

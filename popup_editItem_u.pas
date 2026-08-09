@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Samples.Spin, Vcl.StdCtrls, Vcl.ComCtrls, DMUnit, DMCommon_u, DB, System.UITypes;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Samples.Spin, Vcl.StdCtrls, Vcl.ComCtrls, DMUnit, utils_u, DB, System.UITypes,
+  Vcl.TitleBarCtrls;
 
 type
   TfrmEditItem = class(TForm)
@@ -18,13 +19,16 @@ type
     edtStockPrice: TEdit;
     btnReset: TButton;
     btnUpdate: TButton;
+    tlbTitleBar: TTitleBarPanel;
     procedure FormShow(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
     procedure refreshData();
     procedure btnUpdateClick(Sender: TObject);
     function getNextID(const TableName, IDField, Prefix: string): string;
-    procedure addUser();
-    procedure editUser();
+    procedure addItem();
+    procedure editItem();
+    procedure formatMenu(isAdd: Boolean);
+    procedure FormHide(Sender: TObject);
   private
     { Private declarations }
     FItemID: string;
@@ -36,6 +40,7 @@ type
 
 var
   frmEditItem: TfrmEditItem;
+  isAddGlobal : boolean;
 
 implementation
 
@@ -46,10 +51,18 @@ uses
 { Form }
 
 // Show Form
-
 procedure TfrmEditItem.FormShow(Sender: TObject);
 begin
-  refreshData;
+  utils_u.fixWindow(self);
+  frmManagerHome.btnSignout.Enabled := false;
+end;
+
+
+   // Hide Form
+procedure TfrmEditItem.FormHide(Sender: TObject);
+begin
+     frmManagerHome.refreshItems;
+       frmManagerHome.btnSignout.Enabled := true;
 end;
 
 { End of Form }
@@ -67,22 +80,18 @@ end;
 procedure TfrmEditItem.btnUpdateClick(Sender: TObject);
 
 begin
-  if FisAdd then
+  if isAddGlobal then
   begin
-    addUser;
+    addItem;
   end
   else
   begin
-    editUser;
+    editItem;
   end;
 
   // manager_home_u.frmManagerHome.DBGrid1.DataSource.DataSet.Refresh;
-
+  self.hide
 end;
-
-{ End Of Buttons }
-
-{ Custom Methods }
 
 // Refresh DB
 procedure TfrmEditItem.refreshData;
@@ -141,7 +150,8 @@ begin
 
 end;
 
-procedure TfrmEditItem.addUser;
+// Add Item
+procedure TfrmEditItem.addItem;
 var
   qItems, qStock, newItemID, newStockID, storeID: string;
 begin
@@ -155,15 +165,15 @@ begin
   newItemID := getNextID('tblItems', 'item_id', 'IT');
   newStockID := getNextID('tblStock', 'stock_id', 'ST');
 
-  storeID := manager_home_u.frmManagerHome.DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString;
+  storeID := manager_home_u.sStoreID;
 
   qItems := 'INSERT INTO tblItems (item_id, item_name, item_description, material, price, sale) ' +
-    'VALUES (''' + newItemID + ''', ''' +
-    QuotedStr(edtName.Text) + ''', ''' +
-    QuotedStr(redDescription.Text) + ''', ''' +
-    QuotedStr(edtMaterial.Text) + ''', ' +
-    edtPrice.Text + ', ' +
-    IntToStr(sedSale.Value) + ')';
+    'VALUES (' + QuotedStr(newItemID) + ', ' +
+    QuotedStr(edtName.Text) + ', ' +
+    QuotedStr(redDescription.Text) + ', ' +
+    QuotedStr(edtMaterial.Text) + ', ' +
+    QuotedStr(edtPrice.Text) + ', ' +
+    QuotedStr(IntToStr(sedSale.Value)) + ')';
 
   qStock := 'INSERT INTO tblStock (stock_id, store_id, item_id, quantity_available, stock_price) ' +
     'VALUES (''' + newStockID + ''', ''' +
@@ -172,14 +182,17 @@ begin
     IntToStr(sedQuantity.Value) + ', ' +
     edtStockPrice.Text + ')';
 
-  DMUnit.DataModule1.RunSQL(qItems);
-  DMUnit.DataModule1.RunSQL(qStock);
+  DMUnit.DataModule1.ExecuteSQL(qItems);
+  DMUnit.DataModule1.ExecuteSQL(qStock);
 
   ShowMessage('Item added successfully.');
+  frmManagerHome.refreshItems;
+  self.hide;
 
 end;
 
-procedure TfrmEditItem.editUser;
+// Edit Item
+procedure TfrmEditItem.editItem;
 var
   qItems, qStock, itemID, storeID: string;
 begin
@@ -217,7 +230,32 @@ begin
     qrySQL.ExecSQL;
   end;
 
-  ShowMessage('Item update successfully.');
+  ShowMessage('Item updated successfully.');
+  frmManagerHome.refreshItems;
+  self.hide
+end;
+
+procedure TfrmEditItem.formatMenu(isAdd: Boolean);
+begin
+  if isAdd then
+  begin
+    edtName.Clear;
+    redDescription.Clear;
+    edtMaterial.Clear;
+    edtPrice.Clear;
+    sedSale.Clear;
+    edtStockPrice.Clear;
+    sedQuantity.Clear;
+
+    btnUpdate.Caption := 'Add';
+    isAddGlobal := true;
+  end
+  else
+  begin
+    refreshData;
+    btnUpdate.Caption := 'Update';
+    isAddGlobal := false;
+  end;
 end;
 
 end.

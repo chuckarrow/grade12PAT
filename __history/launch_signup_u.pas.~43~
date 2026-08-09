@@ -1,0 +1,160 @@
+// Charles Fletcher
+// File Status: Complete
+unit launch_signup_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Samples.Spin,
+  utils_u, DMLoginSystem_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
+
+type
+  TfrmSignup = class(TForm)
+    lbl01: TLabel;
+    edtUsername: TEdit;
+    edtPassword: TEdit;
+    edtPasswordRepeat: TEdit;
+    btnViewPassword: TButton;
+    edtName: TEdit;
+    edtSurname: TEdit;
+    sedAge: TSpinEdit;
+    btnBack: TButton;
+    rbnMale: TRadioButton;
+    rbnFemale: TRadioButton;
+    btnSubmit: TButton;
+    tlbTitleBar: TTitleBarPanel;
+    Image1: TImage;
+    procedure FormShow(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure rbnMaleClick(Sender: TObject);
+    procedure btnSubmitClick(Sender: TObject);
+    procedure rbnFemaleClick(Sender: TObject);
+    procedure btnViewPasswordClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmSignup: TfrmSignup;
+  isPassVisible: Boolean;
+
+implementation
+
+uses
+  launch_welcome_u, home_u;
+
+{$R *.dfm}
+
+{$REGION 'Forms'}
+
+// Form Show
+procedure TfrmSignup.FormShow(Sender: TObject);
+begin
+  launch_welcome_u.frmWelcome.Hide;
+
+  // Incorrect Window Activation incorrect Fix
+  utils_u.fixWindow(self);
+
+  // Init.
+  isPassVisible := false;
+
+  // GUI
+  utils_u.screenCentre(self);
+  edtPassword.PasswordChar := '•';
+  edtPasswordRepeat.PasswordChar := '•';
+
+end;
+
+// Close Query
+procedure TfrmSignup.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := false;
+
+  FlashWindow(Handle, True);
+end;
+
+{$ENDREGION}
+
+{$REGION 'Controls' }
+
+// Show Password Button
+procedure TfrmSignup.btnViewPasswordClick(Sender: TObject);
+begin
+  if isPassVisible then
+  begin
+edtPassword.PasswordChar := '•';
+    edtPasswordRepeat.PasswordChar := '•';
+    btnViewPassword.Caption := 'Show Password';
+
+    isPassVisible := false;
+  end
+  else
+  begin
+    edtPassword.PasswordChar := #0;
+    edtPasswordRepeat.PasswordChar := #0;
+    btnViewPassword.Caption := 'Hide  Password';
+
+    isPassVisible := True;
+  end;
+
+end;
+
+// Gender Radio
+// Female Selected
+procedure TfrmSignup.rbnFemaleClick(Sender: TObject);
+begin
+  rbnMale.Checked := false;
+end;
+
+// Male Selected
+procedure TfrmSignup.rbnMaleClick(Sender: TObject);
+begin
+  rbnFemale.Checked := false;
+end;
+
+// Submit Button
+procedure TfrmSignup.btnSubmitClick(Sender: TObject);
+var
+  signupAttempt: TUserSignup;
+  sName, sSurname, sUsername, sPassword, sPasswordRepeat, error: string;
+  iAge: integer;
+  isMale: Boolean;
+begin
+
+  sName := edtName.Text;
+  sSurname := edtSurname.Text;
+  iAge := sedAge.Value;
+  isMale := rbnMale.Checked;
+  sUsername := edtUsername.Text;
+  sPassword := edtPassword.Text;
+  sPasswordRepeat := edtPasswordRepeat.Text;
+
+  // Create User Object
+  signupAttempt := DMLoginSystem_u.TUserSignup.CreateNew(sName, sSurname, sUsername, sPassword, sPasswordRepeat, iAge, isMale);
+
+  if signupAttempt.AttemptRegister(error) then
+  begin
+    openHome(sUsername, self);
+  end
+  else
+    ShowMessage(error);
+end;
+
+// Back Button
+procedure TfrmSignup.btnBackClick(Sender: TObject);
+begin
+  launch_welcome_u.frmWelcome.Show;
+  self.Hide;
+end;
+
+{$ENDREGION}
+
+end.
+
+// Completed 3 Aug :)

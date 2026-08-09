@@ -6,7 +6,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMLoginSystem_u, Vcl.TitleBarCtrls, DMCommon_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMLoginSystem_u, Vcl.TitleBarCtrls, utils_u;
 
 type
   TfrmLogin = class(TForm)
@@ -35,19 +35,20 @@ uses
 
 {$R *.dfm}
 
-{ Form }
+{$REGION 'Forms'}
+
 
 // Show Form
 procedure TfrmLogin.FormShow(Sender: TObject);
 begin
-  launch_welcome_u.frmWelcome.Hide;
-
   // Disappering Taskbar Icon Fix
-  DMCommon.fixWindow(self);
+  utils_u.fixWindow(self);
 
   // GUI
-  DMCommon.screenCentre(self);
+  utils_u.screenCentre(self);
 end;
+
+
 
 // Close Query
 procedure TfrmLogin.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -56,10 +57,10 @@ begin
 
   FlashWindow(Handle, True);
 end;
+{$ENDREGION}
 
-{ End of Form }
+{$REGION 'Buttons' }
 
-{ Buttons }
 
 // Login Button
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
@@ -87,8 +88,7 @@ begin
   launch_welcome_u.frmWelcome.Show; // Show Welcome Form
   self.Hide; // Hide Login Form
 end;
-
-{ End of Buttons }
+{$ENDREGION}
 
 end.
 

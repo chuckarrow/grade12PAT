@@ -1,10 +1,19 @@
 ﻿# TODO
 
+## 9 Aug TODO
 
-## Important
-1. Help menu on every page
-1. Arrays
-1. Help buttons
+
+1. Complete Admin Page
+1. Make Array; Thinking colours
+1. Shop Formatting
+1. All Tables Make Pretty
+1. trip_overview_u:  Create Trip and Edit Trip GUI
+1. Help Buttons on every page
+1. Fix Quanitities
+1. Fix checkout_u: item_id not found
+
+1. Fix Duplicate Items
+1. Migrate DMLoginSystem_u to a unit
 
 ## Things to Ask Ma'am
 - [ ] Arrays (records)
@@ -42,10 +51,10 @@
 | 2 | Update | ✅ |
 | 3 | Delete | ✅ |
 | 4 | View `*` data from a table (SQL) | ✅ |
-| 5 | Two aggregate functions used (SQL) | ⬜ |
+| 5 | Two aggregate functions used (SQL) | ✅ |
 | 6 | Two tables in one SQL statement | ✅ |
 | 7 | Variable used in SQL | ✅ |
-| 8 | One text file read/written/appended to | 🟧 |
+| 8 | One text file read/written/appended to | ✅ |
 | 9 | One array processed | ⬜ |
 | 10 | One class from Phase 1's classes/objects list | ✅ |
 

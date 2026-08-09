@@ -1,0 +1,71 @@
+unit DMCommon_u;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Vcl.Forms, Vcl.Controls, Winapi.Windows, Vcl.Dialogs, System.UITypes	;
+
+type
+  TDMCommon = class(TDataModule)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    class procedure horizCentre(control: TControl; Offset: Integer = 0);
+class procedure screenCentre(Form: TForm);
+class procedure fixWindow(Form: TForm);
+class procedure confirmQuit();
+  end;
+
+var
+  DMCommon: TDMCommon;
+
+Const
+  // Launch GUI
+  launchWindowWidth = 750;
+  launchWindowHeight = 500;
+
+  // Start Currency
+  startingCurrency = 1000.00;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+{$R *.dfm}
+class procedure TDMCommon.confirmQuit;
+begin
+if MessageDlg('Are you sure you want to quit? ',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrNo then
+    Application.Terminate;
+end;
+
+class procedure TDMCommon.fixWindow(Form: TForm);
+begin
+
+  // Incorrect Window Activation incorrect Fix
+  // Source: https://stackoverflow.com/questions/802279/multiple-app-windows-activation-not-working-correctly
+  ShowWindow(Form.Handle, SW_HIDE	);
+  SetWindowLong(Form.Handle, GWL_EXSTYLE, GetWindowLong(Form.Handle, GWL_EXSTYLE) or WS_EX_APPWINDOW);
+  ShowWindow(Form.Handle, SW_SHOW);
+end;
+
+{ TDataModule3 }
+
+{ TDataModule3 }
+
+class procedure TDMCommon.horizCentre(control: TControl;
+  Offset: Integer = 0);
+begin
+
+  control.left := Round(control.Parent.Width / 2) -
+    Round(control.Width / 2) + Offset;
+  // lbl01.Left := Round(Self.Width / 2) - Round(lbl01.Width / 2);
+end;
+
+class procedure TDMCommon.screenCentre(Form: TForm);
+begin
+Form.left := Round((Screen.Width / 2) - Form.Width / 2);
+  Form.Top := Round((Screen.Height / 2) - Form.Height / 2);
+end;
+
+end.
