@@ -3,7 +3,7 @@ object frmShop: TfrmShop
   Top = 0
   Caption = 'Shop | RyokoFuku Travel Planner'
   ClientHeight = 441
-  ClientWidth = 624
+  ClientWidth = 1038
   Color = 11981554
   CustomTitleBar.Control = tlbTitleBar
   CustomTitleBar.Enabled = True
@@ -32,39 +32,48 @@ object frmShop: TfrmShop
   StyleElements = [seFont, seClient]
   OnClose = FormClose
   OnShow = FormShow
+  DesignSize = (
+    1038
+    441)
   TextHeight = 15
   object grbFilter: TGroupBox
     Left = 24
     Top = 36
-    Width = 569
+    Width = 345
     Height = 73
     Caption = 'Filter and Sort'
     TabOrder = 0
     object edtSearch: TEdit
-      Left = 424
+      Left = 200
       Top = 32
       Width = 121
       Height = 23
+      Hint = 'Search'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
-      Text = 'Search'
+      TextHint = 'Search'
+      OnChange = edtSearchChange
     end
     object cmbCategory: TComboBox
-      Left = 240
+      Left = 16
       Top = 32
       Width = 145
       Height = 23
       TabOrder = 1
       Text = 'Category'
+      OnChange = cmbCategoryChange
       Items.Strings = (
         'All'
         'Footwear')
     end
   end
-  object DBGrid1: TDBGrid
+  object dbgShop: TDBGrid
     Left = 24
     Top = 128
-    Width = 569
+    Width = 983
     Height = 249
+    Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -74,18 +83,20 @@ object frmShop: TfrmShop
   end
   object btnAdd: TButton
     Left = 40
-    Top = 400
-    Width = 105
-    Height = 25
+    Top = 383
+    Width = 442
+    Height = 42
+    Anchors = [akLeft, akBottom]
     Caption = 'Add to Suitcase'
     TabOrder = 2
     OnClick = btnAddClick
   end
   object btnBack: TButton
-    Left = 488
+    Left = 902
     Top = 400
     Width = 105
     Height = 25
+    Anchors = [akRight, akBottom]
     Caption = 'Back'
     TabOrder = 3
     OnClick = btnBackClick
@@ -93,7 +104,7 @@ object frmShop: TfrmShop
   object tlbTitleBar: TTitleBarPanel
     Left = 0
     Top = 0
-    Width = 624
+    Width = 1038
     Height = 30
     CustomButtons = <>
   end

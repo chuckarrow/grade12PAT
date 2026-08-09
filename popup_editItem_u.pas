@@ -1,3 +1,5 @@
+// Charles Fletcher
+// File Status: Complete
 unit popup_editItem_u;
 
 interface
@@ -40,7 +42,7 @@ type
 
 var
   frmEditItem: TfrmEditItem;
-  isAddGlobal : boolean;
+  isAddGlobal: Boolean;
 
 implementation
 
@@ -48,7 +50,8 @@ uses
   manager_home_u;
 {$R *.dfm}
 
-{ Form }
+{$REGION 'Forms' }
+
 
 // Show Form
 procedure TfrmEditItem.FormShow(Sender: TObject);
@@ -57,17 +60,16 @@ begin
   frmManagerHome.btnSignout.Enabled := false;
 end;
 
-
-   // Hide Form
+// Hide Form
 procedure TfrmEditItem.FormHide(Sender: TObject);
 begin
-     frmManagerHome.refreshItems;
-       frmManagerHome.btnSignout.Enabled := true;
+  frmManagerHome.refreshItems;
+  frmManagerHome.btnSignout.Enabled := true;
 end;
 
-{ End of Form }
+{$ENDREGION}
 
-{ Buttons }
+{$REGION 'Buttons' }
 
 // Reset Button
 procedure TfrmEditItem.btnResetClick(Sender: TObject);
@@ -93,6 +95,10 @@ begin
   self.hide
 end;
 
+{$ENDREGION}
+
+{$REGION 'Custom Methods' }
+
 // Refresh DB
 procedure TfrmEditItem.refreshData;
 var
@@ -102,7 +108,8 @@ begin
   q := 'SELECT i.item_id, i.item_name, i.item_description, i.material,  i.price, i.sale, ' +
     's.stock_id, s.store_id, s.quantity_available, s.stock_price ' +
     'FROM tblItems i INNER JOIN tblStock s ON i.item_id = s.item_id ' +
-    'WHERE s.item_id = ''' + manager_home_u.frmManagerHome.DBGrid1.DataSource.DataSet.FieldByName('item_id').AsString + ''' ';
+    'WHERE s.item_id = ''' + manager_home_u.frmManagerHome.dbgManager.DataSource.DataSet.FieldByName('item_id')
+    .AsString + ''' ';
   DMUnit.DataModule1.RunSQL(q);
 
   ds := DMUnit.DataModule1.dsQrySQL.DataSet;
@@ -123,7 +130,7 @@ begin
   end
   else
   begin
-    FStoreID := manager_home_u.frmManagerHome.DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString;
+    FStoreID := manager_home_u.frmManagerHome.dbgManager.DataSource.DataSet.FieldByName('store_id').AsString;
     btnUpdate.Caption := 'Add';
   end;
 
@@ -198,8 +205,8 @@ var
 begin
 
   // Get keys from loaded item
-  itemID := manager_home_u.frmManagerHome.DBGrid1.DataSource.DataSet.FieldByName('item_id').AsString;
-  storeID := manager_home_u.frmManagerHome.DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString;
+  itemID := manager_home_u.frmManagerHome.dbgManager.DataSource.DataSet.FieldByName('item_id').AsString;
+  storeID := manager_home_u.frmManagerHome.dbgManager.DataSource.DataSet.FieldByName('store_id').AsString;
 
   // Update tblItems
   qItems := 'UPDATE tblItems SET ' +
@@ -257,5 +264,7 @@ begin
     isAddGlobal := false;
   end;
 end;
+
+{$ENDREGION}
 
 end.

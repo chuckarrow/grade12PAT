@@ -1,0 +1,112 @@
+// Charles Fletcher
+// File Status: Complete
+unit popup_createTrip_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.WinXPickers, utils_u, DMUnit, user_u, DB;
+
+type
+  TfrmCreateTrip = class(TForm)
+    edtName: TEdit;
+    dprDepart: TDatePicker;
+    dprReturn: TDatePicker;
+    btnCreate: TButton;
+    btnBack: TButton;
+    procedure btnCreateClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+    isEdit: boolean;
+  end;
+
+var
+  frmCreateTrip: TfrmCreateTrip;
+
+implementation
+
+uses
+  trip_overview_u;
+
+{$R *.dfm}
+
+
+// Show Form
+procedure TfrmCreateTrip.FormShow(Sender: TObject);
+var
+  q: string;
+  ds: TDataSet;
+begin
+  utils_u.fixWindow(self);
+
+  // Populate Controls (If Editing trip)
+  q := 'SELECT trip_id, trip_name, depart_date, return_date FROM tblTrip WHERE trip_id = ' + QuotedStr(trip_overview_u.tripID);
+  DMUnit.DataModule1.RunSQL(q);
+
+  ds := DMUnit.DataModule1.dsQrySQL.DataSet;
+
+  if not ds.IsEmpty then
+  begin
+    edtName.Text := ds.FieldByName('trip_name').AsString;
+    dprDepart.Date := ds.FieldByName('depart_date').AsDateTime;
+    dprReturn.Date := ds.FieldByName('return_date').AsDateTime;
+  end;
+
+  if isEdit then
+    btnCreate.Caption := 'Update Trip'
+  else
+    btnCreate.Caption := 'Create Trip'
+end;
+
+// Create Trip
+procedure TfrmCreateTrip.btnCreateClick(Sender: TObject);
+var
+  q: string;
+begin
+
+  if isEdit then
+  begin // Edit Trip
+    q := 'UPDATE tblTrip SET ' +
+      'trip_name = ' + QuotedStr(edtName.Text) + ', ' +
+      'depart_date = #' + FormatDateTime('mm/dd/yyyy', dprDepart.Date) + '#, ' +
+      'return_date = #' + FormatDateTime('mm/dd/yyyy', dprReturn.Date) + '# ' +
+      'WHERE trip_id = ' + QuotedStr(tripID) + ' ';
+
+    DMUnit.DataModule1.ExecuteSQL(q);
+
+    ShowMessage('Trip Updated Successfully');
+
+  end
+  else
+  begin // New Trip
+
+    // Insert into db
+    q := 'INSERT INTO tblTrip (trip_id, trip_name, username,  depart_date, return_date) ' +
+      'VALUES (' + QuotedStr(utils_u.getNextID('tblTrip', 'trip_id', '')) + ', ' +
+      QuotedStr(edtName.Text) + ', ' +
+      QuotedStr(user_u.currUser.getUsername) + ', #' +
+      FormatDateTime('mm/dd/yyyy', dprDepart.Date) + '#, #' +
+      FormatDateTime('mm/dd/yyyy', dprReturn.Date) + '#)';
+
+    DMUnit.DataModule1.ExecuteSQL(q);
+
+    ShowMessage('Trip Added Successfully');
+
+  end;
+  frmTripOverview.setCombo;
+  self.hide;
+end;
+
+// Back Button
+procedure TfrmCreateTrip.btnBackClick(Sender: TObject);
+begin
+  frmTripOverview.setCombo;
+  self.hide;
+end;
+
+end.

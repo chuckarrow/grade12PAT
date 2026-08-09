@@ -1,5 +1,5 @@
 ﻿// Charles Fletcher
-// File Status: Missing Functionality
+// File Status: Complete
 unit trip_overview_u;
 
 interface
@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
-  Vcl.StdCtrls, DMUnit, DMLoginSystem_u, Vcl.DBCtrls, System.UITypes, utils_u, Vcl.TitleBarCtrls;
+  Vcl.StdCtrls, DMUnit, user_u, Vcl.DBCtrls, System.UITypes, utils_u, Vcl.TitleBarCtrls;
 
 type
   TfrmTripOverview = class(TForm)
@@ -24,6 +24,7 @@ type
     btnDec: TButton;
     lbl02: TLabel;
     tlbTitleBar: TTitleBarPanel;
+    btnDeleteTrip: TButton;
     procedure FormShow(Sender: TObject);
     procedure refreshList();
     procedure dbcTripSelectClick(Sender: TObject);
@@ -35,6 +36,9 @@ type
     procedure btnNewTripClick(Sender: TObject);
     procedure btnEditTripClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure setCombo();
+    procedure btnDeleteTripClick(Sender: TObject);
+    procedure btnRemoveClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -60,19 +64,7 @@ procedure TfrmTripOverview.FormShow(Sender: TObject);
 begin
   utils_u.fixWindow(self);
 
-  // DB Lookup Combo
-  DMUnit.DataModule1.tblTrip.Filtered := False;
-  DMUnit.DataModule1.tblTrip.Filter :=
-    'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
-  DMUnit.DataModule1.tblTrip.Filtered := True;
-
-  dbcTripSelect.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
-
-  // ShowMessage('Active: ' + BoolToStr(DMUnit.DataModule1.tblTrip.Active, True) +
-  // ' | Count: ' + IntToStr(DMUnit.DataModule1.tblTrip.RecordCount));
-
-  dbcTripSelect.KeyField := 'trip_id'; // Key Field Name
-  dbcTripSelect.ListField := 'trip_name'; // Wanted/Shown Field Name
+  setCombo();
 
   btnFinalise.Enabled := False;
 
@@ -95,13 +87,23 @@ procedure TfrmTripOverview.btnNewTripClick(Sender: TObject);
 begin
   frmCreateTrip.isEdit := False;
   popup_createTrip_u.frmCreateTrip.Show;
+  setCombo;
+end;
+
+procedure TfrmTripOverview.btnRemoveClick(Sender: TObject);
+begin
+  if MessageDlg('Are you sure you want to remove this item from the trip? ',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrNo then
+    removeSelItem();
+
+  refreshList;
 end;
 
 // Edit Trip
 procedure TfrmTripOverview.btnEditTripClick(Sender: TObject);
 begin
 
-  if not (dbcTripSelect.KeyValue = NULL) then
+  if not(dbcTripSelect.KeyValue = NULL) then
   begin
     frmCreateTrip.isEdit := True;
     popup_createTrip_u.frmCreateTrip.Show;
@@ -127,7 +129,7 @@ begin
   tripID := dbcTripSelect.KeyValue;
 
   // GUI
-  lbl01.Caption := tripDepart + ' → ' + tripName;
+  lbl01.Caption := tripDepart + ' → ' + tripReturn;
   btnFinalise.Enabled := True;
 
   refreshList;
@@ -136,34 +138,41 @@ end;
 
 // Increase button
 procedure TfrmTripOverview.btnIncClick(Sender: TObject);
+var
+  q: string;
 begin
-
-  with DMUnit.DataModule1 do
-  begin
-    tblCuratedList.Edit;
-    tblCuratedList['quantity'] := tblCuratedList['quantity'] + 1;
-    tblCuratedList.Post;
-  end;
+  q := 'UPDATE tblCuratedList SET quantity = quantity + 1 WHERE curated_id = ' +
+    dbgItems.DataSource.DataSet.FieldByName('ID').AsString;
+  DMUnit.DataModule1.ExecuteSQL(q);
   refreshList;
 end;
 
 // Decrease Button
 procedure TfrmTripOverview.btnDecClick(Sender: TObject);
+var
+  q: string;
 begin
-  refreshList;
-
-  if DMUnit.DataModule1.tblCuratedList['quantity'] > 1 then
-    with DMUnit.DataModule1 do
-    begin
-      tblCuratedList.Edit;
-      tblCuratedList['quantity'] := tblCuratedList['quantity'] - 1;
-      tblCuratedList.Post;
-    end
+  if dbgItems.DataSource.DataSet.FieldByName('Quantity').AsInteger > 1 then
+  begin
+    q := 'UPDATE tblCuratedList SET quantity = quantity - 1 WHERE curated_id = ' +
+      dbgItems.DataSource.DataSet.FieldByName('ID').AsString;
+    DMUnit.DataModule1.ExecuteSQL(q);
+  end
   else
     if MessageDlg('Are you sure you want to remove this item from the trip? ',
     mtConfirmation, [mbYes, mbNo], 0) <> mrNo then
     removeSelItem();
+
   refreshList;
+end;
+
+procedure TfrmTripOverview.btnDeleteTripClick(Sender: TObject);
+var
+  q: string;
+begin
+  q := 'DELETE FROM tblTrip WHERE trip_id = ' + QuotedStr(tripID);
+  DMUnit.DataModule1.ExecuteSQL(q);
+  setCombo;
 end;
 
 // Finalise Trip Button
@@ -194,12 +203,36 @@ end;
 
 // Remove Selected Item
 procedure TfrmTripOverview.removeSelItem;
+var
+  q, sCurID: string;
 begin
-  with DMUnit.DataModule1
-    do
-  begin
-    tblCuratedList.Delete;
-  end;
+  sCurID := dbgItems.DataSource.DataSet.FieldByName('ID').AsString;
+
+  q := 'DELETE FROM tblCuratedList WHERE curated_id = ' + sCurID;
+  DMUnit.DataModule1.ExecuteSQL(q);
+
+  refreshList;
+end;
+
+// Set DB Lookup Combo
+procedure TfrmTripOverview.setCombo;
+begin
+  // DB Lookup Combo
+  // DMUnit.DataModule1.tblTrip.Refresh;
+  DMUnit.DataModule1.tblTrip.Close;
+  DMUnit.DataModule1.tblTrip.Open;
+  DMUnit.DataModule1.tblTrip.Filtered := False;
+  DMUnit.DataModule1.tblTrip.Filter :=
+    'username = ' + QuotedStr(user_u.currUser.getUsername);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+  dbcTripSelect.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
+
+  // ShowMessage('Active: ' + BoolToStr(DMUnit.DataModule1.tblTrip.Active, True) +
+  // ' | Count: ' + IntToStr(DMUnit.DataModule1.tblTrip.RecordCount));
+
+  dbcTripSelect.KeyField := 'trip_id'; // Key Field Name
+  dbcTripSelect.ListField := 'trip_name'; // Wanted/Shown Field Name
   refreshList;
 end;
 
@@ -209,7 +242,8 @@ var
   q: string;
 begin
 
-  q := 'SELECT i.item_name AS [Item Name],  st.category AS [Category], st.store_name AS [Store], i.price AS [Price per Unit], cl.quantity AS [Quantity], cl.comment AS [Comment]'
+  q := 'SELECT cl.curated_id AS [ID], i.item_name AS [Item Name], st.category AS [Category], ' +
+    'st.store_name AS [Store], i.price AS [Price per Unit], cl.quantity AS [Quantity], cl.comment AS [Comment]'
     + ' FROM ((tblCuratedList cl'
     + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
     + ' INNER JOIN tblItems i ON i.item_id = s.item_id)'
@@ -218,6 +252,30 @@ begin
 
   DMUnit.DataModule1.RunSQL(q);
   dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL;
+
+  if dbgItems.Columns.Count > 0 then
+    dbgItems.Columns[0].Visible := False;
+
+  // Format Table
+  dbgItems.Columns[0].Visible := False; // curated_id — hidden
+
+  dbgItems.Columns[1].Title.Caption := 'Item Name';
+  dbgItems.Columns[1].Width := 140;
+
+  dbgItems.Columns[2].Title.Caption := 'Category';
+  dbgItems.Columns[2].Width := 100;
+
+  dbgItems.Columns[3].Title.Caption := 'Store';
+  dbgItems.Columns[3].Width := 120;
+
+  dbgItems.Columns[4].Title.Caption := 'Price per Unit';
+  dbgItems.Columns[4].Width := 90;
+
+  dbgItems.Columns[5].Title.Caption := 'Quantity';
+  dbgItems.Columns[5].Width := 70;
+
+  dbgItems.Columns[6].Title.Caption := 'Comment';
+  dbgItems.Columns[6].Width := 160;
 
 end;
 {$ENDREGION}

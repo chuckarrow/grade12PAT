@@ -1,9 +1,11 @@
+// Charles Fletcher
+// DEPRECATED; Please use 'user_u'
 unit DMLoginSystem_u;
 
 interface
 
 uses
-  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB, DMCommon_u;
+  System.SysUtils, System.Classes, VCL.Forms, DMUnit, Data.DB, utils_u;
 
 procedure openHome(username: string; form: TForm);
 
@@ -129,16 +131,8 @@ var
 begin
   q := 'SELECT Password FROM tblUsers WHERE username = "' + FUsername + '" ';
 
-  with DMUnit.DataModule1 do // TODO: optimise
-  begin
-    RunSQL(q);
-    qrySQL.Close;
-    qrySQL.SQL.Text := q;
-    qrySQL.Open;
-    Result := not DMUnit.DataModule1.qrySQL.IsEmpty;
-    qrySQL.Close;
-
-  end;
+  DMUnit.DataModule1.RunSQL(q);
+  Result := not DMUnit.DataModule1.qrySQL.IsEmpty;
 
 end;
 
@@ -176,7 +170,7 @@ begin
       QuotedStr(FName) + ', ' +
       QuotedStr(FSurname) + ', ' +
       '1, ' + // Default account type
-      QuotedStr(FloatToStr(DMCommon_u.startingCurrency)) + ', ' +
+      QuotedStr(FloatToStr(utils_u.startingCurrency)) + ', ' +
       BoolToStr(FGender, True) + ')';
 
     // Execute Query
@@ -228,14 +222,13 @@ end;
 // Get Balance
 function TUserLogin.getBalance: Currency;
 var
-q : string;
+  q: string;
 begin
-     q := 'SELECT balance FROM tblUsers WHERE username = "' + FUsername + '" ';
+  q := 'SELECT balance FROM tblUsers WHERE username = "' + FUsername + '" ';
   DMUnit.DataModule1.RunSQL(q);
 
   Result := DMUnit.DataModule1.qrySQL.FieldByName('balance').AsCurrency;
 end;
-
 
 // Valid Credentials
 function TUserLogin.CredentialsAreValid: Boolean;

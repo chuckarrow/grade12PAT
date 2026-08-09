@@ -144,16 +144,6 @@
             <Form>frmSignup</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="DMLoginSystem_u.pas">
-            <Form>DM2</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="DMCommon_u.pas">
-            <Form>DMCommon</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="trip_overview_u.pas">
             <Form>frmTripOverview</Form>
             <FormType>dfm</FormType>
@@ -187,6 +177,7 @@
             <Form>frmCreateTrip</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="user_u.pas"/>
         <None Include="TODO.md"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

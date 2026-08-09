@@ -7,7 +7,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, debug_db_u, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit, Vcl.TitleBarCtrls, utils_u;
+  Vcl.Grids, Vcl.DBGrids, user_u, DMUnit, Vcl.TitleBarCtrls, utils_u;
 
 type
   TfrmHome = class(TForm)
@@ -56,8 +56,10 @@ end;
 // Show Form
 procedure TfrmHome.FormShow(Sender: TObject);
 begin
+  utils_u.screenCentre(self);
+
   // Add Welcome back user
-  lbl01.Caption := 'Welcome back, ' + DMLoginSystem_u.currUser.getName;
+  lbl01.Caption := 'Welcome back, ' + user_u.currUser.getName;
 end;
 
 // Close Form

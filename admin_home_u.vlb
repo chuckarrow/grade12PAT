@@ -10,9 +10,6 @@ Coordinates=462,10,55,58
 [btnSignout]
 Coordinates=381,144,76,58
 
-[DBGrid1]
-Coordinates=10,212,64,36
-
 [cmbAccType]
 Coordinates=10,10,101,124
 
@@ -46,4 +43,7 @@ Visible=True
 
 []
 Coordinates=154,269,91,36
+
+[dbgUsers]
+Coordinates=10,212,64,36
 

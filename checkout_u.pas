@@ -88,6 +88,7 @@ begin
   total := DMUnit.DataModule1.dsQrySQL.DataSet.FieldByName('total_price').AsCurrency;
 
   // GUI
+  refreshLabels;
   refreshItems;
   redReceipt.Lines.Clear;
 end;
@@ -126,20 +127,21 @@ var
   q: string;
 begin
 
-  populateReceipt;
-
   // Funds Check
   if currUser.getBalance() < total then
   begin
     ShowMessage('Insufficient funds. Total: R' + CurrToStr(total));
+    refreshItems;
     Exit;
   end
   else
   begin
+    refreshItems;
+    populateReceipt;
     q := 'UPDATE tblUsers SET balance = balance - ' + CurrToSQLStr(total)
       + ' WHERE username = ' + QuotedStr(currUser.getUsername);
     DMUnit.DataModule1.ExecuteSQL(q);
-
+    refreshItems;
   end;
 
 {$REGION 'Prompt Delete Trip; DO LAST'}
@@ -180,8 +182,11 @@ begin
   if btnBack.Caption = 'Complete' then
   begin
     trip_overview_u.frmTripOverview.hide;
+    frmHome.Show;
+    Exit;
   end;
 
+  frmTripOverview.Show;
 end;
 
 {$ENDREGION}
@@ -195,14 +200,33 @@ var
   q: string;
 begin
 
-  q := 'SELECT cl.stock_id, cl.quantity, cl.comment, i.item_name, i.price'
-    + ' FROM (tblCuratedList cl'
+  q := 'SELECT cl.stock_id, cl.quantity, cl.comment, i.item_name, i.price, ' +
+    '(i.price * cl.quantity) AS line_total' +
+    ' FROM (tblCuratedList cl'
     + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
     + ' INNER JOIN tblItems i ON i.item_id = s.item_id'
     + ' WHERE cl.trip_id = ' + QuotedStr(trip_overview_u.tripID);
 
   DMUnit.DataModule1.RunSQL(q);
   dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL;
+
+  // Format Table
+  dbgItems.Columns[0].Visible := False; // stock_id — hidden
+
+  dbgItems.Columns[1].Title.Caption := 'Quantity';
+  dbgItems.Columns[1].Width := 70;
+
+  dbgItems.Columns[2].Title.Caption := 'Comment';
+  dbgItems.Columns[2].Width := 160;
+
+  dbgItems.Columns[3].Title.Caption := 'Item Name';
+  dbgItems.Columns[3].Width := 140;
+
+  dbgItems.Columns[4].Title.Caption := 'Price per Unit';
+  dbgItems.Columns[4].Width := 90;
+
+  dbgItems.Columns[5].Title.Caption := 'Total';
+  dbgItems.Columns[5].Width := 90;
 
 end;
 
@@ -211,6 +235,7 @@ begin
   lbl01.Caption := 'R' + CurrToStr(currUser.getBalance);
   lbl03.Caption := 'Total: ' + CurrToStrF(total, ffCurrency, 2);
   lbl04.Caption := 'Items: ' + IntToStr(totalItems);
+  refreshItems;
 end;
 
 // Make Receipt
@@ -283,13 +308,14 @@ begin
   redReceipt.Paragraph.Alignment := taCenter;
   redReceipt.Lines.Add('Thank you!');
   redReceipt.Paragraph.Alignment := taLeftJustify;
+
+  refreshItems;
 end;
 
 function CurrToSQLStr(AValue: Currency): string;
 var
   fs: TFormatSettings;
 begin
-  ShowMessage(CurrToStr(AValue));
   fs := TFormatSettings.Invariant; // always uses '.' regardless of locale
   Result := CurrToStr(AValue, fs);
 end;

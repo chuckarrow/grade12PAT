@@ -1,17 +1,13 @@
 ﻿# TODO
 
 ## 9 Aug TODO
-
-
-1. Complete Admin Page
-1. Make Array; Thinking colours
-1. Shop Formatting
-1. All Tables Make Pretty
-1. trip_overview_u:  Create Trip and Edit Trip GUI
 1. Help Buttons on every page
-1. Fix Quanitities
 1. Fix checkout_u: item_id not found
 
+
+
+## 10 Aug Bonus Tasks
+1. Make Array; Thinking colours
 1. Fix Duplicate Items
 1. Migrate DMLoginSystem_u to a unit
 

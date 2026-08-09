@@ -8,8 +8,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls, DMUnit,
-  DMLoginSystem_u, Vcl.Samples.Spin, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, DMCommon_u, Vcl.TitleBarCtrls;
+  user_u, Vcl.Samples.Spin, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Vcl.TitleBarCtrls;
 
 type
   TfrmAddToTrip = class(TForm)
@@ -53,7 +53,7 @@ begin
   // DB Lookup ComboBox
   DMUnit.DataModule1.tblTrip.Filtered := False;
   DMUnit.DataModule1.tblTrip.Filter :=
-    'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
+    'username = ' + QuotedStr(user_u.currUser.getUsername);
   DMUnit.DataModule1.tblTrip.Filtered := True;
 
   dbcmbTrip.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
@@ -81,7 +81,6 @@ begin
   sTripID := dbcmbTrip.KeyValue;
 
   shop_landing_u.frmShop.addToTrip();
-  ShowMessage('TEst');
   frmShop.refreshShop; // Causing Error
   self.Hide;
 end;

@@ -1,3 +1,5 @@
+// Charles Fletcher
+// File Status: Complete
 unit admin_home_u;
 
 interface
@@ -10,7 +12,7 @@ uses
 
 type
   TfrmAdminHome = class(TForm)
-    DBGrid1: TDBGrid;
+    dbgUsers: TDBGrid;
     btnAdd: TButton;
     btnEdit: TButton;
     btnDelete: TButton;
@@ -67,6 +69,8 @@ uses
 
 {$R *.dfm}
 
+{$REGION 'Forms'}
+
 
 // Show Form
 procedure TfrmAdminHome.FormShow(Sender: TObject);
@@ -81,13 +85,91 @@ begin
   utils_u.confirmQuit;
 end;
 
-// Signout Button
-procedure TfrmAdminHome.btnSignoutClick(Sender: TObject);
+{$ENDREGION}
+
+{$REGION 'Controls'}
+
+
+// Edit User Button
+procedure TfrmAdminHome.btnEditClick(Sender: TObject);
+var
+  ds: TDataSet;
+  sUsername, sPassword, sName, sSurname, sBalance: string;
+  iAccType: integer;
+  bIsMale: boolean;
 begin
-  self.hide;
-  launch_welcome_u.frmWelcome.show;
+
+  if (lbl01.Caption = 'Unsaved Changes') then
+    if MessageDlg('You have unsaved Changes! '#13#10'Continue?',
+      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+      Exit;
+
+  ds := dbgUsers.DataSource.DataSet;
+
+  // Create Snapshot
+  sUsername := ds.FieldByName('Username').AsString;
+  sPassword := ds.FieldByName('password').AsString;
+  sName := ds.FieldByName('name').AsString;
+  sSurname := ds.FieldByName('surname').AsString;
+  iAccType := ds.FieldByName('acc_type').AsInteger - 1;
+  sBalance := ds.FieldByName('balance').AsString;
+  bIsMale := ds.FieldByName('is_male').AsBoolean;
+
+  edtUsername.Text := sUsername;
+  edtPassword.Text := sPassword;
+  edtName.Text := sName;
+  edtSurname.Text := sSurname;
+  cmbAccType.ItemIndex := iAccType;
+  edtBalance.Text := sBalance;
+  if bIsMale then
+    tgsGender.State := tssOn
+  else
+    tgsGender.State := tssOff;
+
+  setEditorWarn(0);
 end;
 
+// Delete Button
+procedure TfrmAdminHome.btnDeleteClick(Sender: TObject);
+var
+  q, sUser: string;
+begin
+
+  sUser := QuotedStr(dbgUsers.DataSource.DataSet.FieldByName('username').AsString);
+
+  // Ensure current admin cannot be deleted
+  if dbgUsers.DataSource.DataSet.FieldByName('username').AsString = currUser.getUsername then
+  begin
+    ShowMessage('You cannot delete your own account!');
+    Exit;
+  end;
+
+  // Check if mamanger, and if they have stores
+  if dbgUsers.DataSource.DataSet.FieldByName('acc_type').AsInteger = 2 then
+  begin
+    ShowMessage
+      ('This is a manager!'#13#10'This service does not allow deleting of managers.'#13#10'Recommended Action:'#13#10#13#10'Create new Account & Migrate Stores to new manager accountd');
+    Exit;
+  end;
+
+  // Confirm Deletion
+  if MessageDlg('You are about to delete this user!'#13#10'This action CANNOT be undone'#13#10'Continue?',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  // User
+  q := 'DELETE FROM tblTrip WHERE username = ' + sUser;
+  DMUnit.DataModule1.ExecuteSQL(q);
+
+  q := 'DELETE FROM tblUsers WHERE username = ' + sUser;
+  DMUnit.DataModule1.ExecuteSQL(q);
+
+  // GUI
+  setEditorWarn(2);
+  refreshUsers;
+end;
+
+// Username Edit Change
 procedure TfrmAdminHome.edtUsernameChange(Sender: TObject);
 var
   q: string;
@@ -95,7 +177,7 @@ begin
   warnUnsaved(self);
   q := 'SELECT username FROM tblUsers WHERE username = ' + QuotedStr(edtUsername.Text);
   DMUnit.DataModule1.RunSQL(q);
-  if DBGrid1.DataSource.DataSet.RecordCount > 0 then
+  if dbgUsers.DataSource.DataSet.RecordCount > 0 then
   begin
     doesUserExist := true;
     setEditorWarn(3);
@@ -111,28 +193,6 @@ begin
   refreshUsers;
 end;
 
-procedure TfrmAdminHome.refreshUsers;
-var
-  q: string;
-begin
-
-  // Populate Grid With Stores of Logged in Manager
-  q := 'SELECT * FROM tblUsers ';
-  DMUnit.DataModule1.RunSQL(q);
-  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
-end;
-
-procedure TfrmAdminHome.setEditorWarn(i: integer);
-begin
-  lbl01.Caption := SAVE_STATE[i].Description;
-  lbl01.Font.Color := SAVE_STATE[i].Colour;
-end;
-
-procedure TfrmAdminHome.warnUnsaved(Sender: TObject);
-begin
-  setEditorWarn(1);
-end;
-
 // Clear Button
 procedure TfrmAdminHome.btnClearClick(Sender: TObject);
 begin
@@ -146,6 +206,7 @@ begin
   setEditorWarn(0);
 end;
 
+// Add Button
 procedure TfrmAdminHome.btnAddClick(Sender: TObject);
 var
   q, sBalance: string;
@@ -184,82 +245,65 @@ begin
   refreshUsers;
 end;
 
-procedure TfrmAdminHome.btnDeleteClick(Sender: TObject);
-var
-  q, sUser: string;
+// Signout Button
+procedure TfrmAdminHome.btnSignoutClick(Sender: TObject);
 begin
-
-  sUser := QuotedStr(DBGrid1.DataSource.DataSet.FieldByName('username').AsString);
-
-  // Ensure current admin cannot be deleted
-  if DBGrid1.DataSource.DataSet.FieldByName('username').AsString = currUser.getUsername then
-  begin
-    ShowMessage('You cannot delete your own account!');
-    Exit;
-  end;
-
-  // Check if mamanger, and if they have stores
-  if DBGrid1.DataSource.DataSet.FieldByName('acc_type').AsInteger = 2 then
-  begin
-    ShowMessage
-      ('This is a manager!'#13#10'This service does not allow deleting of managers.'#13#10'Recommended Action:'#13#10#13#10'Create new Account & Migrate Stores to new manager accountd');
-    Exit;
-  end;
-
-  // Confirm Deletion
-  if MessageDlg('You are about to delete this user!'#13#10'This action CANNOT be undone'#13#10'Continue?',
-    mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-    Exit;
-
-  // User
-  q := 'DELETE FROM tblTrip WHERE username = ' + sUser;
-  DMUnit.DataModule1.ExecuteSQL(q);
-
-  q := 'DELETE FROM tblUsers WHERE username = ' + sUser;
-  DMUnit.DataModule1.ExecuteSQL(q);
-
-  // GUI
-  setEditorWarn(2);
-  refreshUsers;
+  self.hide;
+  launch_welcome_u.frmWelcome.show;
 end;
 
-// Edit User Button
-procedure TfrmAdminHome.btnEditClick(Sender: TObject);
+{$ENDREGION}
+
+{$REGION 'Custom Methods'}
+
+
+// Refresh users
+procedure TfrmAdminHome.refreshUsers;
 var
-  ds: TDataSet;
-  sUsername, sPassword, sName, sSurname, sBalance: string;
-  iAccType: integer;
-  bIsMale: boolean;
+  q: string;
 begin
 
-  if (lbl01.Caption = 'Unsaved Changes') then
-    if MessageDlg('You have unsaved Changes! '#13#10'Continue?',
-      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
-      Exit;
+  // Populate Grid With Stores of Logged in Manager
+  q := 'SELECT * FROM tblUsers ';
+  DMUnit.DataModule1.RunSQL(q);
+  dbgUsers.DataSource := DMUnit.DataModule1.dsQrySQL;
 
-  ds := DBGrid1.DataSource.DataSet;
+  // Format Table
+  dbgUsers.Columns[0].Title.Caption := 'Username';
+  dbgUsers.Columns[0].Width := 110;
 
-  // Create Snapshot
-  sUsername := ds.FieldByName('Username').AsString;
-  sPassword := ds.FieldByName('password').AsString;
-  sName := ds.FieldByName('name').AsString;
-  sSurname := ds.FieldByName('surname').AsString;
-  iAccType := ds.FieldByName('acc_type').AsInteger - 1;
-  sBalance := ds.FieldByName('balance').AsString;
-  bIsMale := ds.FieldByName('is_male').AsBoolean;
+  dbgUsers.Columns[1].Visible := false; // password — hide, shouldn't be shown in plaintext on screen
 
-  edtUsername.Text := sUsername;
-  edtPassword.Text := sPassword;
-  edtName.Text := sName;
-  edtSurname.Text := sSurname;
-  cmbAccType.ItemIndex := iAccType;
-  edtBalance.Text := sBalance;
-  if bIsMale then
-    tgsGender.State := tssOn
-  else
-    tgsGender.State := tssOff;
+  dbgUsers.Columns[2].Title.Caption := 'First Name';
+  dbgUsers.Columns[2].Width := 100;
 
-  setEditorWarn(0);
+  dbgUsers.Columns[3].Title.Caption := 'Surname';
+  dbgUsers.Columns[3].Width := 100;
+
+  dbgUsers.Columns[4].Title.Caption := 'Account Type';
+  dbgUsers.Columns[4].Width := 90;
+
+  dbgUsers.Columns[5].Title.Caption := 'Balance';
+  dbgUsers.Columns[5].Width := 80;
+
+  dbgUsers.Columns[6].Title.Caption := 'Male';
+  dbgUsers.Columns[6].Width := 50;
 end;
+
+// Editor Warn Label
+procedure TfrmAdminHome.setEditorWarn(i: integer);
+begin
+  lbl01.Caption := SAVE_STATE[i].Description;
+  lbl01.Font.Color := SAVE_STATE[i].Colour;
+end;
+
+// Controls Change
+procedure TfrmAdminHome.warnUnsaved(Sender: TObject);
+
+begin
+  setEditorWarn(1);
+end;
+
+{$ENDREGION}
 
 end.

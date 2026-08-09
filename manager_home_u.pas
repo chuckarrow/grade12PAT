@@ -1,21 +1,34 @@
+// Charles Fletcher
+// File Status: Complete
 unit manager_home_u;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMUnit, DMLoginSystem_u, System.UITypes,
-  utils_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMUnit, user_u, System.UITypes,
+  utils_u, Vcl.ComCtrls;
 
 type
   TfrmManagerHome = class(TForm)
-    DBGrid1: TDBGrid;
+    dbgManager: TDBGrid;
     btnStore: TButton;
     btnItem: TButton;
     lbl01: TLabel;
     btnAdd: TButton;
     btnDelete: TButton;
     btnSignout: TButton;
+    btnCreateStore: TButton;
+    grpEditor: TGroupBox;
+    btnLoadStore: TButton;
+    btnDeleteStore: TButton;
+    edtID: TEdit;
+    edtStoreName: TEdit;
+    edtCategory: TEdit;
+    edtSubCat: TEdit;
+    edtOrigin: TEdit;
+    redDescription: TRichEdit;
+    lbl02: TLabel;
     procedure FormShow(Sender: TObject);
     procedure btnStoreClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -25,14 +38,35 @@ type
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
     procedure btnSignoutClick(Sender: TObject);
+    procedure warnUnsaved(Sender: TObject);
+    procedure btnLoadStoreClick(Sender: TObject);
+    procedure btnCreateStoreClick(Sender: TObject);
+    procedure btnDeleteStoreClick(Sender: TObject);
+    procedure setEditorWarn(i: integer);
+    procedure lbl02Click(Sender: TObject);
   private
   public
     { Public declarations }
   end;
 
+type
+  TSaveState = record
+    Description: String;
+    Colour: TColor;
+  end;
+
 var
   frmManagerHome: TfrmManagerHome;
   sStore, sStoreID: string;
+  isStoreEdit: boolean;
+
+const
+  SAVE_STATE: array [0 .. 3] of TSaveState = (
+    (Description: ''; Colour: clBlack),
+    (Description: 'Unsaved Changes'; Colour: clRed),
+    (Description: 'Store Deleted'; Colour: clGray),
+    (Description: 'Store Found'; Colour: clBlack)
+    );
 
 implementation
 
@@ -56,6 +90,11 @@ begin
   lbl01.Caption := 'Viewing: Stores';
 end;
 
+procedure TfrmManagerHome.lbl02Click(Sender: TObject);
+begin
+
+end;
+
 // Close Form
 procedure TfrmManagerHome.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
@@ -65,38 +104,34 @@ end;
 
 {$ENDREGION}
 
-{ Buttons }
+{$REGION 'Controls' }
+{$REGION 'Item Buttons' }
 
-// Edit Store Button
-procedure TfrmManagerHome.btnSignoutClick(Sender: TObject);
-begin
-  self.hide;
-  frmWelcome.Show;
-end;
 
+// Edit Store items
 procedure TfrmManagerHome.btnStoreClick(Sender: TObject);
 var
   q: string;
 begin
-  if btnStore.Caption = 'Edit Store' then
+  if btnStore.Caption = 'Edit Store Items' then
   begin
     // Populate Grid With Stores of Logged in Manager
     q := 'SELECT i.item_id, i.item_name, i.item_description, i.material, i.price, i.sale,' +
       's.stock_id, s.store_id, s.quantity_available, s.stock_price ' +
       'FROM tblItems i INNER JOIN tblStock s ON i.item_id = s.item_id ' +
-      'WHERE s.store_id = ''' + DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString + ''' ';
+      'WHERE s.store_id = ''' + dbgManager.DataSource.DataSet.FieldByName('store_id').AsString + ''' ';
     DMUnit.DataModule1.RunSQL(q);
-    DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+    dbgManager.DataSource := DMUnit.DataModule1.dsQrySQL;
     btnStore.Caption := 'Return to Stores';
-      btnAdd.Enabled := true;
-  btnDelete.Enabled := true;
+    btnAdd.Enabled := true;
+    btnDelete.Enabled := true;
   end
   else
   begin
     refreshStores;
-    btnStore.Caption := 'Edit Store';
-      btnAdd.Enabled := false;
-  btnDelete.Enabled := false;
+    btnStore.Caption := 'Edit Store Items';
+    btnAdd.Enabled := false;
+    btnDelete.Enabled := false;
   end;
 
   // GUI
@@ -106,6 +141,21 @@ begin
 
 end;
 
+// Edit Item Button
+procedure TfrmManagerHome.btnItemClick(Sender: TObject);
+begin
+  popup_editItem_u.frmEditItem.Show;
+  frmEditItem.formatMenu(false);
+
+end;
+
+// Add Item Button
+procedure TfrmManagerHome.btnAddClick(Sender: TObject);
+begin
+  popup_editItem_u.frmEditItem.Show;
+  frmEditItem.formatMenu(true);
+end;
+
 // Delete Item Button
 procedure TfrmManagerHome.btnDeleteClick(Sender: TObject);
 var
@@ -113,14 +163,14 @@ var
   itemID, storeID: string;
   ds: TDataSet;
 begin
-  if DBGrid1.DataSource.DataSet.IsEmpty then
+  if dbgManager.DataSource.DataSet.IsEmpty then
   begin
     ShowMessage('No item selected.');
     Exit;
   end;
 
-  itemID := DBGrid1.DataSource.DataSet.FieldByName('item_id').AsString;
-  storeID := DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString;
+  itemID := dbgManager.DataSource.DataSet.FieldByName('item_id').AsString;
+  storeID := dbgManager.DataSource.DataSet.FieldByName('store_id').AsString;
 
   if MessageDlg('Delete this item from ' + storeID + '''s stock?',
     mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
@@ -147,26 +197,132 @@ begin
   refreshItems;
 end;
 
-// Edit Button
-procedure TfrmManagerHome.btnItemClick(Sender: TObject);
-begin
-ShowMessage('Edit');
-  popup_editItem_u.frmEditItem.Show;
-  frmEditItem.formatMenu(false);
+{$ENDREGION}
+{$REGION 'Store Controls' }
 
+
+// Load Selected Store Into Editor
+procedure TfrmManagerHome.btnLoadStoreClick(Sender: TObject);
+var
+  ds: TDataSet;
+  sID, sName, sCategory, sSubCat, sOrigin, sDescription: string;
+begin
+  refreshStores;
+
+  if dbgManager.DataSource.DataSet.IsEmpty then
+  begin
+    ShowMessage('No store selected.');
+    Exit;
+  end;
+
+  if (lbl02.Caption = 'Unsaved Changes') then
+    if MessageDlg('You have unsaved Changes! '#13#10'Continue?',
+      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+      Exit;
+
+  ds := dbgManager.DataSource.DataSet;
+
+  // Snapshot before any control assignment can trigger a requery
+  sID := ds.FieldByName('store_id').AsString;
+  sName := ds.FieldByName('store_name').AsString;
+  sCategory := ds.FieldByName('category').AsString;
+  sSubCat := ds.FieldByName('sub_category').AsString;
+  sOrigin := ds.FieldByName('origin_region').AsString;
+  sDescription := ds.FieldByName('description').AsString;
+
+  edtID.Text := sID;
+  edtStoreName.Text := sName;
+  edtCategory.Text := sCategory;
+  edtSubCat.Text := sSubCat;
+  edtOrigin.Text := sOrigin;
+  redDescription.Lines.Text := sDescription;
+
+  isStoreEdit := true;
+  btnCreateStore.Caption := 'Update Store';
+  setEditorWarn(0);
 end;
 
-// Add Button
-procedure TfrmManagerHome.btnAddClick(Sender: TObject);
+// Create / Update Store
+procedure TfrmManagerHome.btnCreateStoreClick(Sender: TObject);
+var
+  q: string;
 begin
-ShowMessage('Add');
-  popup_editItem_u.frmEditItem.Show;
-   frmEditItem.formatMenu(true);
+  if Trim(edtStoreName.Text) = '' then
+  begin
+    ShowMessage('Store name is required.');
+    Exit;
+  end;
+
+  if isStoreEdit then
+  begin
+    q := 'UPDATE tblStores SET ' +
+      'store_name = ' + QuotedStr(edtStoreName.Text) + ', ' +
+      'category = ' + QuotedStr(edtCategory.Text) + ', ' +
+      'sub_category = ' + QuotedStr(edtSubCat.Text) + ', ' +
+      'origin_region = ' + QuotedStr(edtOrigin.Text) + ', ' +
+      'description = ' + QuotedStr(redDescription.Lines.Text) +
+      ' WHERE store_id = ' + QuotedStr(edtID.Text);
+    DMUnit.DataModule1.ExecuteSQL(q);
+    ShowMessage('Store updated.');
+  end
+  else
+  begin
+    q := 'INSERT INTO tblStores (store_id, manager, store_name, category, sub_category, origin_region, description) ' +
+      'VALUES (' + QuotedStr(utils_u.getNextID('tblStores', 'store_id', '')) + ', ' +
+      QuotedStr(user_u.currUser.getUsername) + ', ' +
+      QuotedStr(edtStoreName.Text) + ', ' +
+      QuotedStr(edtCategory.Text) + ', ' +
+      QuotedStr(edtSubCat.Text) + ', ' +
+      QuotedStr(edtOrigin.Text) + ', ' +
+      QuotedStr(redDescription.Lines.Text) + ')';
+    DMUnit.DataModule1.ExecuteSQL(q);
+    ShowMessage('Store created.');
+  end;
+
+  refreshStores;
+  setEditorWarn(0);
 end;
 
-{ End of Buttons }
+// Delete Store
+procedure TfrmManagerHome.btnDeleteStoreClick(Sender: TObject);
+var
+  q, sID: string;
+begin
+  if dbgManager.DataSource.DataSet.IsEmpty then
+  begin
+    ShowMessage('No store selected.');
+    Exit;
+  end;
 
-{ Custom Methods }
+  sID := dbgManager.DataSource.DataSet.FieldByName('store_id').AsString;
+
+  if MessageDlg('You are about to delete this store!'#13#10'This action CANNOT be undone'#13#10'Continue?',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  q := 'DELETE FROM tblStock WHERE store_id = ' + QuotedStr(sID);
+  DMUnit.DataModule1.ExecuteSQL(q);
+
+  q := 'DELETE FROM tblStores WHERE store_id = ' + QuotedStr(sID);
+  DMUnit.DataModule1.ExecuteSQL(q);
+
+  setEditorWarn(2);
+  refreshStores;
+end;
+{$ENDREGION}
+
+
+// Signout Button
+procedure TfrmManagerHome.btnSignoutClick(Sender: TObject);
+begin
+  self.hide;
+  frmWelcome.Show;
+end;
+
+{$ENDREGION}
+
+{$REGION 'Custom Methods' }
+
 
 // Refresh Store
 procedure TfrmManagerHome.refreshStores;
@@ -175,11 +331,11 @@ var
 begin
 
   // Populate Grid With Stores of Logged in Manager
-  q := 'SELECT * FROM tblStores WHERE manager = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername) + ' ';
+  q := 'SELECT * FROM tblStores WHERE manager = ' + QuotedStr(user_u.currUser.getUsername) + ' ';
   DMUnit.DataModule1.RunSQL(q);
-  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
-  sStore := DBGrid1.DataSource.DataSet.FieldByName('store_name').AsString;
-  sStoreID := DBGrid1.DataSource.DataSet.FieldByName('store_id').AsString;
+  dbgManager.DataSource := DMUnit.DataModule1.dsQrySQL;
+  sStore := dbgManager.DataSource.DataSet.FieldByName('store_name').AsString;
+  sStoreID := dbgManager.DataSource.DataSet.FieldByName('store_id').AsString;
 end;
 
 procedure TfrmManagerHome.refreshItems;
@@ -193,7 +349,20 @@ begin
     'FROM tblItems i INNER JOIN tblStock s ON i.item_id = s.item_id ' +
     'WHERE s.store_id = ''' + sStoreID + ''' ';
   DMUnit.DataModule1.RunSQL(q);
-  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+  dbgManager.DataSource := DMUnit.DataModule1.dsQrySQL;
 end;
+
+procedure TfrmManagerHome.setEditorWarn(i: integer);
+begin
+  lbl02.Caption := SAVE_STATE[i].Description;
+  lbl02.Font.Color := SAVE_STATE[i].Colour;
+end;
+
+procedure TfrmManagerHome.warnUnsaved(Sender: TObject);
+begin
+  setEditorWarn(1);
+end;
+
+{$ENDREGION}
 
 end.

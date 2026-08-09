@@ -6,13 +6,13 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMLoginSystem_u, DMUnit, utils_u,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, user_u, DMUnit, utils_u,
   Vcl.TitleBarCtrls;
 
 type
   TfrmShop = class(TForm)
     grbFilter: TGroupBox;
-    DBGrid1: TDBGrid;
+    dbgShop: TDBGrid;
     btnAdd: TButton;
     edtSearch: TEdit;
     cmbCategory: TComboBox;
@@ -24,6 +24,9 @@ type
     procedure addToTrip();
     procedure refreshShop();
     procedure btnBackClick(Sender: TObject);
+    procedure edtSearchChange(Sender: TObject);
+    procedure populateCategories();
+    procedure cmbCategoryChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -43,12 +46,35 @@ uses
 
 {$REGION 'Forms'}
 
+
 // Form Show
 procedure TfrmShop.FormShow(Sender: TObject);
 begin
   utils_u.fixWindow(self);
+  populateCategories;
   refreshShop;
 
+end;
+
+procedure TfrmShop.populateCategories;
+var
+  q: string;
+begin
+  q := 'SELECT DISTINCT category FROM tblStores ORDER BY category';
+  DMUnit.DataModule1.RunSQL(q);
+  dbgShop.DataSource := DMUnit.DataModule1.dsQrySQL;
+
+  cmbCategory.Items.Clear;
+  cmbCategory.Items.Add('All');
+  while not dbgShop.DataSource.DataSet.Eof do
+  begin
+    cmbCategory.Items.Add(dbgShop.DataSource.DataSet.FieldByName('category').AsString);
+    dbgShop.DataSource.DataSet.Next;
+  end;
+
+  dbgShop.DataSource.DataSet.Close;
+  cmbCategory.ItemIndex := 0;
+  refreshShop;
 end;
 
 // Form Close
@@ -62,10 +88,11 @@ end;
 
 {$REGION 'Buttons' }
 
+
 // Add Button
 procedure TfrmShop.btnAddClick(Sender: TObject);
 begin
-  sStockID := DBGrid1.DataSource.DataSet.FieldByName('stock_id').AsString;
+  sStockID := dbgShop.DataSource.DataSet.FieldByName('stock_id').AsString;
   popup_addToTrip_u.frmAddToTrip.Show;
 end;
 
@@ -76,9 +103,21 @@ begin
   home_u.frmHome.Show;
 end;
 
+procedure TfrmShop.cmbCategoryChange(Sender: TObject);
+begin
+  refreshShop;
+end;
+
+procedure TfrmShop.edtSearchChange(Sender: TObject);
+begin
+  refreshShop;
+end;
+
 {$ENDREGION}
 
 {$REGION 'Customs Methods' }
+
+
 // Add To Trip
 procedure TfrmShop.addToTrip();
 var
@@ -86,7 +125,7 @@ var
 begin
 
   q := 'INSERT INTO tblCuratedList ( [username], [trip_id], stock_id, quantity, [comment] ) VALUES ('
-    + QuotedStr(DMLoginSystem_u.currUser.getUsername) + ', '
+    + QuotedStr(user_u.currUser.getUsername) + ', '
     + QuotedStr(frmAddToTrip.sTripID) + ', '
     + QuotedStr(sStockID) + ', '
     + IntToStr(frmAddToTrip.sedQuantity.Value) + ', '
@@ -98,17 +137,67 @@ end;
 // Refresh Shop
 procedure TfrmShop.refreshShop;
 var
-  q: string;
+  q, sWhere: string;
 begin
   { Refresh DB: }
 
-  q := 'SELECT * FROM tblStock';
-  DMUnit.DataModule1.qrySQL.Close;
-  DMUnit.DataModule1.qrySQL.SQL.Text := q;
-  DMUnit.DataModule1.qrySQL.Open;
+  // Base Query
+  q := 'SELECT tblStock.stock_id, tblStock.quantity_available, ' +
+    'tblItems.item_name, tblItems.item_description, tblItems.material, tblItems.price, tblItems.sale, ' +
+    'tblStores.store_name, tblStores.category ' +
+    'FROM (tblStock ' +
+    'INNER JOIN tblItems ON tblStock.item_id = tblItems.item_id) ' +
+    'INNER JOIN tblStores ON tblStock.store_id = tblStores.store_id';
+
+  sWhere := '';
+
+  // Search Feature
+  if Trim(edtSearch.Text) <> '' then
+    sWhere := '(tblItems.item_name LIKE ' + QuotedStr('%' + edtSearch.Text + '%') +
+      ' OR tblItems.item_description LIKE ' + QuotedStr('%' + edtSearch.Text + '%') + ')';
+
+  // Category Filter
+  if (cmbCategory.ItemIndex > 0) then
+  begin
+    if sWhere <> '' then
+      sWhere := sWhere + ' AND ';
+    sWhere := sWhere + 'tblStores.category = ' + QuotedStr(cmbCategory.Text);
+  end;
+
+  if sWhere <> '' then
+    q := q + ' WHERE ' + sWhere;
+
+  DMUnit.DataModule1.RunSQL(q);
 
   // Bind the dataset
-  DBGrid1.DataSource := DMUnit.DataModule1.dsQrySQL;
+  dbgShop.DataSource := DMUnit.DataModule1.dsQrySQL;
+
+  // Format Table
+  dbgShop.Columns[0].Visible := False; // stock_id — hidden, still usable in code
+
+  dbgShop.Columns[1].Title.Caption := 'Quantity Available';
+  dbgShop.Columns[1].Width := 100;
+
+  dbgShop.Columns[2].Title.Caption := 'Item Name';
+  dbgShop.Columns[2].Width := 140;
+
+  dbgShop.Columns[3].Title.Caption := 'Description';
+  dbgShop.Columns[3].Width := 220;
+
+  dbgShop.Columns[4].Title.Caption := 'Material';
+  dbgShop.Columns[4].Width := 90;
+
+  dbgShop.Columns[5].Title.Caption := 'Price';
+  dbgShop.Columns[5].Width := 70;
+
+  dbgShop.Columns[6].Title.Caption := 'Sale';
+  dbgShop.Columns[6].Width := 60;
+
+  dbgShop.Columns[7].Title.Caption := 'Store';
+  dbgShop.Columns[7].Width := 120;
+
+  dbgShop.Columns[8].Title.Caption := 'Category';
+  dbgShop.Columns[8].Width := 100;
 end;
 {$ENDREGION}
 

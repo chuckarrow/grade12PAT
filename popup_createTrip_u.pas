@@ -1,10 +1,12 @@
+// Charles Fletcher
+// File Status: Complete
 unit popup_createTrip_u;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.WinXPickers, utils_u, DMUnit, DMLoginSystem_u, DB;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.WinXPickers, utils_u, DMUnit, user_u, DB;
 
 type
   TfrmCreateTrip = class(TForm)
@@ -33,6 +35,8 @@ uses
 
 {$R *.dfm}
 
+{$REGION 'Forms' }
+
 
 // Show Form
 procedure TfrmCreateTrip.FormShow(Sender: TObject);
@@ -60,6 +64,8 @@ begin
   else
     btnCreate.Caption := 'Create Trip'
 end;
+{$ENDREGION}
+{$REGION 'Buttons' }
 
 // Create Trip
 procedure TfrmCreateTrip.btnCreateClick(Sender: TObject);
@@ -71,11 +77,14 @@ begin
   begin // Edit Trip
     q := 'UPDATE tblTrip SET ' +
       'trip_name = ' + QuotedStr(edtName.Text) + ', ' +
-      'depart_date = ' + QuotedStr(DateToStr(dprDepart.Date)) + ', ' +
-      'return_date = ' + QuotedStr(DateToStr(dprReturn.Date)) + ' ' +
-      'WHERE trip_id = ' + tripID + ' ';
+      'depart_date = #' + FormatDateTime('mm/dd/yyyy', dprDepart.Date) + '#, ' +
+      'return_date = #' + FormatDateTime('mm/dd/yyyy', dprReturn.Date) + '# ' +
+      'WHERE trip_id = ' + QuotedStr(tripID) + ' ';
 
     DMUnit.DataModule1.ExecuteSQL(q);
+
+    ShowMessage('Trip Updated Successfully');
+
   end
   else
   begin // New Trip
@@ -84,18 +93,26 @@ begin
     q := 'INSERT INTO tblTrip (trip_id, trip_name, username,  depart_date, return_date) ' +
       'VALUES (' + QuotedStr(utils_u.getNextID('tblTrip', 'trip_id', '')) + ', ' +
       QuotedStr(edtName.Text) + ', ' +
-      QuotedStr(DMLoginSystem_u.currUser.getUsername) + ', ' +
-      QuotedStr(DateToStr(dprDepart.Date)) + ', ' +
-      QuotedStr(DateToStr(dprReturn.Date)) + ')';
+      QuotedStr(user_u.currUser.getUsername) + ', #' +
+      FormatDateTime('mm/dd/yyyy', dprDepart.Date) + '#, #' +
+      FormatDateTime('mm/dd/yyyy', dprReturn.Date) + '#)';
 
     DMUnit.DataModule1.ExecuteSQL(q);
+
+    ShowMessage('Trip Added Successfully');
+
   end;
+  frmTripOverview.setCombo;
+  self.hide;
 end;
 
 // Back Button
 procedure TfrmCreateTrip.btnBackClick(Sender: TObject);
 begin
+  frmTripOverview.setCombo;
   self.hide;
 end;
+
+{$ENDREGION}
 
 end.

@@ -2,7 +2,7 @@ object frmManagerHome: TfrmManagerHome
   Left = 0
   Top = 0
   Caption = 'Manager Home'
-  ClientHeight = 253
+  ClientHeight = 550
   ClientWidth = 1048
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,11 +21,11 @@ object frmManagerHome: TfrmManagerHome
     Height = 15
     Caption = 'Viewing: <Stores>/<Items of <Store>>'
   end
-  object DBGrid1: TDBGrid
-    Left = 64
+  object dbgManager: TDBGrid
+    Left = 73
     Top = 56
     Width = 817
-    Height = 127
+    Height = 233
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -37,14 +37,14 @@ object frmManagerHome: TfrmManagerHome
     Left = 896
     Top = 56
     Width = 129
-    Height = 25
-    Caption = 'Edit Store'
+    Height = 41
+    Caption = 'Edit Store Items'
     TabOrder = 1
     OnClick = btnStoreClick
   end
   object btnItem: TButton
     Left = 896
-    Top = 87
+    Top = 103
     Width = 129
     Height = 25
     Caption = 'Edit Item'
@@ -53,7 +53,7 @@ object frmManagerHome: TfrmManagerHome
   end
   object btnAdd: TButton
     Left = 896
-    Top = 127
+    Top = 233
     Width = 129
     Height = 25
     Caption = 'Add Item'
@@ -62,7 +62,7 @@ object frmManagerHome: TfrmManagerHome
   end
   object btnDelete: TButton
     Left = 896
-    Top = 158
+    Top = 264
     Width = 129
     Height = 25
     Caption = 'Delete Item'
@@ -71,11 +71,116 @@ object frmManagerHome: TfrmManagerHome
   end
   object btnSignout: TButton
     Left = 950
-    Top = 220
+    Top = 517
     Width = 75
     Height = 25
     Caption = 'Sign Out'
     TabOrder = 5
     OnClick = btnSignoutClick
+  end
+  object btnCreateStore: TButton
+    Left = 896
+    Top = 449
+    Width = 129
+    Height = 25
+    Caption = 'Create Store'
+    TabOrder = 6
+    OnClick = btnCreateStoreClick
+  end
+  object grpEditor: TGroupBox
+    Left = 73
+    Top = 312
+    Width = 817
+    Height = 193
+    Caption = 'Store Editor'
+    TabOrder = 7
+    object lbl02: TLabel
+      Left = 783
+      Top = 170
+      Width = 3
+      Height = 15
+      Alignment = taRightJustify
+      Caption = '.'
+      OnClick = lbl02Click
+    end
+    object edtID: TEdit
+      Left = 32
+      Top = 40
+      Width = 121
+      Height = 23
+      TabOrder = 0
+      Text = 'Store ID'
+      OnChange = warnUnsaved
+    end
+    object edtStoreName: TEdit
+      Left = 32
+      Top = 69
+      Width = 121
+      Height = 23
+      TabOrder = 1
+      Text = 'Store Name'
+      OnChange = warnUnsaved
+    end
+    object edtCategory: TEdit
+      Left = 168
+      Top = 40
+      Width = 121
+      Height = 23
+      TabOrder = 2
+      Text = 'Category'
+      OnChange = warnUnsaved
+    end
+    object edtSubCat: TEdit
+      Left = 168
+      Top = 69
+      Width = 121
+      Height = 23
+      TabOrder = 3
+      Text = 'Sub-category'
+      OnChange = warnUnsaved
+    end
+    object edtOrigin: TEdit
+      Left = 295
+      Top = 40
+      Width = 121
+      Height = 23
+      TabOrder = 4
+      Text = 'Origin Region'
+      OnChange = warnUnsaved
+    end
+    object redDescription: TRichEdit
+      Left = 422
+      Top = 40
+      Width = 379
+      Height = 89
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Lines.Strings = (
+        'redDescription')
+      ParentFont = False
+      TabOrder = 5
+      OnChange = warnUnsaved
+    end
+  end
+  object btnLoadStore: TButton
+    Left = 896
+    Top = 328
+    Width = 129
+    Height = 41
+    Caption = 'Load Selected Store'
+    TabOrder = 8
+    OnClick = btnLoadStoreClick
+  end
+  object btnDeleteStore: TButton
+    Left = 896
+    Top = 480
+    Width = 129
+    Height = 25
+    Caption = 'Delete Store'
+    TabOrder = 9
+    OnClick = btnDeleteStoreClick
   end
 end

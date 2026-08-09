@@ -1,0 +1,249 @@
+﻿// Charles Fletcher
+// File Status: Missing Functionality
+unit trip_overview_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, DMUnit, DMLoginSystem_u, Vcl.DBCtrls, System.UITypes, utils_u, Vcl.TitleBarCtrls;
+
+type
+  TfrmTripOverview = class(TForm)
+    dbgItems: TDBGrid;
+    btnRemove: TButton;
+    btnBack: TButton;
+    btnFinalise: TButton;
+    lbl01: TLabel;
+    btnNewTrip: TButton;
+    dbcTripSelect: TDBLookupComboBox;
+    btnEditTrip: TButton;
+    btnInc: TButton;
+    btnDec: TButton;
+    lbl02: TLabel;
+    tlbTitleBar: TTitleBarPanel;
+    btnDeleteTrip: TButton;
+    procedure FormShow(Sender: TObject);
+    procedure refreshList();
+    procedure dbcTripSelectClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure btnIncClick(Sender: TObject);
+    procedure btnDecClick(Sender: TObject);
+    procedure removeSelItem();
+    procedure btnFinaliseClick(Sender: TObject);
+    procedure btnNewTripClick(Sender: TObject);
+    procedure btnEditTripClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure setCombo();
+    procedure btnDeleteTripClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTripOverview: TfrmTripOverview;
+  tripID, tripName, tripDepart, tripReturn: string;
+
+implementation
+
+uses
+  home_u, checkout_u, popup_createTrip_u;
+
+{$R *.dfm}
+
+{$REGION 'Forms'}
+
+
+// Show Form
+procedure TfrmTripOverview.FormShow(Sender: TObject);
+begin
+  utils_u.fixWindow(self);
+
+  setCombo();
+
+  btnFinalise.Enabled := False;
+
+end;
+
+// Close Form
+procedure TfrmTripOverview.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caNone;
+  utils_u.confirmQuit();
+end;
+
+{$ENDREGION}
+
+{$REGION 'Buttons' }
+
+
+// New Trip Button
+procedure TfrmTripOverview.btnNewTripClick(Sender: TObject);
+begin
+  frmCreateTrip.isEdit := False;
+  popup_createTrip_u.frmCreateTrip.Show;
+  setCombo;
+end;
+
+// Edit Trip
+procedure TfrmTripOverview.btnEditTripClick(Sender: TObject);
+begin
+
+  if not(dbcTripSelect.KeyValue = NULL) then
+  begin
+    frmCreateTrip.isEdit := True;
+    popup_createTrip_u.frmCreateTrip.Show;
+  end
+  else
+    ShowMessage('Please select Trip');
+end;
+
+// Select Trip Lookup ComboBox
+procedure TfrmTripOverview.dbcTripSelectClick(Sender: TObject);
+begin
+
+  // Time Label
+  DMUnit.DataModule1.tblCuratedList.Filtered := False;
+  DMUnit.DataModule1.tblCuratedList.Filter :=
+    'trip_id = ' + QuotedStr(dbcTripSelect.KeyValue);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+  // Declare Global Variable
+  tripName := DMUnit.DataModule1.tblTrip.FieldByName('trip_name').AsString;
+  tripDepart := DMUnit.DataModule1.tblTrip.FieldByName('depart_date').AsString;
+  tripReturn := DMUnit.DataModule1.tblTrip.FieldByName('return_date').AsString;
+  tripID := dbcTripSelect.KeyValue;
+
+  // GUI
+  lbl01.Caption := tripDepart + ' → ' + tripReturn;
+  btnFinalise.Enabled := True;
+
+  refreshList;
+
+end;
+
+// Increase button
+procedure TfrmTripOverview.btnIncClick(Sender: TObject);
+var
+  q: string;
+begin
+  q := 'UPDATE tblCuratedList SET quantity = quantity + 1 WHERE curated_id = ' +
+    dbgItems.DataSource.DataSet.FieldByName('ID').AsString;
+  DMUnit.DataModule1.ExecuteSQL(q);
+  refreshList;
+end;
+
+// Decrease Button
+procedure TfrmTripOverview.btnDecClick(Sender: TObject);
+var
+  q: string;
+begin
+  if dbgItems.DataSource.DataSet.FieldByName('Quantity').AsInteger > 1 then
+  begin
+    q := 'UPDATE tblCuratedList SET quantity = quantity - 1 WHERE curated_id = ' +
+      dbgItems.DataSource.DataSet.FieldByName('ID').AsString;
+    DMUnit.DataModule1.ExecuteSQL(q);
+  end
+  else
+    if MessageDlg('Are you sure you want to remove this item from the trip? ',
+    mtConfirmation, [mbYes, mbNo], 0) <> mrNo then
+    removeSelItem();
+
+  refreshList;
+end;
+
+procedure TfrmTripOverview.btnDeleteTripClick(Sender: TObject);
+var
+  q: string;
+begin
+  q := 'DELETE FROM tblTrip WHERE trip_id = ' + QuotedStr(tripID);
+  DMUnit.DataModule1.ExecuteSQL(q);
+  setCombo;
+end;
+
+// Finalise Trip Button
+procedure TfrmTripOverview.btnFinaliseClick(Sender: TObject);
+begin
+
+  if dbgItems.DataSource.DataSet.RecordCount = 0 then
+  begin
+    ShowMessage('This Trip has no items');
+    Exit;
+  end;
+
+  self.hide;
+  checkout_u.frmCheckout.Show;
+end;
+
+// Back Button
+procedure TfrmTripOverview.btnBackClick(Sender: TObject);
+begin
+  self.hide;
+  frmHome.Show;
+end;
+
+{$ENDREGION}
+
+{$REGION 'Custom Methods'}
+
+
+// Remove Selected Item
+procedure TfrmTripOverview.removeSelItem;
+begin
+  with DMUnit.DataModule1
+    do
+  begin
+    tblCuratedList.Delete;
+  end;
+  refreshList;
+end;
+
+// Set DB Lookup Combo
+procedure TfrmTripOverview.setCombo;
+begin
+ShowMessage(currUser.getUsername);
+  // DB Lookup Combo
+  DMUnit.DataModule1.tblTrip.Refresh;
+  DMUnit.DataModule1.tblTrip.Filtered := False;
+  DMUnit.DataModule1.tblTrip.Filter :=
+    'username = ' + QuotedStr(DMLoginSystem_u.currUser.getUsername);
+  DMUnit.DataModule1.tblTrip.Filtered := True;
+
+  dbcTripSelect.ListSource := DMUnit.DataModule1.dsTblTrip; // Source
+
+  // ShowMessage('Active: ' + BoolToStr(DMUnit.DataModule1.tblTrip.Active, True) +
+  // ' | Count: ' + IntToStr(DMUnit.DataModule1.tblTrip.RecordCount));
+
+  dbcTripSelect.KeyField := 'trip_id'; // Key Field Name
+  dbcTripSelect.ListField := 'trip_name'; // Wanted/Shown Field Name
+  refreshList;
+end;
+
+// Refresh List
+procedure TfrmTripOverview.refreshList;
+var
+  q: string;
+begin
+
+  q := 'SELECT cl.curated_id AS [ID], i.item_name AS [Item Name], st.category AS [Category], ' +
+    'st.store_name AS [Store], i.price AS [Price per Unit], cl.quantity AS [Quantity], cl.comment AS [Comment]'
+    + ' FROM ((tblCuratedList cl'
+    + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
+    + ' INNER JOIN tblItems i ON i.item_id = s.item_id)'
+    + ' INNER JOIN tblStores st ON st.store_id = s.store_id'
+    + ' WHERE cl.trip_id = ' + QuotedStr(tripID);
+
+  DMUnit.DataModule1.RunSQL(q);
+  dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL;
+
+  if dbgItems.Columns.Count > 0 then
+    dbgItems.Columns[0].Visible := False;
+
+end;
+{$ENDREGION}
+
+end.
