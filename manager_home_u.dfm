@@ -183,4 +183,13 @@ object frmManagerHome: TfrmManagerHome
     TabOrder = 9
     OnClick = btnDeleteStoreClick
   end
+  object btnHelp: TButton
+    Left = 960
+    Top = 8
+    Width = 65
+    Height = 25
+    Caption = '?'
+    TabOrder = 10
+    OnClick = btnHelpClick
+  end
 end

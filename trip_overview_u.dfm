@@ -99,7 +99,7 @@ object frmTripOverview: TfrmTripOverview
   end
   object btnNewTrip: TButton
     Left = 8
-    Top = 40
+    Top = 51
     Width = 75
     Height = 25
     Caption = 'Create Trip'
@@ -108,7 +108,7 @@ object frmTripOverview: TfrmTripOverview
   end
   object dbcTripSelect: TDBLookupComboBox
     Left = 432
-    Top = 40
+    Top = 51
     Width = 145
     Height = 23
     TabOrder = 5
@@ -116,7 +116,7 @@ object frmTripOverview: TfrmTripOverview
   end
   object btnEditTrip: TButton
     Left = 991
-    Top = 40
+    Top = 51
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
@@ -153,12 +153,21 @@ object frmTripOverview: TfrmTripOverview
   end
   object btnDeleteTrip: TButton
     Left = 991
-    Top = 76
+    Top = 87
     Width = 75
     Height = 25
     Anchors = [akTop, akRight]
     Caption = 'Delete Trip'
     TabOrder = 10
     OnClick = btnDeleteTripClick
+  end
+  object btnHelp: TButton
+    Left = 947
+    Top = 51
+    Width = 23
+    Height = 25
+    Caption = '?'
+    TabOrder = 11
+    OnClick = btnHelpClick
   end
 end

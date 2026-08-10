@@ -6,7 +6,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMUnit, user_u, System.UITypes,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, DMUnit, user_u, System.UITypes, appStrings_u,
   utils_u, Vcl.ComCtrls;
 
 type
@@ -29,6 +29,7 @@ type
     edtOrigin: TEdit;
     redDescription: TRichEdit;
     lbl02: TLabel;
+    btnHelp: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnStoreClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -44,6 +45,7 @@ type
     procedure btnDeleteStoreClick(Sender: TObject);
     procedure setEditorWarn(i: integer);
     procedure lbl02Click(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
   public
     { Public declarations }
@@ -309,6 +311,13 @@ begin
   setEditorWarn(2);
   refreshStores;
 end;
+
+// Help Button
+procedure TfrmManagerHome.btnHelpClick(Sender: TObject);
+begin
+   ShowMessage(sManagerHelp);
+end;
+
 {$ENDREGION}
 
 

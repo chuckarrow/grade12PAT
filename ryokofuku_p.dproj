@@ -123,61 +123,51 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="popup_createTrip_u.pas">
+            <Form>frmCreateTrip</Form>
+        </DCCReference>
+        <DCCReference Include="user_u.pas"/>
         <DCCReference Include="home_u.pas">
             <Form>frmHome</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="launch_welcome_u.pas">
             <Form>frmWelcome</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="launch_login_u.pas">
             <Form>frmLogin</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DMUnit.pas">
             <Form>DataModule1</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="launch_signup_u.pas">
             <Form>frmSignup</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="trip_overview_u.pas">
             <Form>frmTripOverview</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="shop_landing_u.pas">
             <Form>frmShop</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="admin_home_u.pas">
             <Form>frmAdminHome</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="manager_home_u.pas">
             <Form>frmManagerHome</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="popup_addToTrip_u.pas">
             <Form>frmAddToTrip</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="popup_editItem_u.pas">
             <Form>frmEditItem</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="checkout_u.pas">
             <Form>frmCheckout</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="utils_u.pas"/>
-        <DCCReference Include="popup_createTrip_u.pas">
-            <Form>frmCreateTrip</Form>
-            <FormType>dfm</FormType>
+        <DCCReference Include="utils_u.pas">
+            <Form>$R *.res</Form>
         </DCCReference>
-        <DCCReference Include="user_u.pas"/>
+        <DCCReference Include="appStrings_u.pas"/>
         <None Include="TODO.md"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

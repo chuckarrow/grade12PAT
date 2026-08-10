@@ -1,0 +1,89 @@
+object frmHome: TfrmHome
+  Left = 0
+  Top = 0
+  BorderStyle = bsSingle
+  Caption = 'Home | RyokoFuku Travel Planner'
+  ClientHeight = 300
+  ClientWidth = 343
+  Color = 12113138
+  CustomTitleBar.Control = tlbTitleBar
+  CustomTitleBar.Enabled = True
+  CustomTitleBar.Height = 31
+  CustomTitleBar.ShowIcon = False
+  CustomTitleBar.SystemColors = False
+  CustomTitleBar.BackgroundColor = 8828129
+  CustomTitleBar.ForegroundColor = 65793
+  CustomTitleBar.InactiveBackgroundColor = clWhite
+  CustomTitleBar.InactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonForegroundColor = 65793
+  CustomTitleBar.ButtonBackgroundColor = clWhite
+  CustomTitleBar.ButtonHoverForegroundColor = 65793
+  CustomTitleBar.ButtonHoverBackgroundColor = 16053492
+  CustomTitleBar.ButtonPressedForegroundColor = 65793
+  CustomTitleBar.ButtonPressedBackgroundColor = 15395562
+  CustomTitleBar.ButtonInactiveForegroundColor = 10066329
+  CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  GlassFrame.Enabled = True
+  GlassFrame.Top = 31
+  StyleElements = [seFont]
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  TextHeight = 15
+  object lbl01: TLabel
+    Left = 80
+    Top = 52
+    Width = 79
+    Height = 15
+    Alignment = taCenter
+    Caption = '[Home Screen]'
+  end
+  object btnTrip: TButton
+    Left = 80
+    Top = 89
+    Width = 178
+    Height = 65
+    Caption = 'View Trips'
+    TabOrder = 0
+    OnClick = btnTripClick
+  end
+  object btnSignout: TButton
+    Left = 80
+    Top = 248
+    Width = 82
+    Height = 34
+    Caption = 'Sign Out'
+    TabOrder = 1
+    OnClick = btnSignoutClick
+  end
+  object btnShop: TButton
+    Left = 80
+    Top = 168
+    Width = 178
+    Height = 65
+    Caption = 'Go Shopping'
+    TabOrder = 2
+    OnClick = btnShopClick
+  end
+  object tlbTitleBar: TTitleBarPanel
+    Left = 0
+    Top = 0
+    Width = 343
+    Height = 30
+    CustomButtons = <>
+  end
+  object btnQuit: TButton
+    Left = 168
+    Top = 248
+    Width = 90
+    Height = 34
+    Caption = 'Quit'
+    TabOrder = 4
+    OnClick = btnQuitClick
+  end
+end

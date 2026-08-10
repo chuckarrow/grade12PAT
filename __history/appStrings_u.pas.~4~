@@ -1,0 +1,71 @@
+unit appStrings_u;
+
+interface
+
+resourcestring
+  sAdminHomeHelp =
+    '=== Administrator Home Panel Help ===' + sLineBreak +
+    sLineBreak +
+    'This control center allows you to add, edit, and delete system users.' + sLineBreak +
+    sLineBreak +
+    '1. VIEWING USERS:' + sLineBreak +
+    '   • The central table displays active usernames, names, account levels, and balances.' + sLineBreak +
+    '   • For system security, user passwords are encrypted and hidden from plain view.' + sLineBreak +
+    sLineBreak +
+    '2. EDITING AN EXISTING USER:' + sLineBreak +
+    '   • Highlight a user in the table and click the [Edit User] button.' + sLineBreak +
+    '   • The selection details will populate the form editor on the right.' + sLineBreak +
+    '   • Modify fields as needed and click [Update User] to save.' + sLineBreak +
+    sLineBreak +
+    '3. ADDING A NEW USER:' + sLineBreak +
+    '   • Clear any active editing profiles using the [Clear] button.' + sLineBreak +
+    '   • Type in a brand new username. The editor status will flag it as "Unsaved Changes".' + sLineBreak +
+    '   • Fill out the password, demographic, and account parameters.' + sLineBreak +
+    '   • Click [Add User] to commit the entry to the system database.' + sLineBreak +
+    sLineBreak +
+    '4. STATUS INDICATORS (Bottom Right):' + sLineBreak +
+    '   • "Unsaved Changes" (Red): Text inputs have been modified but not saved yet.' + sLineBreak +
+    '   • "User Found" (Black): The current username typed already exists in the system.' + sLineBreak +
+    '   • "User Deleted" (Gray): Confirms the last deletion operation succeeded.' + sLineBreak +
+    sLineBreak +
+    '5. SYSTEM SAFETY SAFEGUARDS:' + sLineBreak +
+    '   • Self-Deletion Block: You cannot delete your own logged-in administrator account.' + sLineBreak +
+    '   • Manager Demotion Lock: Active manager profiles cannot be demoted or deleted ' +
+    'directly. Their connected retail locations must be migrated first.';
+
+  sHomeHelp =
+    '=== Main Dashboard Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to your personal account dashboard. From here, you can manage your bookings, browse retail stores, or securely manage your profile session.'
+    + sLineBreak +
+    sLineBreak +
+    'AVAILABLE NAVIGATION PLATFORMS:' + sLineBreak +
+    '   • [Bookings & Trips]: Opens your travel overview panel. Click this to view, modify, track, or manage active trip itineraries and transit histories.'
+    + sLineBreak +
+    '   • [Marketplace & Shop]: Accesses the interactive storefront landing zone. Use this to shop, view merchant balances, browse listings, or make digital transactions.'
+    + sLineBreak +
+    sLineBreak +
+    'ACCOUNT SESSION OPTIONS:' + sLineBreak +
+    '   • [Sign Out]: Terminates your current dashboard view safely and returns you directly back to the initial Welcome application landing window.'
+    + sLineBreak +
+    '   • [Quit Application]: Completely closes out the application workflow safely. The system will prompt you for exit confirmation before terminating the runtime thread.';
+
+  sLoginHelp =
+    '=== Secure Portal Login Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to the system authentication portal. Please enter your valid credentials to proceed to your profile.' + sLineBreak +
+    sLineBreak +
+    'LOGIN DIRECTIONS:' + sLineBreak +
+    '   • [Username Input]: Type your registered unique system identifier.' + sLineBreak +
+    '   • [Password Input]: Enter your secure password (characters will be masked for safety).' + sLineBreak +
+    '   • [Login button]: Click this to verify your credentials and launch the dashboard.' + sLineBreak +
+    '   • [Back button]: Click this to cancel entry and return to the main landing splash screen.' + sLineBreak +
+    sLineBreak +
+    'FORGOT YOUR CREDENTIALS?' + sLineBreak +
+    '   • For security and privacy protection, password recovery is not handled locally.' + sLineBreak +
+    '   • If you have forgotten your password or username, please contact your System Administrator directly.' + sLineBreak +
+    '   • Your administrator can reset your credentials or verify account status through the Central Admin Panel.';
+
+implementation
+
+end.

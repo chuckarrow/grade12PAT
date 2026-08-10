@@ -7,7 +7,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, user_u, DMUnit, utils_u,
-  Vcl.TitleBarCtrls;
+  Vcl.TitleBarCtrls, appStrings_u;
 
 type
   TfrmShop = class(TForm)
@@ -18,6 +18,7 @@ type
     cmbCategory: TComboBox;
     btnBack: TButton;
     tlbTitleBar: TTitleBarPanel;
+    btnHelp: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
@@ -27,6 +28,7 @@ type
     procedure edtSearchChange(Sender: TObject);
     procedure populateCategories();
     procedure cmbCategoryChange(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -103,14 +105,22 @@ begin
   home_u.frmHome.Show;
 end;
 
+// Combo Category on Change
 procedure TfrmShop.cmbCategoryChange(Sender: TObject);
 begin
   refreshShop;
 end;
 
+// Search Edit on Change
 procedure TfrmShop.edtSearchChange(Sender: TObject);
 begin
   refreshShop;
+end;
+
+// Help Button
+procedure TfrmShop.btnHelpClick(Sender: TObject);
+begin
+  ShowMessage(sShopHelp);
 end;
 
 {$ENDREGION}

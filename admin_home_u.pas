@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, DMUnit, utils_u, Vcl.WinXCtrls,
   System.UITypes,
-  DMLoginSystem_u;
+  user_u, appStrings_u;
 
 type
   TfrmAdminHome = class(TForm)
@@ -27,6 +27,7 @@ type
     tgsGender: TToggleSwitch;
     lbl01: TLabel;
     edtPassword: TEdit;
+    btnHelp: TButton;
     procedure refreshUsers();
     procedure FormShow(Sender: TObject);
     procedure btnSignoutClick(Sender: TObject);
@@ -38,6 +39,7 @@ type
     procedure btnClearClick(Sender: TObject);
     procedure edtUsernameChange(Sender: TObject);
     procedure btnAddClick(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -53,6 +55,7 @@ type
 var
   frmAdminHome: TfrmAdminHome;
   doesUserExist: boolean;
+  iAccType: integer;
 
 const
   SAVE_STATE: array [0 .. 3] of TSaveState = (
@@ -75,6 +78,8 @@ uses
 // Show Form
 procedure TfrmAdminHome.FormShow(Sender: TObject);
 begin
+btnAdd.Enabled := false;
+
   refreshUsers;
 end;
 
@@ -89,13 +94,18 @@ end;
 
 {$REGION 'Controls'}
 
+    // Help Button
+procedure TfrmAdminHome.btnHelpClick(Sender: TObject);
+begin
+     ShowMessage(sAdminHomeHelp);
+end;
 
 // Edit User Button
 procedure TfrmAdminHome.btnEditClick(Sender: TObject);
 var
   ds: TDataSet;
   sUsername, sPassword, sName, sSurname, sBalance: string;
-  iAccType: integer;
+
   bIsMale: boolean;
 begin
 
@@ -126,8 +136,11 @@ begin
   else
     tgsGender.State := tssOff;
 
+    btnAdd.Enabled := true;
+
   setEditorWarn(0);
 end;
+
 
 // Delete Button
 procedure TfrmAdminHome.btnDeleteClick(Sender: TObject);
@@ -214,6 +227,12 @@ begin
 
   sBalance := StringReplace(edtBalance.Text, ',', '.', [rfReplaceAll]);
   sBalance := StringReplace(sBalance, ' ', '', [rfReplaceAll]);
+
+  if (cmbAccType.ItemIndex = 0) and (iAccType = 2) then
+  begin
+    ShowMessage('You cannot demote a Manager');
+    Exit;
+  end;
 
   if doesUserExist then
   begin

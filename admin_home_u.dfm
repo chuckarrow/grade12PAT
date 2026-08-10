@@ -1,10 +1,13 @@
 object frmAdminHome: TfrmAdminHome
   Left = 0
   Top = 0
-  Caption = 'Form1'
+  HelpType = htKeyword
+  HelpKeyword = 'Admin Page. Used for creating/editing/deleting User information'
+  BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
+  Caption = 'Admin | RyokoFuku Travel Planner'
   ClientHeight = 620
   ClientWidth = 1048
-  Color = clBtnFace
+  Color = clActiveCaption
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -184,5 +187,14 @@ object frmAdminHome: TfrmAdminHome
     Caption = 'Clear Editor'
     TabOrder = 6
     OnClick = btnClearClick
+  end
+  object btnHelp: TButton
+    Left = 948
+    Top = 8
+    Width = 75
+    Height = 25
+    Caption = '?'
+    TabOrder = 7
+    OnClick = btnHelpClick
   end
 end

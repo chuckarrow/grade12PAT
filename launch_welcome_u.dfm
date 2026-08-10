@@ -371,6 +371,7 @@ object frmWelcome: TfrmWelcome
       Height = 30
       Anchors = [akTop, akRight]
       Caption = '?'
+      OnClick = SpeedButton1Click
     end
   end
   object btnClose: TButton

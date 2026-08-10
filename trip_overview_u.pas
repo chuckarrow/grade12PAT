@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids,
-  Vcl.StdCtrls, DMUnit, user_u, Vcl.DBCtrls, System.UITypes, utils_u, Vcl.TitleBarCtrls;
+  Vcl.StdCtrls, DMUnit, user_u, Vcl.DBCtrls, System.UITypes, utils_u, Vcl.TitleBarCtrls, appStrings_u;
 
 type
   TfrmTripOverview = class(TForm)
@@ -25,6 +25,7 @@ type
     lbl02: TLabel;
     tlbTitleBar: TTitleBarPanel;
     btnDeleteTrip: TButton;
+    btnHelp: TButton;
     procedure FormShow(Sender: TObject);
     procedure refreshList();
     procedure dbcTripSelectClick(Sender: TObject);
@@ -39,6 +40,7 @@ type
     procedure setCombo();
     procedure btnDeleteTripClick(Sender: TObject);
     procedure btnRemoveClick(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -90,6 +92,13 @@ begin
   setCombo;
 end;
 
+// Help Button
+procedure TfrmTripOverview.btnHelpClick(Sender: TObject);
+begin
+  ShowMessage(sTripOverviewHelp);
+end;
+
+// Remove Trip
 procedure TfrmTripOverview.btnRemoveClick(Sender: TObject);
 begin
   if MessageDlg('Are you sure you want to remove this item from the trip? ',
@@ -115,6 +124,9 @@ end;
 // Select Trip Lookup ComboBox
 procedure TfrmTripOverview.dbcTripSelectClick(Sender: TObject);
 begin
+  // Null check to avoid error
+  if dbcTripSelect.KeyValue = NULL then
+    Exit;
 
   // Time Label
   DMUnit.DataModule1.tblCuratedList.Filtered := False;

@@ -6,7 +6,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, DMLoginSystem_u, Vcl.TitleBarCtrls, utils_u;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.TitleBarCtrls, utils_u, user_u, appStrings_u;
 
 type
   TfrmLogin = class(TForm)
@@ -15,10 +15,12 @@ type
     btnLogin: TButton;
     btnBack: TButton;
     tlbTitleBar: TTitleBarPanel;
+    btnHelp: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure btnLoginClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -48,8 +50,6 @@ begin
   utils_u.screenCentre(self);
 end;
 
-
-
 // Close Query
 procedure TfrmLogin.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
@@ -66,7 +66,7 @@ end;
 procedure TfrmLogin.btnLoginClick(Sender: TObject);
 var
   sUsername, sPassword, error: string;
-  loginAttempt: DMLoginSystem_u.TUserLogin;
+  loginAttempt: user_u.TUserLogin;
 begin
   // Fetch details from UI
   sUsername := edtUsername.Text;
@@ -88,8 +88,12 @@ begin
   launch_welcome_u.frmWelcome.Show; // Show Welcome Form
   self.Hide; // Hide Login Form
 end;
+
+// Help Button
+procedure TfrmLogin.btnHelpClick(Sender: TObject);
+begin
+  ShowMessage(sLoginHelp);
+end;
 {$ENDREGION}
 
 end.
-
-

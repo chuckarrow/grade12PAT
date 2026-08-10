@@ -7,7 +7,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, debug_db_u, Data.DB,
-  Vcl.Grids, Vcl.DBGrids, user_u, DMUnit, Vcl.TitleBarCtrls, utils_u;
+  Vcl.Grids, Vcl.DBGrids, user_u, DMUnit, Vcl.TitleBarCtrls, utils_u, appStrings_u;
 
 type
   TfrmHome = class(TForm)
@@ -17,6 +17,7 @@ type
     btnShop: TButton;
     tlbTitleBar: TTitleBarPanel;
     btnQuit: TButton;
+    btnHelp: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
@@ -24,6 +25,7 @@ type
     procedure btnTripClick(Sender: TObject);
     procedure btnShopClick(Sender: TObject);
     procedure btnQuitClick(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -51,6 +53,7 @@ begin
   // Open Tables
   if not DMUnit.DataModule1.tblTrip.Active then
     DMUnit.DataModule1.OpenTables;
+
 end;
 
 // Show Form
@@ -60,6 +63,7 @@ begin
 
   // Add Welcome back user
   lbl01.Caption := 'Welcome back, ' + user_u.currUser.getName;
+  btnShop.Default := true;
 end;
 
 // Close Form
@@ -95,6 +99,11 @@ begin
 end;
 
 // Quit button
+procedure TfrmHome.btnHelpClick(Sender: TObject);
+begin
+ShowMessage(sHomeHelp);
+end;
+
 procedure TfrmHome.btnQuitClick(Sender: TObject);
 begin
   utils_u.confirmQuit();

@@ -1,0 +1,150 @@
+// Charles Fletcher
+// appStrings_u is used to store all help strings and other large texts.
+// Texts are hand written and formatted by author with assistance from AI
+unit appStrings_u;
+
+interface
+
+resourcestring
+  sAdminHomeHelp =
+    '=== Administrator Home Panel Help ===' + sLineBreak +
+    sLineBreak +
+    'This control center allows you to add, edit, and delete system users.' + sLineBreak +
+    sLineBreak +
+    '1. VIEWING USERS:' + sLineBreak +
+    '   • The central table displays active usernames, names, account levels, and balances.' + sLineBreak +
+    '   • For system security, user passwords are encrypted and hidden from plain view.' + sLineBreak +
+    sLineBreak +
+    '2. EDITING AN EXISTING USER:' + sLineBreak +
+    '   • Highlight a user in the table and click the [Edit User] button.' + sLineBreak +
+    '   • The selection details will populate the form editor on the right.' + sLineBreak +
+    '   • Modify fields as needed and click [Update User] to save.' + sLineBreak +
+    sLineBreak +
+    '3. ADDING A NEW USER:' + sLineBreak +
+    '   • Clear any active editing profiles using the [Clear] button.' + sLineBreak +
+    '   • Type in a brand new username. The editor status will flag it as "Unsaved Changes".' + sLineBreak +
+    '   • Fill out the password, demographic, and account parameters.' + sLineBreak +
+    '   • Click [Add User] to commit the entry to the system database.' + sLineBreak +
+    sLineBreak +
+    '4. STATUS INDICATORS (Bottom Right):' + sLineBreak +
+    '   • "Unsaved Changes" (Red): Text inputs have been modified but not saved yet.' + sLineBreak +
+    '   • "User Found" (Black): The current username typed already exists in the system.' + sLineBreak +
+    '   • "User Deleted" (Gray): Confirms the last deletion operation succeeded.' + sLineBreak +
+    sLineBreak +
+    '5. SYSTEM SAFETY SAFEGUARDS:' + sLineBreak +
+    '   • Self-Deletion Block: You cannot delete your own logged-in administrator account.' + sLineBreak +
+    '   • Manager Demotion Lock: Active manager profiles cannot be demoted or deleted ' +
+    'directly. Their connected retail locations must be migrated first.';
+
+  sHomeHelp =
+    '=== Main Dashboard Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to your personal account dashboard. From here, you can manage your bookings, browse retail stores, or securely manage your profile session.'
+    + sLineBreak +
+    sLineBreak +
+    'AVAILABLE NAVIGATION PLATFORMS:' + sLineBreak +
+    '   • [Bookings & Trips]: Opens your travel overview panel. Click this to view, modify, track, or manage active trip itineraries and transit histories.'
+    + sLineBreak +
+    '   • [Marketplace & Shop]: Accesses the interactive storefront landing zone. Use this to shop, view merchant balances, browse listings, or make digital transactions.'
+    + sLineBreak +
+    sLineBreak +
+    'ACCOUNT SESSION OPTIONS:' + sLineBreak +
+    '   • [Sign Out]: Terminates your current dashboard view safely and returns you directly back to the initial Welcome application landing window.'
+    + sLineBreak +
+    '   • [Quit Application]: Completely closes out the application workflow safely. The system will prompt you for exit confirmation before terminating the runtime thread.';
+
+  sLoginHelp =
+    '=== Secure Portal Login Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to the system authentication portal. Please enter your valid credentials to proceed to your profile.' + sLineBreak +
+    sLineBreak +
+    'LOGIN DIRECTIONS:' + sLineBreak +
+    '   • [Username Input]: Type your registered unique system identifier.' + sLineBreak +
+    '   • [Password Input]: Enter your secure password (characters will be masked for safety).' + sLineBreak +
+    '   • [Login button]: Click this to verify your credentials and launch the dashboard.' + sLineBreak +
+    '   • [Back button]: Click this to cancel entry and return to the main landing splash screen.' + sLineBreak +
+    sLineBreak +
+    'FORGOT YOUR CREDENTIALS?' + sLineBreak +
+    '   • For security and privacy protection, password recovery is not handled locally.' + sLineBreak +
+    '   • If you have forgotten your password or username, please contact your System Administrator directly.' + sLineBreak +
+    '   • Your administrator can reset your credentials or verify account status through the Central Admin Panel.';
+
+  sSignupHelp =
+    '=== New Account Registration Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to the registration screen. Complete all input parameters to establish a secure database user account profile.' +
+    sLineBreak +
+    sLineBreak +
+    'FORM SUBMISSION REQUIREMENT CRITERIA:' + sLineBreak +
+    '   • [Profile Fields]: Enter your official given First Name, Surname, and Age.' + sLineBreak +
+    '   • [Unique Identity]: Pick an original Username. The engine checks this against existing records.' + sLineBreak +
+    '   • [Gender Assignment]: Select your identity marker via the provided Radio Button controls.' + sLineBreak +
+    sLineBreak +
+    'PASSWORD UTILITY & VERIFICATION:' + sLineBreak +
+    '   • [Dual Verification]: Enter your secure passphrase in both password input containers.' + sLineBreak +
+    '   • [Password Visibility Toggle]: Press [Show Password] to turn off masking variables (#0).' + sLineBreak +
+    '   • This reveals plain characters, allowing you to easily verify typing mismatches.' + sLineBreak +
+    '   • Press [Hide Password] to quickly mask sensitive text characters using secure bullet marks (•).' + sLineBreak +
+    sLineBreak +
+    'NAVIGATION ACTIONS:' + sLineBreak +
+    '   • [Submit Registration]: Processes inputs, validates security checks, and loads your new home profile.' + sLineBreak +
+    '   • [Back Control]: Aborts current registration fields and drops focus directly back to the welcome window.';
+
+  sWelcomeHelp =
+    '=== Application Gateway Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to the application platform portal. This landing interface serves as the primary system entry point.' + sLineBreak +
+    sLineBreak +
+    'AVAILABLE ACCOUNT GATEWAYS:' + sLineBreak +
+    '   • [Secure Account Login]: Select this pathway if you already possess registered credentials.' + sLineBreak +
+    '   • It dynamically provisions a new secure login instance and hides this landing panel.' + sLineBreak +
+    '   • [Create New Account]: Choose this if you are a first-time visitor wanting to create a profile.' + sLineBreak +
+    '   • It instances the system sign-up form so you can add your information to the database.' + sLineBreak +
+    sLineBreak +
+    'SYSTEM NAVIGATION OPTIONS:' + sLineBreak +
+    '   • [Close Application]: Gracefully stops all active background processes and database connections.' + sLineBreak +
+    '   • This safely terminates the central execution thread and closes the program interface.';
+
+  sManagerHelp =
+    '=== Store Manager Hub Help ===' + sLineBreak +
+    sLineBreak +
+    'This administrative workspace allows you to control your retail outlets and maintain their standalone product inventories.'
+    + sLineBreak +
+    sLineBreak +
+    '1. UNDERSTANDING THE TWO GRID MODES:' + sLineBreak +
+    '   • [Viewing Stores Mode]: Displays your assigned retail venues. Item modification buttons are locked here.' + sLineBreak +
+    '   • [Viewing Items Mode]: Triggered by clicking [Edit Store Items]. This displays the active stock counts, bulk quantities, and specialized base prices for the selected storefront.'
+    + sLineBreak +
+    sLineBreak +
+    '2. OUTLET MANAGEMENT & EDITOR:' + sLineBreak +
+    '   • Use [Load Selected Store] to securely map details into the panel inputs.' + sLineBreak +
+    '   • The engine tracks input modifications and triggers an "Unsaved Changes" text alert.' + sLineBreak +
+    '   • Clear out fields manually or change inputs to click [Create Store] for fresh venues.' + sLineBreak +
+    sLineBreak +
+    '3. INVENTORY CONTROL & INTEGRITY RULES:' + sLineBreak +
+    '   • [Add / Edit Items]: Launches a dedicated pop-up modal to adjust pricing structures and stocks.' + sLineBreak +
+    '   • [Item Clean-up Safeguard]: Removing an item deletes it from that specific branch stock. If no other active retail store carries that item ID, the core record is purged automatically from the main repository to prevent database bloating.';
+
+  sShopHelp =
+    '=== Interactive Marketplace Help ===' + sLineBreak +
+    sLineBreak +
+    'Welcome to the shopping catalog. Here you can browse available vendor products, filter current inventories, and assign catalog items directly to your upcoming trips.'
+    + sLineBreak +
+    sLineBreak +
+    '1. SEARCH & RE-INDEX FILTERS:' + sLineBreak +
+    '   • [Search Bar]: Type inside the text box to instantly query matching item titles or description fields.' + sLineBreak +
+    '   • [Category Filters]: Pull down the selection field to parse items belonging to exact commercial groups (e.g., Apparel, Souvenirs, Groceries). Select "All" to completely reset boundaries.'
+    + sLineBreak +
+    sLineBreak +
+    '2. ASSIGNING INVENTORY TO TRIPS:' + sLineBreak +
+    '   • Select a product line item out of the active grid, then choose the [Add to Trip] button.' + sLineBreak +
+    '   • This references the stock identifier asset and presents a supplementary panel layout.' + sLineBreak +
+    '   • Specify your batch requirements, supply optional notes, and click save to safely map the record right into your trip itinerary repository.'
+    + sLineBreak +
+    sLineBreak +
+    '3. NAVIGATION PATHWAYS:' + sLineBreak +
+    '   • [Back Arrow]: Aborts inventory filtering and redirects focus back to your primary user dashboard view.';
+
+implementation
+
+end.

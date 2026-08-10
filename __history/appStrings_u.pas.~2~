@@ -1,0 +1,10 @@
+unit appStrings_u;
+
+interface
+
+resourcestring
+sAdminHome = 'Welcome to the Admin Interface.'#13#10'Here you can add/edit/delete users.'
+
+implementation
+
+end.

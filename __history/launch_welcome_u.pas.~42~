@@ -1,0 +1,105 @@
+// Charles Fletcher
+// File Status: Complete
+unit launch_welcome_u;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, utils_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
+  Vcl.Buttons;
+
+type
+  TfrmWelcome = class(TForm)
+    btnLogin: TButton;
+    btnSignup: TButton;
+    lbl01: TLabel;
+    tlbTitleBar: TTitleBarPanel;
+    btnClose: TButton;
+    lbl02: TLabel;
+    img01: TImage;
+    SpeedButton1: TSpeedButton;
+    procedure FormShow(Sender: TObject);
+    procedure btnSignupClick(Sender: TObject);
+    procedure btnLoginClick(Sender: TObject);
+    procedure btnCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmWelcome: TfrmWelcome;
+
+implementation
+
+uses
+  home_u, launch_signup_u, launch_login_u;
+
+{$R *.dfm}
+
+{$REGION 'Forms'}
+
+
+// Form Create
+procedure TfrmWelcome.FormCreate(Sender: TObject);
+begin
+  // GUI
+  // Dimensions
+  Self.Height := utils_u.launchWindowHeight;
+  Self.Width := utils_u.launchWindowWidth;
+
+  // Control Horizontal Centering
+  utils_u.horizCentre(btnLogin);
+  utils_u.horizCentre(btnSignup);
+  utils_u.horizCentre(lbl01);
+  utils_u.horizCentre(lbl02);
+  utils_u.horizCentre(img01);
+
+  // Location
+  utils_u.screenCentre(Self);
+end;
+
+// Form Show
+procedure TfrmWelcome.FormShow(Sender: TObject);
+begin
+  home_u.frmHome.Hide;
+
+  // Incorrect Window Activation incorrect Fix
+  utils_u.fixWindow(Self);
+end;
+
+
+{$ENDREGION}
+
+{$REGION 'Buttons' }
+
+
+// Login Form
+procedure TfrmWelcome.btnLoginClick(Sender: TObject);
+begin
+  Application.CreateForm(TfrmLogin, frmLogin);
+  Self.Hide;
+  launch_login_u.frmLogin.Show;
+
+end;
+
+// Signup Form
+procedure TfrmWelcome.btnSignupClick(Sender: TObject);
+begin
+  Application.CreateForm(TfrmSignup, frmSignup);
+  launch_signup_u.frmSignup.Show;
+end;
+
+// Close Button
+procedure TfrmWelcome.btnCloseClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+{$ENDREGION}
+
+end.

@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, utils_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls,
-  Vcl.Buttons;
+  Vcl.Buttons, appStrings_u;
 
 type
   TfrmWelcome = class(TForm)
@@ -25,6 +25,7 @@ type
     procedure btnLoginClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -72,6 +73,10 @@ begin
   utils_u.fixWindow(Self);
 end;
 
+procedure TfrmWelcome.SpeedButton1Click(Sender: TObject);
+begin
+  ShowMessage(sWelcomeHelp);
+end;
 
 {$ENDREGION}
 

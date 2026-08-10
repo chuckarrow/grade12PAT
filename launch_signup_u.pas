@@ -8,7 +8,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Samples.Spin,
-  utils_u, DMLoginSystem_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls;
+  utils_u, user_u, Vcl.TitleBarCtrls, Vcl.Imaging.pngimage, Vcl.ExtCtrls, appStrings_u;
 
 type
   TfrmSignup = class(TForm)
@@ -26,6 +26,7 @@ type
     btnSubmit: TButton;
     tlbTitleBar: TTitleBarPanel;
     Image1: TImage;
+    btnHelp: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure rbnMaleClick(Sender: TObject);
@@ -33,6 +34,7 @@ type
     procedure rbnFemaleClick(Sender: TObject);
     procedure btnViewPasswordClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure btnHelpClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -81,6 +83,12 @@ end;
 {$ENDREGION}
 
 {$REGION 'Controls' }
+
+// Help Button
+procedure TfrmSignup.btnHelpClick(Sender: TObject);
+begin
+      ShowMessage(sSignupHelp);
+end;
 
 // Show Password Button
 procedure TfrmSignup.btnViewPasswordClick(Sender: TObject);
@@ -135,7 +143,7 @@ begin
   sPasswordRepeat := edtPasswordRepeat.Text;
 
   // Create User Object
-  signupAttempt := DMLoginSystem_u.TUserSignup.CreateNew(sName, sSurname, sUsername, sPassword, sPasswordRepeat, iAge, isMale);
+  signupAttempt := user_u.TUserSignup.CreateNew(sName, sSurname, sUsername, sPassword, sPasswordRepeat, iAge, isMale);
 
   if signupAttempt.AttemptRegister(error) then
   begin

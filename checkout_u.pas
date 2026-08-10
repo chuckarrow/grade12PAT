@@ -7,9 +7,17 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.WinXCtrls, Vcl.StdCtrls, Vcl.ComCtrls, Vcl.DBCtrls, Vcl.Grids, Vcl.DBGrids,
-  System.UITypes,
-  DMLoginSystem_u,
-  DMUnit, utils_u, Vcl.TitleBarCtrls;
+  System.UITypes, user_u, DMUnit, utils_u, Vcl.TitleBarCtrls, appStrings_u;
+
+// --- TCartItem Record ---
+type
+  TCartItem = record
+    sItemName: string;
+    iQuantity: Integer;
+    cUnitPrice: Currency;
+    cLineTotal: Currency;
+    sComment: string;
+  end;
 
 type
   TfrmCheckout = class(TForm)
@@ -25,15 +33,21 @@ type
     lbl04: TLabel;
     btnBack: TButton;
     tlbTitleBar: TTitleBarPanel;
+    btnHelp: TButton;
+
     procedure FormShow(Sender: TObject);
-    procedure btnSubmitClick(Sender: TObject);
-    procedure refreshItems();
-    procedure btnFundsClick(Sender: TObject);
-    procedure populateReceipt();
-    procedure btnSaveClick(Sender: TObject);
-    procedure refreshLabels();
-    procedure btnBackClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+
+    procedure btnSubmitClick(Sender: TObject);
+    procedure btnFundsClick(Sender: TObject);
+    procedure btnSaveClick(Sender: TObject);
+    procedure btnBackClick(Sender: TObject);
+    procedure btnHelpClick(Sender: TObject);
+
+    procedure refreshItems();
+    procedure refreshLabels();
+    procedure loadCartArray(); // Loads trip items into arrCart
+    procedure populateReceipt(); // Reads from arrCart to build the receipt
 
   private
     { Private declarations }
@@ -43,12 +57,11 @@ type
 
 function CurrToSQLStr(AValue: Currency): string;
 
-// Array
-
 var
   frmCheckout: TfrmCheckout;
   total: Currency;
-  totalItems: integer;
+  totalItems: Integer;
+  arrCart: array of TCartItem; // Dynamic array — populated by loadCartArray
 
 implementation
 
@@ -67,18 +80,17 @@ var
 begin
   utils_u.fixWindow(self);
 
-  // Populate Form
+  // Populate balance label
   lbl01.Caption := 'R' + CurrToStr(currUser.getBalance);
 
-  // Get Item Count
+  // Get total item count from DB
   q := 'SELECT SUM(cl.quantity) AS total_items'
     + ' FROM tblCuratedList cl'
     + ' WHERE cl.trip_id = ' + QuotedStr(trip_overview_u.tripID);
-
   DMUnit.DataModule1.RunSQL(q);
   totalItems := DMUnit.DataModule1.dsQrySQL.DataSet.FieldByName('total_items').AsInteger;
 
-  // Get Total
+  // Get total price from DB
   q := 'SELECT SUM(i.price * cl.quantity) AS total_price'
     + ' FROM (tblCuratedList cl'
     + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
@@ -102,7 +114,7 @@ end;
 
 {$ENDREGION}
 
-{$REGION 'Buttons' }
+{$REGION 'Buttons'}
 
 
 // Add Funds Button
@@ -121,13 +133,18 @@ begin
   refreshItems;
 end;
 
+// Help Button
+procedure TfrmCheckout.btnHelpClick(Sender: TObject);
+begin
+  ShowMessage(sCheckoutHelp);
+end;
+
 // Checkout Button
 procedure TfrmCheckout.btnSubmitClick(Sender: TObject);
 var
   q: string;
 begin
-
-  // Funds Check
+  // Funds check — compare live balance against calculated total
   if currUser.getBalance() < total then
   begin
     ShowMessage('Insufficient funds. Total: R' + CurrToStr(total));
@@ -137,10 +154,16 @@ begin
   else
   begin
     refreshItems;
+
+    // Lock current prices into the array, then build receipt from that snapshot
+    loadCartArray;
     populateReceipt;
+
+    // Deduct total from user balance in DB
     q := 'UPDATE tblUsers SET balance = balance - ' + CurrToSQLStr(total)
       + ' WHERE username = ' + QuotedStr(currUser.getUsername);
     DMUnit.DataModule1.ExecuteSQL(q);
+
     refreshItems;
   end;
 
@@ -160,7 +183,6 @@ begin
         q := 'DELETE FROM tblTrip WHERE trip_id = ' + QuotedStr(trip_overview_u.tripID);
         ExecuteSQL(q);
       end;
-
       ShowMessage('Trip Deleted');
     end;
 {$ENDREGION}
@@ -168,13 +190,13 @@ begin
   refreshLabels;
 end;
 
-// Save Receipt
+// Save Receipt to text file
 procedure TfrmCheckout.btnSaveClick(Sender: TObject);
 begin
   redReceipt.Lines.SaveToFile('Receipt.txt');
 end;
 
-// Back/Complete Button
+// Back / Complete Button
 procedure TfrmCheckout.btnBackClick(Sender: TObject);
 begin
   self.hide;
@@ -194,15 +216,14 @@ end;
 {$REGION 'Custom Methods'}
 
 
-// Refresh Items
+// --- Refresh DB Grid ---
 procedure TfrmCheckout.refreshItems;
 var
   q: string;
 begin
-
-  q := 'SELECT cl.stock_id, cl.quantity, cl.comment, i.item_name, i.price, ' +
-    '(i.price * cl.quantity) AS line_total' +
-    ' FROM (tblCuratedList cl'
+  q := 'SELECT cl.stock_id, cl.quantity, cl.comment, i.item_name, i.price, '
+    + '(i.price * cl.quantity) AS line_total'
+    + ' FROM (tblCuratedList cl'
     + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
     + ' INNER JOIN tblItems i ON i.item_id = s.item_id'
     + ' WHERE cl.trip_id = ' + QuotedStr(trip_overview_u.tripID);
@@ -211,7 +232,7 @@ begin
   dbgItems.DataSource := DMUnit.DataModule1.dsQrySQL;
 
   // Format Table
-  dbgItems.Columns[0].Visible := False; // stock_id — hidden
+  dbgItems.Columns[0].Visible := False; // stock_id — hidden, still usable in code
 
   dbgItems.Columns[1].Title.Caption := 'Quantity';
   dbgItems.Columns[1].Width := 70;
@@ -227,9 +248,9 @@ begin
 
   dbgItems.Columns[5].Title.Caption := 'Total';
   dbgItems.Columns[5].Width := 90;
-
 end;
 
+// --- Refresh Labels ---
 procedure TfrmCheckout.refreshLabels;
 begin
   lbl01.Caption := 'R' + CurrToStr(currUser.getBalance);
@@ -238,15 +259,67 @@ begin
   refreshItems;
 end;
 
-// Make Receipt
+// --- Load Cart Into Array ---
+
+procedure TfrmCheckout.loadCartArray;
+var
+  q: string;
+  ds: TDataSet;
+  i: Integer;
+  iCount: Integer;
+begin
+  // Reuse the same query as refreshItems to get a fresh consistent snapshot
+  q := 'SELECT cl.stock_id, cl.quantity, cl.comment, i.item_name, i.price, '
+    + '(i.price * cl.quantity) AS line_total'
+    + ' FROM (tblCuratedList cl'
+    + ' INNER JOIN tblStock s ON s.stock_id = cl.stock_id)'
+    + ' INNER JOIN tblItems i ON i.item_id = s.item_id'
+    + ' WHERE cl.trip_id = ' + QuotedStr(trip_overview_u.tripID);
+
+  DMUnit.DataModule1.RunSQL(q);
+  ds := DMUnit.DataModule1.dsQrySQL.DataSet;
+
+  // --- Pass 1: count rows so the array can be sized correctly ---
+  iCount := 0;
+  ds.First;
+  while not ds.Eof do
+  begin
+    Inc(iCount);
+    ds.Next;
+  end;
+
+  SetLength(arrCart, iCount); // Size the dynamic array
+
+  // --- Pass 2: populate each element ---
+  ds.First;
+  i := 0;
+  while not ds.Eof do
+  begin
+    arrCart[i].sItemName := ds.FieldByName('item_name').AsString;
+    arrCart[i].iQuantity := ds.FieldByName('quantity').AsInteger;
+    arrCart[i].cUnitPrice := ds.FieldByName('price').AsCurrency;
+    arrCart[i].cLineTotal := ds.FieldByName('line_total').AsCurrency;
+    arrCart[i].sComment := ds.FieldByName('comment').AsString;
+    Inc(i);
+    ds.Next;
+  end;
+end;
+
+// --- Build Receipt From Array ---
+
 procedure TfrmCheckout.populateReceipt;
 var
-  ds: TDataSet;
-  itemLine: string;
-  totalPrice: Currency;
-  totalItems: integer;
+  i: Integer;
+  cRunTotal: Currency;
+  iRunItems: Integer;
+  sLine: string;
 begin
-  ds := DMUnit.DataModule1.dsQrySQL.DataSet;
+  // check if array is empty there is nothing to receipt
+  if Length(arrCart) = 0 then
+  begin
+    ShowMessage('No items in cart. Load cart first.');
+    Exit;
+  end;
 
   redReceipt.Clear;
   redReceipt.Font.Name := 'Courier New'; // fixed-width so columns align
@@ -260,10 +333,10 @@ begin
   redReceipt.SelAttributes.Style := [];
 
   redReceipt.Lines.Add('');
-  redReceipt.Lines.Add('Trip:   ' + trip_overview_u.tripName);
-  redReceipt.Lines.Add('Departure:   ' + (trip_overview_u.tripDepart));
-  redReceipt.Lines.Add('Return:   ' + (trip_overview_u.tripReturn));
-  redReceipt.Lines.Add('Trip ID: ' + trip_overview_u.tripID);
+  redReceipt.Lines.Add('Trip:       ' + trip_overview_u.tripName);
+  redReceipt.Lines.Add('Departure:  ' + trip_overview_u.tripDepart);
+  redReceipt.Lines.Add('Return:     ' + trip_overview_u.tripReturn);
+  redReceipt.Lines.Add('Trip ID:    ' + trip_overview_u.tripID);
   redReceipt.Lines.Add(StringOfChar('-', 40));
 
   // --- Column headers ---
@@ -272,37 +345,38 @@ begin
   redReceipt.SelAttributes.Style := [];
   redReceipt.Lines.Add(StringOfChar('-', 40));
 
-  // --- Items ---
-  totalPrice := 0;
-  totalItems := 0;
-  ds.First;
-  while not ds.Eof do
+  // --- Iterate arrCart to build line items ---
+  cRunTotal := 0;
+  iRunItems := 0;
+
+  for i := 0 to High(arrCart) do
   begin
-    itemLine := Format('%-20s%5d%10s',
-      [ds.FieldByName('item_name').AsString,
-      ds.FieldByName('quantity').AsInteger,
-      CurrToStr(ds.FieldByName('price').AsCurrency)]);
-    redReceipt.Lines.Add(itemLine);
+    // Format one line: left-justify item name, right-align qty and price
+    sLine := Format('%-20s%5d%10s',
+      [arrCart[i].sItemName,
+      arrCart[i].iQuantity,
+      CurrToStr(arrCart[i].cUnitPrice)]);
 
-    totalPrice := totalPrice + (ds.FieldByName('price').AsCurrency * ds.FieldByName('quantity').AsInteger);
-    totalItems := totalItems + ds.FieldByName('quantity').AsInteger;
+    redReceipt.Lines.Add(sLine);
 
-    ds.Next;
+    // Accumulate totals from the array (prices locked at load time)
+    cRunTotal := cRunTotal + arrCart[i].cLineTotal;
+    iRunItems := iRunItems + arrCart[i].iQuantity;
   end;
 
   redReceipt.Lines.Add(StringOfChar('-', 40));
 
   // --- Totals ---
   redReceipt.SelAttributes.Style := [fsBold];
-  redReceipt.Lines.Add(Format('%-20s%5d', ['Total Items:', totalItems]));
-  redReceipt.Lines.Add(Format('%-20s%10s', ['Total Cost:', CurrToStr(totalPrice)]));
+  redReceipt.Lines.Add(Format('%-25s%5d', ['Total Items:', iRunItems]));
+  redReceipt.Lines.Add(Format('%-20s%10s', ['Total Cost:', CurrToStr(cRunTotal)]));
   redReceipt.SelAttributes.Style := [];
 
   redReceipt.Lines.Add(StringOfChar('-', 40));
 
   // --- Balance ---
-  redReceipt.Lines.Add('Balance before: R' + CurrToStr(currUser.getBalance));
-  redReceipt.Lines.Add('Balance after:  R' + CurrToStr(currUser.getBalance - totalPrice));
+  redReceipt.Lines.Add('Balance before:  R' + CurrToStr(currUser.getBalance));
+  redReceipt.Lines.Add('Balance after:   R' + CurrToStr(currUser.getBalance - cRunTotal));
 
   redReceipt.Lines.Add('');
   redReceipt.Paragraph.Alignment := taCenter;
@@ -316,7 +390,7 @@ function CurrToSQLStr(AValue: Currency): string;
 var
   fs: TFormatSettings;
 begin
-  fs := TFormatSettings.Invariant; // always uses '.' regardless of locale
+  fs := TFormatSettings.Invariant;
   Result := CurrToStr(AValue, fs);
 end;
 
